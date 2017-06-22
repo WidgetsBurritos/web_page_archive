@@ -1,0 +1,22 @@
+{
+    "name": "drupal/web_page_archive",
+    "description": ".",
+    "type": "drupal-module",
+    "license": "GPL-2.0+",
+    "homepage": "http://drupal.org/project/web_page_archive",
+    "authors": [
+        {
+            "name": "bighappyface",
+            "email": "anomalous20@gmail.com"
+        },
+        {
+            "name": "WidgetsBurritos",
+            "email": "davidstinemetze@gmail.com"
+        },
+        {
+            "name": "pobster",
+            "email": "pobster@25159.no-reply.drupal.org"
+        }
+    ],
+    "minimum-stability": "dev"
+}
