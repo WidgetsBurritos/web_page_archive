@@ -1,0 +1,31 @@
+entity.web_page_archive.collection:
+  path: 'admin/config/development/web-page-archive'
+  defaults:
+    _entity_list: 'web_page_archive'
+    _title: 'Web Page Archive'
+  requirements:
+    _permission: 'administer web page archive'
+
+entity.web_page_archive.add_form:
+  path: 'admin/config/development/web-page-archive/add'
+  defaults:
+    _entity_form: 'web_page_archive.add'
+    _title: 'Add Archive'
+  requirements:
+    _entity_create_access: 'web_page_archive'
+
+entity.web_page_archive.edit_form:
+  path: 'admin/config/development/web-page-archive/{web_page_archive}/edit'
+  defaults:
+    _entity_form: 'web_page_archive.edit'
+    _title: 'Edit Archive'
+  requirements:
+    _entity_access: 'web_page_archive.update'
+
+entity.web_page_archive.delete_form:
+  path: 'admin/config/development/web-page-archive/{web_page_archive}/delete'
+  defaults:
+    _entity_form: 'web_page_archive.delete'
+    _title: 'Delete Archive'
+  requirements:
+    _entity_access: 'web_page_archive.delete'
