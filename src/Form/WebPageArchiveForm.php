@@ -37,7 +37,36 @@ class WebPageArchiveForm extends EntityForm {
       '#disabled' => !$web_page_archive->isNew(),
     ];
 
-    /* You will need additional form elements for your custom properties. */
+    $form['sitemap_url'] = [
+      '#type' => 'url',
+      '#title' => $this->t('XML Sitemap URL'),
+      '#description' => $this->t('Path to sitemap.'),
+      '#required' => TRUE,
+      '#default_value' => $web_page_archive->getSitemapUrl(),
+    ];
+
+    $form['cron_schedule'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Cron Schedule'),
+      '#description' => $this->t('Not yet implemented.Schedule for the archiving. Uses CRON expressions - See: <a href="https://en.wikipedia.org/wiki/Cron#CRON_expression">https://en.wikipedia.org/wiki/Cron#CRON_expression</a>'),
+      '#maxlength' => 255,
+      '#default_value' => $web_page_archive->getCronSchedule(),
+      '#disabled' => TRUE,
+    ];
+
+    $form['capture_screenshot'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Capture Screenshot?'),
+      '#description' => $this->t('If checked, this job will include download and compare screenshots.'),
+      '#default_value' => $web_page_archive->isScreenshotCapturing(),
+    ];
+
+    $form['capture_html'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Capture HTML?'),
+      '#description' => $this->t('If checked, this job will include download and compare html.'),
+      '#default_value' => $web_page_archive->isHtmlCapturing(),
+    ];
 
     return $form;
   }
