@@ -3,6 +3,9 @@
 namespace Drupal\web_page_archive\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityBase;
+use Drupal\Core\Entity\EntityWithPluginCollectionInterface;
+use Drupal\Core\Plugin\DefaultLazyPluginCollection;
+use Drupal\web_page_archive\Plugin\CaptureUtilityInterface;
 
 /**
  * Defines the Web Page Archive entity.
@@ -43,11 +46,12 @@ use Drupal\Core\Config\Entity\ConfigEntityBase;
  *     "sitemap_url",
  *     "cron_schedule",
  *     "capture_screenshot",
- *     "capture_html"
+ *     "capture_html",
+ *     "capture_utilities"
  *   }
  * )
  */
-class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface {
+class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface, EntityWithPluginCollectionInterface {
 
   /**
    * The Web Page Archive ID.
@@ -92,6 +96,20 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
   protected $capture_screenshot;
 
   /**
+   * The array of capture utilities for this archive.
+   *
+   * @var array
+   */
+  protected $capture_utilities = [];
+
+  /**
+   * Holds the collection of capture utilities that are used by this archive.
+   *
+   * @var \Drupal\Core\Plugin\DefaultLazyPluginCollection
+   */
+  protected $capture_utility_collection;
+
+  /**
    * Retrieves the Sitemap URL.
    */
   public function getSitemapUrl() {
@@ -119,4 +137,86 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
     return $this->capture_screenshot;
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function getCaptureUtility($capture_utility) {
+    return $this->getCaptureUtilities()->get($capture_utility);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getCaptureUtilities() {
+    if (!$this->capture_utility_collection) {
+      $this->capture_utility_collection = new DefaultLazyPluginCollection($this->captureUtilityPluginManager(), $this->capture_utilities);
+    }
+    return $this->capture_utility_collection;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getPluginCollections() {
+    return ['capture_utilities' => $this->getCaptureUtilities()];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function addCaptureUtility(array $configuration) {
+    $configuration['uuid'] = $this->uuidGenerator()->generate();
+    $this->getCaptureUtilities()->addInstanceId($configuration['uuid'], $configuration);
+    return $configuration['uuid'];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function deleteCaptureUtility(CaptureUtilityInterface $capture_utility) {
+    $this->getCaptureUtilities()->removeInstanceId($capture_utility->getUuid());
+    $this->save();
+    return $this;
+  }
+
+  /**
+   * Determines if entity has an instance of the specified plugin id.
+   *
+   * @param string $id
+   *   Capture utility plugin id.
+   */
+  public function hasCaptureUtilityInstance($id) {
+    foreach ($this->capture_utilities as $utility) {
+      if ($utility['id'] == $id) {
+        return TRUE;
+      }
+    }
+
+    return FALSE;
+  }
+  /**
+   * Deletes a capture utility by id.
+   *
+   * @param string $id
+   *   Capture utility plugin id.
+   */
+  public function deleteCaptureUtilityById($id) {
+    foreach ($this->capture_utilities as $utility) {
+      if ($utility['id'] == $id) {
+        $this->getCaptureUtilities()->removeInstanceId($utility['uuid']);
+      }
+    }
+    $this->save();
+    return $this;
+  }
+
+  /**
+   * Wraps the search plugin manager.
+   *
+   * @return \Drupal\Component\Plugin\PluginManagerInterface
+   *   A search plugin manager object.
+   */
+  protected function captureUtilityPluginManager() {
+    return \Drupal::service('plugin.manager.capture_utility');
+  }
 }
