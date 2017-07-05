@@ -1,5 +1,7 @@
+# Web page archive entity menu items definition
 entity.web_page_archive.collection:
-  title: Web Page Archive
-  parent: system.admin_config_development
-  description: 'Settings for Web Page Archives'
+  title: 'Web Page Archive'
   route_name: entity.web_page_archive.collection
+  description: 'Settings for Web Page Archives'
+  parent: system.admin_config_development
+  weight: 99

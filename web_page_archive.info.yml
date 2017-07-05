@@ -1,6 +1,5 @@
 name: Web Page Archive
 type: module
-description: '.'
-package: Performance
-configure: entity.web_page_archive.collection
+description: 'Provides web site snapshot functionality.'
+package: Utility
 core: 8.x

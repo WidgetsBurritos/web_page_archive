@@ -15,7 +15,7 @@ entity.web_page_archive.add_form:
     _entity_create_access: 'web_page_archive'
 
 entity.web_page_archive.edit_form:
-  path: 'admin/config/development/web-page-archive/{web_page_archive}'
+  path: 'admin/config/development/web-page-archive/{web_page_archive}/edit'
   defaults:
     _entity_form: 'web_page_archive.edit'
     _title: 'Edit Archive'
@@ -29,21 +29,3 @@ entity.web_page_archive.delete_form:
     _title: 'Delete Archive'
   requirements:
     _entity_access: 'web_page_archive.delete'
-
-entity.web_page_archive.enable:
-  path: 'admin/config/development/web-page-archive/{web_page_archive}/enable'
-  defaults:
-    _controller: '\Drupal\web_page_archive\Controller\WebPageArchiveController::performOperation'
-    op: enable
-  requirements:
-    _entity_access: 'web_page_archive.update'
-    _csrf_token: 'TRUE'
-
-entity.web_page_archive.disable:
-  path: 'admin/config/development/web-page-archive/{web_page_archive}/disable'
-  defaults:
-    _controller: '\Drupal\web_page_archive\Controller\WebPageArchiveController::performOperation'
-    op: disable
-  requirements:
-    _entity_access: 'web_page_archive.disable'
-    _csrf_token: 'TRUE'

@@ -8,3 +8,39 @@ web_page_archive.web_page_archive.*:
     label:
       type: label
       label: 'Label'
+    uuid:
+      type: string
+    sitemap_url:
+      type: uri
+      label: 'XML Sitemap URL'
+    cron_schedule:
+      type: string
+      label: 'Cron Schedule'
+    capture_screenshot:
+      type: boolean
+      label: 'Capture Screenshot'
+    capture_html:
+      type: boolean
+      label: 'Capture HTML'
+    runs:
+      type: sequence
+      sequence:
+        type: mapping
+        mapping:
+          uuid:
+            type: string
+          status:
+            type: string
+            label: 'Status'
+          timestamp:
+            type: string
+            label: 'Timestamp'
+          capture_url:
+            type: uri
+            label: 'Capture URL'
+          screenshot:
+            type: uri
+            label: 'Screenshot'
+          html:
+            type: string
+            label: 'HTML snapshot'
