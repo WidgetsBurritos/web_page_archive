@@ -22,14 +22,14 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
    *
    * @var \Drupal\user\UserInterface
    */
-  protected $authorized_user;
+  protected $authorizedUser;
 
   /**
    * Unauthorized User.
    *
    * @var \Drupal\user\UserInterface
    */
-  protected $unauthorized_user;
+  protected $unauthorizedUser;
 
   /**
    * {@inheritdoc}
@@ -43,10 +43,10 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
    */
   protected function setUp() {
     parent::setUp();
-    $this->authorized_user = $this->drupalCreateUser([
+    $this->authorizedUser = $this->drupalCreateUser([
       'administer web page archive',
     ]);
-    $this->unauthorized_user = $this->drupalCreateUser([
+    $this->unauthorizedUser = $this->drupalCreateUser([
       'administer nodes',
     ]);
     $this->session = $this->assertSession();
@@ -59,7 +59,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $assert = $this->assertSession();
 
     // Login.
-    $this->drupalLogin($this->authorized_user);
+    $this->drupalLogin($this->authorizedUser);
 
     // Verify list exists with add button.
     $this->drupalGet('admin/config/development/web-page-archive');
@@ -111,24 +111,27 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $this->assertFieldChecked('capture_html');
   }
 
+  /**
+   * Tests programmatic creation of web page archive entities.
+   */
   public function testProgrammaticEntityCreation() {
     $assert = $this->assertSession();
 
     // Create a dummy entity.
-    $data = array(
+    $data = [
       'label' => 'Programmatic Archive',
       'id' => 'programmatic_archive',
       'sitemap_url' => 'http://localhost/sitemap.xml',
       'capture_html' => FALSE,
       'capture_screenshot' => TRUE,
-    );
+    ];
     $wpa = \Drupal::entityManager()
       ->getStorage('web_page_archive')
       ->create($data);
     $wpa->save();
 
     // Login.
-    $this->drupalLogin($this->authorized_user);
+    $this->drupalLogin($this->authorizedUser);
     $this->drupalGet('admin/config/development/web-page-archive/programmatic_archive/edit');
     $this->assertResponse(Response::HTTP_OK);
     $this->assertFieldByName('label', 'Programmatic Archive');
@@ -145,20 +148,20 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $assert = $this->assertSession();
 
     // Create a dummy entity.
-    $data = array(
+    $data = [
       'label' => 'Test Archive',
       'id' => 'test_archive',
       'sitemap_url' => 'http://localhost/sitemap.xml',
       'capture_html' => FALSE,
       'capture_screenshot' => TRUE,
-    );
+    ];
     $wpa = \Drupal::entityManager()
       ->getStorage('web_page_archive')
       ->create($data);
     $wpa->save();
 
     // Login.
-    $this->drupalLogin($this->unauthorized_user);
+    $this->drupalLogin($this->unauthorizedUser);
 
     $urls = [
       'admin/config/development/web-page-archive',
@@ -172,4 +175,5 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
       $this->assertResponse(Response::HTTP_FORBIDDEN);
     }
   }
+
 }

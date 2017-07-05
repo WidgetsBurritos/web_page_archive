@@ -80,14 +80,14 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
   /**
    * Boolean indicating if entity captures HTML.
    *
-   * @var boolean
+   * @var bool
    */
   protected $capture_html;
 
   /**
    * Boolean indicating if entity captures screenshot.
    *
-   * @var boolean
+   * @var bool
    */
   protected $capture_screenshot;
 
@@ -118,4 +118,5 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
   public function isScreenshotCapturing() {
     return $this->capture_screenshot;
   }
+
 }
