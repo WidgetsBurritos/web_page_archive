@@ -49,13 +49,12 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $this->unauthorizedUser = $this->drupalCreateUser([
       'administer nodes',
     ]);
-    $this->session = $this->assertSession();
   }
 
   /**
-   * Functional test of performance budget entity.
+   * Functional test of adding web page archive entities via the UI.
    */
-  public function testPerformanceBudgetEntity() {
+  public function testAdminEntityCreation() {
     $assert = $this->assertSession();
 
     // Login.
