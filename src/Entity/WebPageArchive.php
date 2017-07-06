@@ -194,6 +194,7 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
 
     return FALSE;
   }
+
   /**
    * Deletes a capture utility by id.
    *
@@ -211,6 +212,35 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
   }
 
   /**
+   * Queues the archive to run.
+   */
+  public function queueRun() {
+    // TODO: Interact with state api to indicate running status.
+    // TODO: Setup XML parsing.
+    $sitemap = [
+      'http://www.rackspace.com',
+      'http://www.rackspace.com/managed-hosting',
+    ];
+
+    foreach ($sitemap as $url) {
+      // TODO: Send to Queue API instead.
+      $this->captureUrl($url);
+    }
+  }
+
+  /**
+   * Captures and stores the specified URL results.
+   */
+  public function captureUrl($url) {
+    foreach ($this->getCaptureUtilities() as $utility) {
+      // TODO: Throw and handle exceptions.
+      $capture_response = $utility->captureUrl($url)->getResponse();
+
+      // TODO: Store result: $capture_response->getSerialized().
+    }
+  }
+
+  /**
    * Wraps the search plugin manager.
    *
    * @return \Drupal\Component\Plugin\PluginManagerInterface
@@ -219,4 +249,5 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
   protected function captureUtilityPluginManager() {
     return \Drupal::service('plugin.manager.capture_utility');
   }
+
 }

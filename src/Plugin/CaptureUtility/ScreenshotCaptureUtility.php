@@ -2,13 +2,14 @@
 
 namespace Drupal\web_page_archive\Plugin\CaptureUtility;
 
-use Drupal\Component\Plugin\PluginBase;
+use Drupal\web_page_archive\Plugin\CaptureResponse\ScreenshotCaptureResponse;
+use Drupal\web_page_archive\Plugin\CaptureUtilityBase;
 
 /**
  * Captures screenshot of a remote uri.
  *
  * @CaptureUtility(
- *   id = "ScreenshotCapture",
+ *   id = "ScreenshotCaptureUtility",
  *   label = @Translation("Screenshot capture utility", context = "Web Page Archive"),
  * )
  */
@@ -17,7 +18,7 @@ class ScreenshotCaptureUtility extends CaptureUtilityBase {
   /**
    * Most recent response.
    *
-   * @var string|null
+   * @var string|NULL
    */
   private $response = NULL;
 
@@ -25,8 +26,8 @@ class ScreenshotCaptureUtility extends CaptureUtilityBase {
    * {@inheritdoc}
    */
   public function captureUrl($uri) {
-    // TODO: Do something.
-    $this->response = NULL;
+    // TODO: Do the actual capture.
+    $this->response = new ScreenshotCaptureResponse('https://upload.wikimedia.org/wikipedia/commons/c/c1/Drupal-wordmark.svg');
 
     return $this;
   }

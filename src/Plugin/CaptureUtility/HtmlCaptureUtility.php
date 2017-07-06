@@ -2,14 +2,14 @@
 
 namespace Drupal\web_page_archive\Plugin\CaptureUtility;
 
-use Drupal\Component\Plugin\PluginBase;
-use Drupal\Core\Render\Markup;
+use Drupal\web_page_archive\Plugin\CaptureResponse\HtmlCaptureResponse;
+use Drupal\web_page_archive\Plugin\CaptureUtilityBase;
 
 /**
  * Captures HTML of a remote uri.
  *
  * @CaptureUtility(
- *   id = "HtmlCapture",
+ *   id = "HtmlCaptureUtility",
  *   label = @Translation("Html capture utility", context = "Web Page Archive"),
  * )
  */
@@ -26,8 +26,8 @@ class HtmlCaptureUtility extends CaptureUtilityBase {
    * {@inheritdoc}
    */
   public function captureUrl($uri) {
-    // TODO: Do something.
-    $this->response = Markup::create('<p>Some Markup');
+    // TODO: Do the actual capture.
+    $this->response = new HtmlCaptureResponse('<p>Simulated response</p>');
 
     return $this;
   }

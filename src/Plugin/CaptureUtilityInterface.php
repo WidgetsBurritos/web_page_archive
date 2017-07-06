@@ -23,8 +23,8 @@ interface CaptureUtilityInterface extends PluginInspectionInterface {
   /**
    * Retrieves response from most recent capture.
    *
-   * @return string
-   *   A stringified response.
+   * @return Drupal\web_page_archive\Plugin\CaptureResponseInterface
+   *   A capture response object.
    */
   public function getResponse();
 
