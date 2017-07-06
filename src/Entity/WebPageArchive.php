@@ -3,6 +3,9 @@
 namespace Drupal\web_page_archive\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityBase;
+use Drupal\Core\Entity\EntityWithPluginCollectionInterface;
+use Drupal\Core\Plugin\DefaultLazyPluginCollection;
+use Drupal\web_page_archive\Plugin\CaptureUtilityInterface;
 
 /**
  * Defines the Web Page Archive entity.
@@ -43,11 +46,12 @@ use Drupal\Core\Config\Entity\ConfigEntityBase;
  *     "sitemap_url",
  *     "cron_schedule",
  *     "capture_screenshot",
- *     "capture_html"
+ *     "capture_html",
+ *     "capture_utilities"
  *   }
  * )
  */
-class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface {
+class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface, EntityWithPluginCollectionInterface {
 
   /**
    * The Web Page Archive ID.
@@ -92,6 +96,20 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
   protected $capture_screenshot;
 
   /**
+   * The array of capture utilities for this archive.
+   *
+   * @var array
+   */
+  protected $capture_utilities = [];
+
+  /**
+   * Holds the collection of capture utilities that are used by this archive.
+   *
+   * @var \Drupal\Core\Plugin\DefaultLazyPluginCollection
+   */
+  protected $capture_utility_collection;
+
+  /**
    * Retrieves the Sitemap URL.
    */
   public function getSitemapUrl() {
@@ -117,6 +135,145 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
    */
   public function isScreenshotCapturing() {
     return $this->capture_screenshot;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getCaptureUtility($capture_utility) {
+    return $this->getCaptureUtilities()->get($capture_utility);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getCaptureUtilities() {
+    if (!$this->capture_utility_collection) {
+      $this->capture_utility_collection = new DefaultLazyPluginCollection($this->captureUtilityPluginManager(), $this->capture_utilities);
+    }
+    return $this->capture_utility_collection;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getPluginCollections() {
+    return ['capture_utilities' => $this->getCaptureUtilities()];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function addCaptureUtility(array $configuration) {
+    $configuration['uuid'] = $this->uuidGenerator()->generate();
+    $this->getCaptureUtilities()->addInstanceId($configuration['uuid'], $configuration);
+    return $configuration['uuid'];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function deleteCaptureUtility(CaptureUtilityInterface $capture_utility) {
+    $this->getCaptureUtilities()->removeInstanceId($capture_utility->getUuid());
+    return $this;
+  }
+
+  /**
+   * Determines if entity has an instance of the specified plugin id.
+   *
+   * @param string $id
+   *   Capture utility plugin id.
+   */
+  public function hasCaptureUtilityInstance($id) {
+    foreach ($this->capture_utilities as $utility) {
+      if ($utility['id'] == $id) {
+        return TRUE;
+      }
+    }
+
+    return FALSE;
+  }
+
+  /**
+   * Deletes a capture utility by id.
+   *
+   * @param string $id
+   *   Capture utility plugin id.
+   */
+  public function deleteCaptureUtilityById($id) {
+    foreach ($this->capture_utilities as $utility) {
+      if ($utility['id'] == $id) {
+        $this->getCaptureUtilities()->removeInstanceId($utility['uuid']);
+      }
+    }
+    return $this;
+  }
+
+  /**
+   * Queues the archive to run.
+   */
+  public function queueRun() {
+    // TODO: Interact with state api to indicate running status.
+    // TODO: Setup XML parsing.
+    $sitemap = [
+      'http://www.rackspace.com',
+      'http://www.rackspace.com/managed-hosting',
+    ];
+
+    foreach ($sitemap as $url) {
+      // TODO: Send to Queue API instead.
+      $this->captureUrl($url);
+    }
+  }
+
+  /**
+   * Captures and stores the specified URL results.
+   */
+  public function captureUrl($url) {
+    foreach ($this->getCaptureUtilities() as $utility) {
+      // TODO: Throw and handle exceptions.
+      $capture_response = $utility->captureUrl($url)->getResponse();
+
+      // TODO: Store result: $capture_response->getSerialized().
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function save() {
+    // TODO: Handle this nonsense in plugins instead (future task).
+    $plugin_options = [
+      [
+        'id' => 'HtmlCaptureUtility',
+        'isCapturing' => $this->isHtmlCapturing(),
+      ],
+      [
+        'id' => 'ScreenshotCaptureUtility',
+        'isCapturing' => $this->isScreenshotCapturing(),
+      ],
+    ];
+
+    foreach ($plugin_options as $option) {
+      if (!$this->hasCaptureUtilityInstance($option['id']) && $option['isCapturing']) {
+        $this->addCaptureUtility(['id' => $option['id']]);
+      }
+      elseif (!$option['isCapturing']) {
+        $this->deleteCaptureUtilityById($option['id']);
+      }
+    }
+
+    return parent::save();
+  }
+
+  /**
+   * Wraps the search plugin manager.
+   *
+   * @return \Drupal\Component\Plugin\PluginManagerInterface
+   *   A search plugin manager object.
+   */
+  protected function captureUtilityPluginManager() {
+    return \Drupal::service('plugin.manager.capture_utility');
   }
 
 }

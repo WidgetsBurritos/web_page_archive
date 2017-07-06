@@ -78,6 +78,12 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     );
     $assert->pageTextContains('Created the Test Archive Web page archive entity.');
 
+    // Verify entity has appropriate capture utilities.
+    $entity = \Drupal::entityTypeManager()->getStorage('web_page_archive')->load('test_archive');
+    $capture_utilities = $entity->getCaptureUtilities()->getConfiguration();
+    $this->assertEqual(1, count($capture_utilities));
+    $this->assertEqual('ScreenshotCaptureUtility', array_shift($capture_utilities)['id']);
+
     // Verify entity view, edit, and delete buttons are present.
     // This is to ensure the entity config is correct for user operations.
     $this->assertLinkByHref('admin/config/development/web-page-archive/test_archive');
@@ -103,6 +109,12 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     );
     $assert->pageTextContains('Saved the Test Archiver Web page archive entity.');
 
+    // Verify entity has appropriate capture utilities.
+    $entity = \Drupal::entityTypeManager()->getStorage('web_page_archive')->load('test_archive');
+    $capture_utilities = $entity->getCaptureUtilities()->getConfiguration();
+    $this->assertEqual(1, count($capture_utilities));
+    $this->assertEqual('HtmlCaptureUtility', array_shift($capture_utilities)['id']);
+
     // Verify previous values are retained.
     $this->drupalGet('admin/config/development/web-page-archive/test_archive/edit');
     $this->assertFieldByName('sitemap_url', 'http://localhost:1234/sitemap.xml');
@@ -121,7 +133,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
       'label' => 'Programmatic Archive',
       'id' => 'programmatic_archive',
       'sitemap_url' => 'http://localhost/sitemap.xml',
-      'capture_html' => FALSE,
+      'capture_html' => TRUE,
       'capture_screenshot' => TRUE,
     ];
     $wpa = \Drupal::entityManager()
@@ -136,7 +148,14 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $this->assertFieldByName('label', 'Programmatic Archive');
     $this->assertFieldByName('sitemap_url', 'http://localhost/sitemap.xml');
     $this->assertFieldChecked('capture_screenshot');
-    $this->assertNoFieldChecked('capture_html');
+    $this->assertFieldChecked('capture_html');
+
+    // Verify entity has appropriate capture utilities.
+    $entity = \Drupal::entityTypeManager()->getStorage('web_page_archive')->load('programmatic_archive');
+    $capture_utilities = $entity->getCaptureUtilities()->getConfiguration();
+    $this->assertEqual(2, count($capture_utilities));
+    $this->assertEqual('HtmlCaptureUtility', array_shift($capture_utilities)['id']);
+    $this->assertEqual('ScreenshotCaptureUtility', array_shift($capture_utilities)['id']);
 
   }
 

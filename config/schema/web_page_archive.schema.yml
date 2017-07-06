@@ -22,6 +22,15 @@ web_page_archive.web_page_archive.*:
     capture_html:
       type: boolean
       label: 'Capture HTML'
+    capture_utilities:
+      type: sequence
+      sequence:
+        type: mapping
+        mapping:
+          uuid:
+            type: string
+          id:
+            type: string
     runs:
       type: sequence
       sequence:

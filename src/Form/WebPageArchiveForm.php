@@ -54,6 +54,7 @@ class WebPageArchiveForm extends EntityForm {
       '#disabled' => TRUE,
     ];
 
+    // TODO: Make plugins inject their form fields instead (future task).
     $form['capture_screenshot'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Capture Screenshot?'),
@@ -76,6 +77,7 @@ class WebPageArchiveForm extends EntityForm {
    */
   public function save(array $form, FormStateInterface $form_state) {
     $web_page_archive = $this->entity;
+
     $status = $web_page_archive->save();
 
     switch ($status) {
