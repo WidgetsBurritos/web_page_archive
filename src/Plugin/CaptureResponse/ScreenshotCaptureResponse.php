@@ -16,7 +16,7 @@ class ScreenshotCaptureResponse extends CaptureResponseBase {
    *   The response contents.
    */
   public function __construct($content) {
-    $this->setType('uri')->setContent($content);
+    $this->setType(self::TYPE_URI)->setContent($content);
   }
 
 }

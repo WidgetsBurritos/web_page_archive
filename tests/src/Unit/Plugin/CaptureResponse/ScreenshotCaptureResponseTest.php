@@ -19,12 +19,12 @@ class ScreenshotCaptureResponseTest extends UnitTestCase {
     $response = new ScreenshotCaptureResponse('<p>My response content</p>');
 
     // Test getters.
-    $this->assertSame('uri', $response->getType());
+    $this->assertSame(ScreenshotCaptureResponse::TYPE_URI, $response->getType());
     $this->assertSame('<p>My response content</p>', $response->getContent());
 
     // Test serialized output.
     $expected_serialized = serialize([
-      'type' => 'uri',
+      'type' => ScreenshotCaptureResponse::TYPE_URI,
       'content' => '<p>My response content</p>',
     ]);
     $this->assertSame($expected_serialized, $response->getSerialized());

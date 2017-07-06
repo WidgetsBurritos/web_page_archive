@@ -16,7 +16,7 @@ class HtmlCaptureResponse extends CaptureResponseBase {
    *   The response contents.
    */
   public function __construct($content) {
-    $this->setType('html')->setContent($content);
+    $this->setType(self::TYPE_HTML)->setContent($content);
   }
 
 }

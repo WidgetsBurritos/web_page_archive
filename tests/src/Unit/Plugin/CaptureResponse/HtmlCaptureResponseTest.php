@@ -19,12 +19,12 @@ class HtmlCaptureResponseTest extends UnitTestCase {
     $response = new HtmlCaptureResponse('<p>My response content</p>');
 
     // Test getters.
-    $this->assertSame('html', $response->getType());
+    $this->assertSame(HtmlCaptureResponse::TYPE_HTML, $response->getType());
     $this->assertSame('<p>My response content</p>', $response->getContent());
 
     // Test serialized output.
     $expected_serialized = serialize([
-      'type' => 'html',
+      'type' => HtmlCaptureResponse::TYPE_HTML,
       'content' => '<p>My response content</p>',
     ]);
     $this->assertSame($expected_serialized, $response->getSerialized());

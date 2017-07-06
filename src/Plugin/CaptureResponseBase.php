@@ -8,6 +8,16 @@ namespace Drupal\web_page_archive\Plugin;
 abstract class CaptureResponseBase implements CaptureResponseInterface {
 
   /**
+   * Response content is a URI.
+   */
+  const TYPE_URI = 'uri';
+
+  /**
+   * Response content is HTML.
+   */
+  const TYPE_HTML = 'html';
+
+  /**
    * The response content.
    *
    * @var string
