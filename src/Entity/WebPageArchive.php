@@ -175,7 +175,6 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
    */
   public function deleteCaptureUtility(CaptureUtilityInterface $capture_utility) {
     $this->getCaptureUtilities()->removeInstanceId($capture_utility->getUuid());
-    $this->save();
     return $this;
   }
 
@@ -207,7 +206,6 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
         $this->getCaptureUtilities()->removeInstanceId($utility['uuid']);
       }
     }
-    $this->save();
     return $this;
   }
 
@@ -238,6 +236,34 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
 
       // TODO: Store result: $capture_response->getSerialized().
     }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function save() {
+    // TODO: Handle this nonsense in plugins instead (future task).
+    $plugin_options = [
+      [
+        'id' => 'HtmlCaptureUtility',
+        'isCapturing' => $this->isHtmlCapturing(),
+      ],
+      [
+        'id' => 'ScreenshotCaptureUtility',
+        'isCapturing' => $this->isScreenshotCapturing(),
+      ],
+    ];
+
+    foreach ($plugin_options as $option) {
+      if (!$this->hasCaptureUtilityInstance($option['id']) && $option['isCapturing']) {
+        $this->addCaptureUtility(['id' => $option['id']]);
+      }
+      elseif (!$option['isCapturing']) {
+        $this->deleteCaptureUtilityById($option['id']);
+      }
+    }
+
+    return parent::save();
   }
 
   /**

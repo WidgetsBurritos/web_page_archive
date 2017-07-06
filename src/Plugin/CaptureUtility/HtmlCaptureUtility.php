@@ -18,7 +18,7 @@ class HtmlCaptureUtility extends CaptureUtilityBase {
   /**
    * Most recent response.
    *
-   * @var string|NULL
+   * @var string|null
    */
   private $response = NULL;
 
