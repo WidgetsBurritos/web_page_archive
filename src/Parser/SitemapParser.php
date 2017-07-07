@@ -13,7 +13,7 @@ class SitemapParser {
   /**
    * Http client.
    *
-   * @var object
+   * @var GuzzleHttp\Client
    */
   private $httpClient;
 
