@@ -86,7 +86,7 @@ class CaptureQueueWorkerTest extends UnitTestCase {
  * Since drupal_set_message() is unavailable we need to cheat to get it in.
  *
  * @todo Delete after https://www.drupal.org/node/2278383 is in.
- * @see https://api.drupal.org/api/drupal/core%21modules%21aggregator%21tests%21src%21Unit%21Plugin%21AggregatorPluginSettingsBaseTest.php/8.2.x
+ * @see https://api.drupal.org/api/drupal/core!modules!aggregator!tests!src!Unit!Plugin!AggregatorPluginSettingsBaseTest.php/8.2.x
  */
 namespace Drupal\web_page_archive\Plugin\QueueWorker;
 

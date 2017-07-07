@@ -18,11 +18,17 @@ use GuzzleHttp\Exception\RequestException;
 class SitemapParserTest extends UnitTestCase {
 
   /**
-   * Tests sitemap parsing.
+   * Sitemap parser.
+   *
+   * @var \Drupal\web_page_archive\Parser\SitemapParser
    */
-  public function testSitemapParser() {
+  protected static $sitemapParser;
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function setUpBeforeClass() {
     // Setup our Mock Connection.
-    // TODO: Split this test up into chunks.
     $mock = new MockHandler([
       new Response(200, [], file_get_contents(__DIR__ . '/fixtures/sitemap.good.xml')),
       new Response(200, [], file_get_contents(__DIR__ . '/fixtures/sitemap.empty.xml')),
@@ -32,36 +38,65 @@ class SitemapParserTest extends UnitTestCase {
       new RequestException("Error Communicating with Server", new Request('GET', 'test')),
     ]);
     $handler = HandlerStack::create($mock);
-    $sitemap_parser = new SitemapParser($handler);
+    static::$sitemapParser = new SitemapParser($handler);
+  }
 
+  /**
+   * Tests good sitemap.
+   */
+  public function testParsesGoodSitemapCorrectly() {
     // Good sitemap.
-    $urls = $sitemap_parser->parse('https://www.somesite.com/sitemap.good.xml');
+    $urls = static::$sitemapParser->parse('https://www.somesite.com/sitemap.good.xml');
     $expected = [
       'https://www.somesite.com/',
       'https://www.somesite.com/about/',
     ];
     $this->assertSame($expected, $urls);
+  }
 
+  /**
+   * Tests empty sitemap.
+   */
+  public function testsParsesEmptySitemapCorrectly() {
     // Empty sitemap.
-    $urls = $sitemap_parser->parse('https://www.someemptysite.com/sitemap.empty.xml');
+    $urls = static::$sitemapParser->parse('https://www.someemptysite.com/sitemap.empty.xml');
     $this->assertSame([], $urls);
 
-    // Bad format (parseable).
-    $urls = $sitemap_parser->parse('https://www.somesite.com/invalid.file.html');
+  }
+
+  /**
+   * Tests parseable, but invalid file format (e.g. html).
+   */
+  public function testsParsesNonSitemapCorrectly() {
+    $urls = static::$sitemapParser->parse('https://www.somesite.com/invalid.file.html');
     $this->assertSame([], $urls);
+  }
 
-    // Bad format (unparseable).
-    $this->setExpectedException('\Symfony\Component\Serializer\Exception\UnexpectedValueException');
-    $urls = $sitemap_parser->parse('https://www.somesite.com/invalid.file.png');
+  /**
+   * Tests unparseable file throws exception.
+   *
+   * @expectedException Symfony\Component\Serializer\Exception\UnexpectedValueException
+   */
+  public function testsUnparseableFileThrowsException() {
+    $urls = static::$sitemapParser->parse('https://www.somesite.com/invalid.file.png');
+  }
 
-    // Access denied.
-    $this->setExpectedException('\GuzzleHttp\Exception\ClientException');
-    $urls = $sitemap_parser->parse('https://www.somesite.com/access-denied-page');
+  /**
+   * Tests 4xx client error throws exception.
+   *
+   * @expectedException GuzzleHttp\Exception\ClientException
+   */
+  public function testsClientErrorThrowsException() {
+    $urls = static::$sitemapParser->parse('https://www.somesite.com/access-denied-page');
+  }
 
-    // Connection failure.
-    $this->setExpectedException('\GuzzleHttp\Exception\RequestException');
-    $urls = $sitemap_parser->parse('https://www.youcantconnecttome.com/sitemap.xml');
-
+  /**
+   * Tests connection failures.
+   *
+   * @expectedException GuzzleHttp\Exception\RequestException
+   */
+  public function testsRequestErrorThrowsException() {
+    $urls = static::$sitemapParser->parse('https://www.youcantconnecttome.com/sitemap.xml');
   }
 
 }
