@@ -22,6 +22,7 @@ class SitemapParserTest extends UnitTestCase {
    */
   public function testSitemapParser() {
     // Setup our Mock Connection.
+    // TODO: Split this test up into chunks.
     $mock = new MockHandler([
       new Response(200, [], file_get_contents(__DIR__ . '/fixtures/sitemap.good.xml')),
       new Response(200, [], file_get_contents(__DIR__ . '/fixtures/sitemap.empty.xml')),

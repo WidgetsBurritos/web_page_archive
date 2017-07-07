@@ -231,17 +231,19 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
    * Captures and stores the specified URL results.
    */
   private function captureUrls(array $urls = []) {
+    $queue_factory = \Drupal::service('queue');
+    $queue = $queue_factory->get('web_page_archive_capture');
+    // TODO: Get next available run ID from state api.
+    $run_id = 1;
     foreach ($urls as $url) {
       foreach ($this->getCaptureUtilities() as $utility) {
-        try {
-          // TODO: Send this to Queue API.
-          $capture_response = $utility->captureUrl($url)->getResponse();
-          // TODO: Store result: $capture_response->getSerialized().
-        }
-        catch (Exception $e) {
-          // TODO: What to do here? (future task)
-          drupal_set_message($e->getMessage(), 'warning');
-        }
+        $item = [
+          'entity_id' => $this->id(),
+          'utility' => $utility,
+          'url' => $url,
+          'run_id' => $run_id,
+        ];
+        $queue->createItem($item);
       }
     }
   }
