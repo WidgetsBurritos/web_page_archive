@@ -107,7 +107,7 @@ before_script:
   - drupal-ti before_script
 
 script:
-  - phpcs --standard=$HOME/.composer/vendor/drupal/coder/coder_sniffer/Drupal/ruleset.xml src/ tests/
+  - phpcs --standard=$HOME/.composer/vendor/drupal/coder/coder_sniffer/Drupal/ruleset.xml ./ --extensions=php,module,inc,install,test,profile,theme --ignore=vendor/
   - drupal-ti script
 
 after_script:
