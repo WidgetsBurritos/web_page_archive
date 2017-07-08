@@ -74,7 +74,6 @@ class WebPageArchiveTypeInfo implements ContainerInjectionInterface {
   public function entityOperation(EntityInterface $entity) {
     $operations = [];
     if ($this->currentUser->hasPermission('access web_page_archive information')) {
-      // TODO: Add "Start Run" button.
       if ($entity->hasLinkTemplate('view')) {
         $operations['web_page_archive_view'] = [
           'title' => $this->t('View Run History'),
@@ -83,12 +82,15 @@ class WebPageArchiveTypeInfo implements ContainerInjectionInterface {
         ];
       }
       if ($entity->hasLinkTemplate('queue_form')) {
+        $title = $entity->getQueueCt() > 0 ? $this->t('Queue') : $this->t('Start Run');
+
         $operations['web_page_archive_queue'] = [
-          'title' => $this->t('Queue'),
+          'title' => $title,
           'weight' => 0,
           'url' => $entity->toUrl('queue_form'),
         ];
       }
+
     }
     return $operations;
   }
