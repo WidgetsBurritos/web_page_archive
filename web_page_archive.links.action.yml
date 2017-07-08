@@ -3,8 +3,3 @@ entity.web_page_archive.add_form:
   title: 'Add Archive'
   appears_on:
     - entity.web_page_archive.collection
-entity.web_page_archive.queue:
-  route_name: 'entity.web_page_archive.queue'
-  title: 'Job Queue'
-  appears_on:
-    - entity.web_page_archive.collection

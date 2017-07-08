@@ -20,7 +20,8 @@ use Drupal\web_page_archive\Plugin\CaptureUtilityInterface;
  *     "form" = {
  *       "add" = "Drupal\web_page_archive\Form\WebPageArchiveForm",
  *       "edit" = "Drupal\web_page_archive\Form\WebPageArchiveForm",
- *       "delete" = "Drupal\web_page_archive\Form\WebPageArchiveDeleteForm"
+ *       "delete" = "Drupal\web_page_archive\Form\WebPageArchiveDeleteForm",
+ *       "queue" = "Drupal\web_page_archive\Form\WebPageArchiveQueueForm"
  *     },
  *     "route_provider" = {
  *       "html" = "Drupal\web_page_archive\WebPageArchiveHtmlRouteProvider",
@@ -38,6 +39,7 @@ use Drupal\web_page_archive\Plugin\CaptureUtilityInterface;
  *     "add-form" = "/admin/config/development/web-page-archive/add",
  *     "edit-form" = "/admin/config/development/web-page-archive/{web_page_archive}/edit",
  *     "delete-form" = "/admin/config/development/web-page-archive/{web_page_archive}/delete",
+ *     "queue-form" = "/admin/config/development/web-page-archive/{web_page_archive}/queue",
  *     "collection" = "/admin/config/development/web-page-archive"
  *   },
  *   config_export = {
@@ -211,40 +213,51 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
   }
 
   /**
+   * Retrieves count of number of jobs in queue.
+   *
+   * @var int
+   */
+  public function getQueueCt() {
+    $queue = \Drupal::service('queue')->get("web_page_archive_capture.{$this->uuid()}");
+    return (isset($queue)) ? $queue->numberOfItems() : 0;
+  }
+
+  /**
+   * Retrieves count of number of completed runs.
+   *
+   * @var int
+   */
+  public function getRunCt() {
+    // TODO: Implement this.
+    return 0;
+  }
+
+  /**
    * Queues the archive to run.
    */
-  public function queueRun() {
-    // TODO: Interact with state api to indicate running status.
+  public function startNewRun() {
     try {
       // Retrieve sitemap contents.
       $sitemap_parser = new SitemapParser();
       $urls = $sitemap_parser->parse($this->getSitemapUrl());
-      $this->captureUrls($urls);
+      $queue_factory = \Drupal::service('queue');
+      $queue = $queue_factory->get("web_page_archive_capture.{$this->uuid()}");
+
+      foreach ($urls as $url) {
+        foreach ($this->getCaptureUtilities() as $utility) {
+          $item = [
+            'web_page_archive' => $this,
+            'utility' => $utility,
+            'url' => $url,
+            'run_id' => $this->uuidGenerator()->generate(),
+          ];
+          $queue->createItem($item);
+        }
+      }
     }
     catch (Exception $e) {
       // TODO: What to do here? (future task)
       drupal_set_message($e->getMessage(), 'warning');
-    }
-  }
-
-  /**
-   * Captures and stores the specified URL results.
-   */
-  private function captureUrls(array $urls = []) {
-    $queue_factory = \Drupal::service('queue');
-    $queue = $queue_factory->get('web_page_archive_capture');
-    // TODO: Get next available run ID from state api.
-    $run_id = 1;
-    foreach ($urls as $url) {
-      foreach ($this->getCaptureUtilities() as $utility) {
-        $item = [
-          'entity_id' => $this->id(),
-          'utility' => $utility,
-          'url' => $url,
-          'run_id' => $run_id,
-        ];
-        $queue->createItem($item);
-      }
     }
   }
 

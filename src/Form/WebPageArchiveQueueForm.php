@@ -2,17 +2,18 @@
 
 namespace Drupal\web_page_archive\Form;
 
-use Drupal\Core\Form\FormBase;
+use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueWorkerManagerInterface;
-use Drupal\Core\Queue\SuspendQueueException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Admin form for queue processing.
+ * Class WebPageArchiveForm.
+ *
+ * @package Drupal\web_page_archive\Form
  */
-class WebPageArchiveQueueForm extends FormBase {
+class WebPageArchiveQueueForm extends EntityForm {
 
   /**
    * Queue factory.
@@ -49,36 +50,25 @@ class WebPageArchiveQueueForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function getFormId() {
-    return 'web_page_archive_queue_form';
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function buildForm(array $form, FormStateInterface $form_state) {
-    $queue = $this->queueFactory->get('web_page_archive_capture');
+  public function form(array $form, FormStateInterface $form_state) {
+    $form = parent::form($form, $form_state);
+    $web_page_archive = $this->getEntity();
 
     $form['help'] = [
       '#type' => 'markup',
-      '#markup' => $this->t('Submitting this form will process the web page archive queue which contains @number items.', ['@number' => $queue->numberOfItems()]),
-    ];
-    $form['actions']['#type'] = 'actions';
-    $form['actions']['submit'] = [
-      '#type' => 'submit',
-      '#value' => $this->t('Process queue'),
-      '#button_type' => 'primary',
+      '#markup' => $this->t('Submitting this form will process the web page archive queue which contains @number items.', ['@number' => $web_page_archive->getQueueCt()]),
     ];
 
     return $form;
   }
 
   /**
-   * {@inheritdoc}
+   * Processes the queue.
    */
-  public function submitForm(array &$form, FormStateInterface $form_state) {
-    $queue = $this->queueFactory->get('web_page_archive_capture');
-    $queue_worker = $this->queueManager->createInstance('web_page_archive_capture');
+  public function processQueue(array $form, FormStateInterface $form_state) {
+    $web_page_archive = $this->getEntity();
+    $queue = $this->queueFactory->get("web_page_archive_capture.{$web_page_archive->uuid()}");
+    $queue_worker = $this->queueManager->createInstance("web_page_archive_capture");
 
     while ($item = $queue->claimItem()) {
       try {
@@ -94,6 +84,18 @@ class WebPageArchiveQueueForm extends FormBase {
         drupal_set_message($e->getMessage(), 'warning');
       }
     }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function actions(array $form, FormStateInterface $form_state) {
+    $actions['process'] = [
+      '#type' => 'submit',
+      '#value' => $this->t('Process Queue'),
+      '#submit' => ['::processQueue'],
+    ];
+    return $actions;
   }
 
 }
