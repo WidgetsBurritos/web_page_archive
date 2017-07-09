@@ -79,21 +79,26 @@ class WebPageArchiveQueueForm extends EntityForm {
     $queue = $this->queueFactory->get("web_page_archive_capture.{$web_page_archive->uuid()}");
     $queue_worker = $this->queueManager->createInstance("web_page_archive_capture");
 
+    $processed_ct = 0;
     while ($item = $queue->claimItem()) {
       try {
         $queue_worker->processItem($item->data);
         $queue->deleteItem($item);
+        $processed_ct++;
       }
       catch (SuspendQueueException $e) {
         $queue->releaseItem($item);
+        watchdog_exception('web_page_archive', $e);
         break;
       }
       catch (\Exception $e) {
-        // TODO: What to do here? (future task)
-        drupal_set_message($e->getMessage(), 'warning');
+        watchdog_exception('web_page_archive', $e);
       }
     }
-    $form_state->setRedirect('entity.web_page_archive.view', ['web_page_archive' => $web_page_archive->id()]);
+
+    // TODO: What happens if there were exceptions above?
+    drupal_set_message(t('@processed_ct jobs have been processed.', ['@processed_ct' => $processed_ct]), 'status');
+    $form_state->setRedirect('entity.web_page_archive.canonical', ['web_page_archive' => $web_page_archive->id()]);
   }
 
   /**
@@ -102,8 +107,10 @@ class WebPageArchiveQueueForm extends EntityForm {
   public function startRun(array $form, FormStateInterface $form_state) {
     $web_page_archive = $this->getEntity();
     $web_page_archive->startNewRun();
-    $args = ['web_page_archive' => $web_page_archive->id()];
-    $form_state->setRedirect('entity.web_page_archive.view', ['web_page_archive' => $web_page_archive->id()]);
+
+    // TODO: Should there be some sort of validation the aboved worked?
+    drupal_set_message(t('@label archive has been queued.', ['@label' => $web_page_archive->label()]), 'status');
+    $form_state->setRedirect('entity.web_page_archive.canonical', ['web_page_archive' => $web_page_archive->id()]);
   }
 
   /**

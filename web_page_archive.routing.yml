@@ -14,12 +14,17 @@ entity.web_page_archive.add_form:
   requirements:
     _entity_create_access: 'web_page_archive'
 
-entity.web_page_archive.view:
+entity.web_page_archive.canonical:
   path: 'admin/config/development/web-page-archive/{web_page_archive}'
   defaults:
-    _title: 'View'
+    _controller: '\Drupal\web_page_archive\Controller\WebPageArchiveController::viewRuns'
+    _title_callback: '\Drupal\web_page_archive\Controller\WebPageArchiveController::title'
+  options:
+    parameters:
+      web_page_archive:
+        type: web_page_archive
   requirements:
-    _entity_access: 'web_page_archive.update'
+    _permission: 'web_page_archive.view'
 
 entity.web_page_archive.edit_form:
   path: 'admin/config/development/web-page-archive/{web_page_archive}/edit'
