@@ -44,12 +44,22 @@ web_page_archive.web_page_archive.*:
           timestamp:
             type: string
             label: 'Timestamp'
-          capture_url:
-            type: uri
-            label: 'Capture URL'
-          screenshot:
-            type: uri
-            label: 'Screenshot'
-          html:
-            type: string
-            label: 'HTML snapshot'
+          captures:
+            type: sequence
+            sequence:
+              type: mapping
+              mapping:
+                uuid:
+                  type: string
+                queue_ct:
+                  type: integer
+                  label: 'Queue Ct'
+                capture_url:
+                  type: uri
+                  label: 'Capture URL'
+                capture_type:
+                  type: string
+                  label: 'Capture Type'
+                content:
+                  type: string
+                  label: 'Capture Content'

@@ -75,6 +75,8 @@ class WebPageArchiveQueueForm extends EntityForm {
    * Processes the queue.
    */
   public function processQueue(array $form, FormStateInterface $form_state) {
+    // TODO: Move this behavior to controller.
+    // TODO: Add batch processing.
     $web_page_archive = $this->getEntity();
     $queue = $this->queueFactory->get("web_page_archive_capture.{$web_page_archive->uuid()}");
     $queue_worker = $this->queueManager->createInstance("web_page_archive_capture");

@@ -20,7 +20,7 @@ class CaptureQueueWorker extends QueueWorkerBase {
   public function processItem($data) {
     try {
       // Check all required keys are provided.
-      $required = ['utility', 'url'];
+      $required = ['utility', 'url', 'run_uuid', 'web_page_archive'];
       foreach ($required as $key) {
         if (empty($data[$key])) {
           throw new \Exception("$key is required");
@@ -28,10 +28,10 @@ class CaptureQueueWorker extends QueueWorkerBase {
       }
 
       // Capture the response.
-      $capture_response = $data['utility']->captureUrl($data['url'])->getResponse();
+      $data['capture_response'] = $data['utility']->capture($data)->getResponse();
+      $data['web_page_archive']->markCaptureComplete($data);
 
-      // TODO: Store $capture_response->getSerialized().
-      return $capture_response;
+      return $data['capture_response'];
 
     }
     catch (\Exception $e) {

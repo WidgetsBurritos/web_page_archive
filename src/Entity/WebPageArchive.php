@@ -50,7 +50,8 @@ use Drupal\web_page_archive\Plugin\CaptureUtilityInterface;
  *     "cron_schedule",
  *     "capture_screenshot",
  *     "capture_html",
- *     "capture_utilities"
+ *     "capture_utilities",
+ *     "runs"
  *   }
  * )
  */
@@ -238,10 +239,12 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
   public function startNewRun() {
     try {
       // Retrieve sitemap contents.
+      // TODO: Move functionality into controller?
       $sitemap_parser = new SitemapParser();
       $urls = $sitemap_parser->parse($this->getSitemapUrl());
       $queue_factory = \Drupal::service('queue');
       $queue = $queue_factory->get("web_page_archive_capture.{$this->uuid()}");
+      $run_uuid = $this->uuidGenerator()->generate();
 
       foreach ($urls as $url) {
         foreach ($this->getCaptureUtilities() as $utility) {
@@ -249,16 +252,55 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
             'web_page_archive' => $this,
             'utility' => $utility,
             'url' => $url,
-            'run_id' => $this->uuidGenerator()->generate(),
+            'run_uuid' => $run_uuid,
           ];
           $queue->createItem($item);
         }
       }
+
+      $this->storeNewRun($run_uuid, $queue->numberOfItems());
     }
     catch (\Exception $e) {
       // TODO: What to do here? (future task)
       drupal_set_message($e->getMessage(), 'warning');
     }
+  }
+
+  /**
+   * Stores run info into the databsae.
+   */
+  protected function storeNewRun($uuid, $queue_ct) {
+    // TODO: Move functionality into controller?
+    $config = $this->getEditableConfig();
+    $new_run = [
+      'uuid' => $uuid,
+      'timestamp' => \Drupal::time()->getCurrentTime(),
+      'queue_ct' => $queue_ct,
+      'status' => 'pending',
+      'captures' => [],
+    ];
+
+    $config->set("runs.{$uuid}", $new_run);
+    $config->save();
+  }
+
+  /**
+   * Marks a capture task complete.
+   */
+  public function markCaptureComplete($data) {
+    // TODO: Move functionality into controller?
+    $config = $this->getEditableConfig();
+    $uuid = $this->uuidGenerator()->generate();
+    $capture = [
+      'uuid' => $uuid,
+      'timestamp' => \Drupal::time()->getCurrentTime(),
+      'status' => 'complete',
+      'capture_url' => $data['url'],
+      'type' => $data['capture_response']->getType(),
+      'content' => $data['capture_response']->getContent(),
+    ];
+    $config->set("runs.{$data['run_uuid']}.captures.{$uuid}", $capture);
+    $config->save();
   }
 
   /**
@@ -297,6 +339,16 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
    */
   protected function captureUtilityPluginManager() {
     return \Drupal::service('plugin.manager.capture_utility');
+  }
+
+  /**
+   * Retrieves an editable config for this entity.
+   *
+   * @return \Drupal\Core\Config\Config
+   *   A config object for the current entity.
+   */
+  protected function getEditableConfig() {
+    return \Drupal::service('config.factory')->getEditable("web_page_archive.web_page_archive.{$this->id()}");
   }
 
 }
