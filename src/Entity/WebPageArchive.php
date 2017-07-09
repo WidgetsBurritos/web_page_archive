@@ -255,7 +255,7 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
         }
       }
     }
-    catch (Exception $e) {
+    catch (\Exception $e) {
       // TODO: What to do here? (future task)
       drupal_set_message($e->getMessage(), 'warning');
     }

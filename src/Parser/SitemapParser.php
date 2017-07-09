@@ -31,6 +31,9 @@ class SitemapParser {
   /**
    * Parses a sitemap URL.
    *
+   * @throws \GuzzleHttp\Exception\ConnectException
+   *   Exception thrown in event of networking error.
+   *
    * @throws \GuzzleHttp\Exception\ClientException
    *   Exception when a client error is encountered (4xx codes).
    *
