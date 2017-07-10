@@ -114,6 +114,14 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
    */
   protected $capture_utility_collection;
 
+
+  /**
+   * Holds run data.
+   *
+   * @var array
+   */
+  protected $runs = [];
+
   /**
    * Retrieves the Sitemap URL.
    */
