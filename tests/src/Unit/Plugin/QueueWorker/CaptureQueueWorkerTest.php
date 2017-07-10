@@ -6,6 +6,7 @@ use Drupal\Tests\UnitTestCase;
 use Drupal\Tests\web_page_archive\Unit\Mock\MockAlwaysThrowingCaptureUtility;
 use Drupal\Tests\web_page_archive\Unit\Mock\MockHtmlCaptureUtility;
 use Drupal\Tests\web_page_archive\Unit\Mock\MockScreenshotCaptureUtility;
+use Drupal\Tests\web_page_archive\Unit\Mock\MockWebPageArchive;
 use Drupal\web_page_archive\Plugin\QueueWorker\CaptureQueueWorker;
 
 /**
@@ -34,6 +35,8 @@ class CaptureQueueWorkerTest extends UnitTestCase {
     $data = [
       'utility' => new MockScreenshotCaptureUtility(),
       'url' => 'http://www.whatever.com',
+      'run_uuid' => '12345678-1234-1234-1234-123456789000',
+      'web_page_archive' => new MockWebPageArchive(),
     ];
     $response = $this->queue->processItem($data);
     $this->assertSame('uri', $response->getType());
@@ -49,6 +52,8 @@ class CaptureQueueWorkerTest extends UnitTestCase {
   public function testMissingUtilityWritesMessage() {
     $data = [
       'url' => 'http://www.whatever.com',
+      'run_uuid' => '12345678-1234-1234-1234-123456789000',
+      'web_page_archive' => new MockWebPageArchive(),
     ];
     $response = $this->queue->processItem($data);
   }
@@ -62,6 +67,38 @@ class CaptureQueueWorkerTest extends UnitTestCase {
   public function testMissingUrlWritesMessage() {
     $data = [
       'utility' => new MockHtmlCaptureUtility(),
+      'run_uuid' => '12345678-1234-1234-1234-123456789000',
+      'web_page_archive' => new MockWebPageArchive(),
+    ];
+    $response = $this->queue->processItem($data);
+  }
+
+  /**
+   * Tests missing run_uuid writes message.
+   *
+   * @expectedException Exception
+   * @expectedExceptionMessage run_uuid is required
+   */
+  public function testMissingRunUuidWritesMessage() {
+    $data = [
+      'utility' => new MockHtmlCaptureUtility(),
+      'url' => 'http://www.whatever.com',
+      'web_page_archive' => new MockWebPageArchive(),
+    ];
+    $response = $this->queue->processItem($data);
+  }
+
+  /**
+   * Tests missing web_page_archive writes message.
+   *
+   * @expectedException Exception
+   * @expectedExceptionMessage web_page_archive is required
+   */
+  public function testMissingWebPageArchiveWritesMessage() {
+    $data = [
+      'utility' => new MockHtmlCaptureUtility(),
+      'url' => 'http://www.whatever.com',
+      'run_uuid' => '12345678-1234-1234-1234-123456789000',
     ];
     $response = $this->queue->processItem($data);
   }
@@ -76,6 +113,8 @@ class CaptureQueueWorkerTest extends UnitTestCase {
     $data = [
       'utility' => new MockAlwaysThrowingCaptureUtility(),
       'url' => 'http://www.whatever.com',
+      'run_uuid' => '12345678-1234-1234-1234-123456789000',
+      'web_page_archive' => new MockWebPageArchive(),
     ];
     $response = $this->queue->processItem($data);
   }
