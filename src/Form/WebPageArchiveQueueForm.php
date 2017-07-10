@@ -72,43 +72,29 @@ class WebPageArchiveQueueForm extends EntityForm {
   }
 
   /**
-   * Processes the queue.
-   */
-  public function processQueue(array $form, FormStateInterface $form_state) {
-    // TODO: Move this behavior to controller.
-    // TODO: Add batch processing.
-    $web_page_archive = $this->getEntity();
-    $queue = $this->queueFactory->get("web_page_archive_capture.{$web_page_archive->uuid()}");
-    $queue_worker = $this->queueManager->createInstance("web_page_archive_capture");
-
-    $processed_ct = 0;
-    while ($item = $queue->claimItem()) {
-      try {
-        $queue_worker->processItem($item->data);
-        $queue->deleteItem($item);
-        $processed_ct++;
-      }
-      catch (SuspendQueueException $e) {
-        $queue->releaseItem($item);
-        watchdog_exception('web_page_archive', $e);
-        break;
-      }
-      catch (\Exception $e) {
-        watchdog_exception('web_page_archive', $e);
-      }
-    }
-
-    // TODO: What happens if there were exceptions above?
-    drupal_set_message(t('@processed_ct jobs have been processed.', ['@processed_ct' => $processed_ct]), 'status');
-    $form_state->setRedirect('entity.web_page_archive.canonical', ['web_page_archive' => $web_page_archive->id()]);
-  }
-
-  /**
    * Starts a new run.
    */
   public function startRun(array $form, FormStateInterface $form_state) {
     $web_page_archive = $this->getEntity();
     $web_page_archive->startNewRun();
+
+    $queue = $this->queueFactory->get("web_page_archive_capture.{$web_page_archive->uuid()}");
+    $queue_worker = $this->queueManager->createInstance("web_page_archive_capture");
+
+    // Create capture job batch.
+    $batch = array(
+      'title' => $this->t("Process all capture queue jobs with batch"),
+      'operations' => array(),
+      'finished' => 'Drupal\web_page_archive\Controller\WebPageArchiveController::batchFinished',
+    );
+
+    // Create batch operations.
+    for ($i = 0; $i < ceil($queue->numberOfItems() / WEB_PAGE_ARCHIVE_BATCH_SIZE); $i++) {
+      $batch['operations'][] = array('Drupal\web_page_archive\Controller\WebPageArchiveController::batchProcess', array($web_page_archive));
+    }
+
+    // Adds the batch sets.
+    batch_set($batch);
 
     // TODO: Should there be some sort of validation the aboved worked?
     drupal_set_message(t('@label archive has been queued.', ['@label' => $web_page_archive->label()]), 'status');
@@ -119,20 +105,11 @@ class WebPageArchiveQueueForm extends EntityForm {
    * {@inheritdoc}
    */
   protected function actions(array $form, FormStateInterface $form_state) {
-    if ($this->queueCt > 0) {
-      $actions['process'] = [
-        '#type' => 'submit',
-        '#value' => $this->t('Process Queue'),
-        '#submit' => ['::processQueue'],
-      ];
-    }
-    else {
-      $actions['process'] = [
-        '#type' => 'submit',
-        '#value' => $this->t('Start Run'),
-        '#submit' => ['::startRun'],
-      ];
-    }
+    $actions['start'] = [
+      '#type' => 'submit',
+      '#value' => $this->t('Start Run'),
+      '#submit' => ['::startRun'],
+    ];
     return $actions;
   }
 
