@@ -44,6 +44,9 @@ web_page_archive.web_page_archive.*:
           timestamp:
             type: string
             label: 'Timestamp'
+          queue_ct:
+            type: integer
+            label: 'Queue Ct'
           captures:
             type: sequence
             sequence:
@@ -51,9 +54,12 @@ web_page_archive.web_page_archive.*:
               mapping:
                 uuid:
                   type: string
-                queue_ct:
-                  type: integer
-                  label: 'Queue Ct'
+                status:
+                  type: string
+                  label: 'Status'
+                timestamp:
+                  type: string
+                  label: 'Timestamp'
                 capture_url:
                   type: uri
                   label: 'Capture URL'

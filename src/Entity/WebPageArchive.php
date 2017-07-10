@@ -276,7 +276,7 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
   }
 
   /**
-   * Stores run info into the databsae.
+   * Stores run info into the database.
    */
   protected function storeNewRun($uuid, $queue_ct) {
     // TODO: Move functionality into controller?
@@ -305,7 +305,7 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
       'timestamp' => \Drupal::service('datetime.time')->getCurrentTime(),
       'status' => 'complete',
       'capture_url' => $data['url'],
-      'type' => $data['capture_response']->getType(),
+      'capture_type' => $data['capture_response']->getType(),
       'content' => $data['capture_response']->getContent(),
     ];
     $config->set("runs.{$data['run_uuid']}.captures.{$uuid}", $capture);
