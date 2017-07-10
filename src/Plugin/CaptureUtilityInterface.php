@@ -12,13 +12,13 @@ interface CaptureUtilityInterface extends PluginInspectionInterface {
   /**
    * Captures the specified URL.
    *
-   * @param string|null $url
-   *   The url to capture.
+   * @param array $data
+   *   Array containing capture info.
    *
    * @return CaptureUtilityInterface
    *   Returns reference to self.
    */
-  public function captureUrl($url);
+  public function capture(array $data);
 
   /**
    * Retrieves response from most recent capture.

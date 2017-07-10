@@ -29,7 +29,7 @@ class MockAlwaysThrowingCaptureUtility extends HtmlCaptureUtility {
   /**
    * {@inheritdoc}
    */
-  public function captureUrl($uri) {
+  public function capture(array $data = []) {
     throw new \Exception('Oh no! I could not capture the URL.');
   }
 

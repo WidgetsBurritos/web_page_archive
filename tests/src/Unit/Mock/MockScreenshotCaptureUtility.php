@@ -30,7 +30,7 @@ class MockScreenshotCaptureUtility extends ScreenshotCaptureUtility {
   /**
    * {@inheritdoc}
    */
-  public function captureUrl($uri) {
+  public function capture(array $data = []) {
     // TODO: Do the actual capture.
     $this->response = new ScreenshotCaptureResponse('https://upload.wikimedia.org/wikipedia/commons/c/c1/Drupal-wordmark.svg');
 

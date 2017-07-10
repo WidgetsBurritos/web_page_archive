@@ -2,9 +2,11 @@
 
 ## Instructions
 
-Unpack in the *modules* folder (currently in the root of your Drupal 8 installation) and enable in `/admin/modules`.
+Unpack in the *modules* folder (currently in the root of your Drupal 8
+installation) and enable in `/admin/modules`.
 
-Then visit `/admin/config/development/web-page-archive` to configure the web page archive integration.
+Then visit `/admin/config/development/web-page-archive` to configure the web
+page archive integration.
 
 ## Contributing
 
