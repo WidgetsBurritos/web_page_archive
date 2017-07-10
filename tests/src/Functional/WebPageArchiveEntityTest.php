@@ -3,6 +3,9 @@
 namespace Drupal\Tests\web_page_archive\Functional;
 
 use Drupal\Tests\BrowserTestBase;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Response as GuzzleResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -156,7 +159,6 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $this->assertEqual(2, count($capture_utilities));
     $this->assertEqual('HtmlCaptureUtility', array_shift($capture_utilities)['id']);
     $this->assertEqual('ScreenshotCaptureUtility', array_shift($capture_utilities)['id']);
-
   }
 
   /**
@@ -193,6 +195,47 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
       $this->drupalGet($url);
       $this->assertResponse(Response::HTTP_FORBIDDEN);
     }
+  }
+
+  /**
+   * Function test to confirm process and run work.
+   */
+  public function testMockProcessAndRun() {
+    $assert = $this->assertSession();
+
+    // Login and create our entity.
+    $this->drupalLogin($this->authorizedUser);
+    $this->drupalGet('admin/config/development/web-page-archive/add');
+    $this->drupalPostForm(
+      NULL,
+      [
+        'label' => 'Process and Run Archive',
+        'id' => 'process_and_run_archive',
+        'sitemap_url' => 'http://localhost/sitemap.xml',
+        'capture_html' => TRUE,
+        'capture_screenshot' => TRUE,
+      ],
+      t('Save')
+    );
+
+    // Setup mock handler.
+    $mock = new MockHandler([
+      new GuzzleResponse(Response::HTTP_OK, [], file_get_contents(__DIR__ . '/fixtures/sitemap.xml')),
+    ]);
+    $handler = HandlerStack::create($mock);
+
+    // Start a new run.
+    $entity = \Drupal::entityTypeManager()->getStorage('web_page_archive')->load('process_and_run_archive');
+    $entity->startNewRun($handler);
+
+    // Confirm data is queued.
+    $this->drupalGet('admin/config/development/web-page-archive/process_and_run_archive/queue');
+    $assert->pageTextContains('Submitting this form will process the web page archive queue which contains 4 items');
+
+    // Click "Process Queue".
+    $this->drupalPostForm(NULL, [], t('Process Queue'));
+    $assert->pageTextContains('4 jobs have been processed');
+
   }
 
 }
