@@ -5,6 +5,7 @@ namespace Drupal\web_page_archive\Entity;
 use Drupal\Core\Config\Entity\ConfigEntityBase;
 use Drupal\Core\Entity\EntityWithPluginCollectionInterface;
 use Drupal\Core\Plugin\DefaultLazyPluginCollection;
+use Drupal\web_page_archive\Parser\SitemapParser;
 use Drupal\web_page_archive\Plugin\CaptureUtilityInterface;
 
 /**
@@ -214,27 +215,36 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
    */
   public function queueRun() {
     // TODO: Interact with state api to indicate running status.
-    // TODO: Setup XML parsing.
-    $sitemap = [
-      'http://www.rackspace.com',
-      'http://www.rackspace.com/managed-hosting',
-    ];
-
-    foreach ($sitemap as $url) {
-      // TODO: Send to Queue API instead.
-      $this->captureUrl($url);
+    try {
+      // Retrieve sitemap contents.
+      $sitemap_parser = new SitemapParser();
+      $urls = $sitemap_parser->parse($this->getSitemapUrl());
+      $this->captureUrls($urls);
+    }
+    catch (Exception $e) {
+      // TODO: What to do here? (future task)
+      drupal_set_message($e->getMessage(), 'warning');
     }
   }
 
   /**
    * Captures and stores the specified URL results.
    */
-  public function captureUrl($url) {
-    foreach ($this->getCaptureUtilities() as $utility) {
-      // TODO: Throw and handle exceptions.
-      $capture_response = $utility->captureUrl($url)->getResponse();
-
-      // TODO: Store result: $capture_response->getSerialized().
+  private function captureUrls(array $urls = []) {
+    $queue_factory = \Drupal::service('queue');
+    $queue = $queue_factory->get('web_page_archive_capture');
+    // TODO: Get next available run ID from state api.
+    $run_id = 1;
+    foreach ($urls as $url) {
+      foreach ($this->getCaptureUtilities() as $utility) {
+        $item = [
+          'entity_id' => $this->id(),
+          'utility' => $utility,
+          'url' => $url,
+          'run_id' => $run_id,
+        ];
+        $queue->createItem($item);
+      }
     }
   }
 

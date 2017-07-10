@@ -29,3 +29,11 @@ entity.web_page_archive.delete_form:
     _title: 'Delete Archive'
   requirements:
     _entity_access: 'web_page_archive.delete'
+
+entity.web_page_archive.queue:
+  path: 'admin/config/development/web-page-archive/queue'
+  defaults:
+    _form: '\Drupal\web_page_archive\Form\WebPageArchiveQueueForm'
+    _title: 'Web Page Archive Queue'
+  requirements:
+    _permission: 'administer web page archive'
