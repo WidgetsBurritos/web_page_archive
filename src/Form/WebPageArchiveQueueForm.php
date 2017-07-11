@@ -73,7 +73,7 @@ class WebPageArchiveQueueForm extends EntityForm {
     $web_page_archive = $this->getEntity();
     $web_page_archive->startNewRun();
 
-    $queue = $this->queueFactory->get("web_page_archive_capture.{$web_page_archive->uuid()}");
+    $queue = $web_page_archive->getQueue();
     $queue_worker = $this->queueManager->createInstance("web_page_archive_capture");
 
     // Create capture job batch.

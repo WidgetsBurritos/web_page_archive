@@ -228,7 +228,7 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
    * @var int
    */
   public function getQueueCt() {
-    $queue = \Drupal::service('queue')->get("web_page_archive_capture.{$this->uuid()}");
+    $queue = $this->getQueue();
     return (isset($queue)) ? $queue->numberOfItems() : 0;
   }
 
@@ -243,6 +243,16 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
   }
 
   /**
+   * Retrieves the queue for the archive.
+   *
+   * @return \Drupal\Core\Queue\QueueInterface
+   *   Queue object for this particular archive.
+   */
+  public function getQueue() {
+    return \Drupal::service('queue')->get("web_page_archive_capture.{$this->uuid()}");
+  }
+
+  /**
    * Queues the archive to run.
    */
   public function startNewRun(HandlerStack $handler = NULL) {
@@ -251,8 +261,7 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
       // TODO: Move functionality into controller?
       $sitemap_parser = new SitemapParser($handler);
       $urls = $sitemap_parser->parse($this->getSitemapUrl());
-      $queue_factory = \Drupal::service('queue');
-      $queue = $queue_factory->get("web_page_archive_capture.{$this->uuid()}");
+      $queue = $this->getQueue();
       $run_uuid = $this->uuidGenerator()->generate();
 
       foreach ($urls as $url) {

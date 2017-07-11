@@ -70,7 +70,7 @@ class WebPageArchiveController extends ControllerBase {
    * Common batch processing callback for all operations.
    */
   public static function batchProcess(WebPageArchive $web_page_archive, &$context) {
-    $queue = \Drupal::service('queue')->get("web_page_archive_capture.{$web_page_archive->uuid()}");
+    $queue = $web_page_archive->getQueue();
     $queue_worker = \Drupal::service('plugin.manager.queue_worker')->createInstance('web_page_archive_capture');
 
     // TODO: Move threshold into admin panel.
