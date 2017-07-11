@@ -7,6 +7,7 @@ use Drupal\Core\Entity\EntityWithPluginCollectionInterface;
 use Drupal\Core\Plugin\DefaultLazyPluginCollection;
 use Drupal\web_page_archive\Parser\SitemapParser;
 use Drupal\web_page_archive\Plugin\CaptureUtilityInterface;
+use GuzzleHttp\HandlerStack;
 
 /**
  * Defines the Web Page Archive entity.
@@ -112,6 +113,14 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
    * @var \Drupal\Core\Plugin\DefaultLazyPluginCollection
    */
   protected $capture_utility_collection;
+
+
+  /**
+   * Holds run data.
+   *
+   * @var array
+   */
+  protected $runs = [];
 
   /**
    * Retrieves the Sitemap URL.
@@ -236,11 +245,11 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
   /**
    * Queues the archive to run.
    */
-  public function startNewRun() {
+  public function startNewRun(HandlerStack $handler = NULL) {
     try {
       // Retrieve sitemap contents.
       // TODO: Move functionality into controller?
-      $sitemap_parser = new SitemapParser();
+      $sitemap_parser = new SitemapParser($handler);
       $urls = $sitemap_parser->parse($this->getSitemapUrl());
       $queue_factory = \Drupal::service('queue');
       $queue = $queue_factory->get("web_page_archive_capture.{$this->uuid()}");
@@ -267,14 +276,14 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
   }
 
   /**
-   * Stores run info into the databsae.
+   * Stores run info into the database.
    */
   protected function storeNewRun($uuid, $queue_ct) {
     // TODO: Move functionality into controller?
     $config = $this->getEditableConfig();
     $new_run = [
       'uuid' => $uuid,
-      'timestamp' => \Drupal::time()->getCurrentTime(),
+      'timestamp' => \Drupal::service('datetime.time')->getCurrentTime(),
       'queue_ct' => $queue_ct,
       'status' => 'pending',
       'captures' => [],
@@ -293,10 +302,10 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
     $uuid = $this->uuidGenerator()->generate();
     $capture = [
       'uuid' => $uuid,
-      'timestamp' => \Drupal::time()->getCurrentTime(),
+      'timestamp' => \Drupal::service('datetime.time')->getCurrentTime(),
       'status' => 'complete',
       'capture_url' => $data['url'],
-      'type' => $data['capture_response']->getType(),
+      'capture_type' => $data['capture_response']->getType(),
       'content' => $data['capture_response']->getContent(),
     ];
     $config->set("runs.{$data['run_uuid']}.captures.{$uuid}", $capture);

@@ -3,6 +3,9 @@
 namespace Drupal\Tests\web_page_archive\Functional;
 
 use Drupal\Tests\BrowserTestBase;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Response as GuzzleResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -156,7 +159,6 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $this->assertEqual(2, count($capture_utilities));
     $this->assertEqual('HtmlCaptureUtility', array_shift($capture_utilities)['id']);
     $this->assertEqual('ScreenshotCaptureUtility', array_shift($capture_utilities)['id']);
-
   }
 
   /**
@@ -193,6 +195,46 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
       $this->drupalGet($url);
       $this->assertResponse(Response::HTTP_FORBIDDEN);
     }
+  }
+
+  /**
+   * Functional test to confirm queuing works as expected.
+   */
+  public function testQueuing() {
+    // Create a dummy entity.
+    $data = [
+      'label' => 'Process and Run Archive',
+      'id' => 'process_and_run_archive',
+      'sitemap_url' => 'http://localhost/sitemap.xml',
+      'capture_html' => TRUE,
+      'capture_screenshot' => TRUE,
+    ];
+    $wpa = \Drupal::entityManager()
+      ->getStorage('web_page_archive')
+      ->create($data);
+    $wpa->save();
+
+    // Setup mock handler.
+    $mock = new MockHandler([
+      new GuzzleResponse(Response::HTTP_OK, [], file_get_contents(__DIR__ . '/fixtures/sitemap.xml')),
+    ]);
+    $handler = HandlerStack::create($mock);
+
+    // Start a new run.
+    $entity = \Drupal::entityTypeManager()->getStorage('web_page_archive')->load('process_and_run_archive');
+
+    // Retrieve queue.
+    $queue_factory = \Drupal::service('queue');
+    $queue = $queue_factory->get("web_page_archive_capture.{$entity->uuid()}");
+
+    // Ensure queue is empty.
+    $this->assertEqual(0, $queue->numberOfItems());
+
+    // Queue up items.
+    $entity->startNewRun($handler);
+
+    // Check queue.
+    $this->assertEqual(4, $queue->numberOfItems());
   }
 
 }

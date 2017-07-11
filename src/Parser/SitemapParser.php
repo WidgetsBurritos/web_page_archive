@@ -3,6 +3,7 @@
 namespace Drupal\web_page_archive\Parser;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\HandlerStack;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 
 /**
@@ -19,8 +20,11 @@ class SitemapParser {
 
   /**
    * Constructor for Sitemap Parser.
+   *
+   * @param \GuzzleHttp\HandlerStack $handler
+   *   Non-default http client handler.
    */
-  public function __construct($handler = NULL) {
+  public function __construct(HandlerStack $handler = NULL) {
     $client_options = [];
     if (isset($handler)) {
       $client_options['handler'] = $handler;

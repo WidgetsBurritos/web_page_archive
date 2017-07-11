@@ -82,10 +82,8 @@ class WebPageArchiveTypeInfo implements ContainerInjectionInterface {
         ];
       }
       if ($entity->hasLinkTemplate('queue_form')) {
-        $title = $entity->getQueueCt() > 0 ? $this->t('Queue') : $this->t('Start Run');
-
         $operations['web_page_archive_queue'] = [
-          'title' => $title,
+          'title' => $this->t('Start Run'),
           'weight' => 0,
           'url' => $entity->toUrl('queue_form'),
         ];
