@@ -17,7 +17,7 @@ use GuzzleHttp\HandlerStack;
  *   label = @Translation("Web Page Archive"),
  *   handlers = {
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
- *     "list_builder" = "Drupal\web_page_archive\WebPageArchiveListBuilder",
+ *     "list_builder" = "Drupal\web_page_archive\Entity\WebPageArchiveListBuilder",
  *     "form" = {
  *       "add" = "Drupal\web_page_archive\Form\WebPageArchiveForm",
  *       "edit" = "Drupal\web_page_archive\Form\WebPageArchiveForm",
@@ -25,7 +25,7 @@ use GuzzleHttp\HandlerStack;
  *       "queue" = "Drupal\web_page_archive\Form\WebPageArchiveQueueForm"
  *     },
  *     "route_provider" = {
- *       "html" = "Drupal\web_page_archive\WebPageArchiveHtmlRouteProvider",
+ *       "html" = "Drupal\web_page_archive\Entity\Routing\WebPageArchiveHtmlRouteProvider",
  *     },
  *   },
  *   config_prefix = "web_page_archive",
