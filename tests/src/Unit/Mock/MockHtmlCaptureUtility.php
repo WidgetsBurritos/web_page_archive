@@ -31,9 +31,7 @@ class MockHtmlCaptureUtility extends HtmlCaptureUtility {
    * {@inheritdoc}
    */
   public function capture(array $data = []) {
-    // TODO: Do the actual capture.
     $this->response = new HtmlCaptureResponse('<p>Simulated response</p>');
-
     return $this;
   }
 

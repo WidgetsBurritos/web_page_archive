@@ -5,8 +5,6 @@
  * This module holds functions useful for web page archives.
  */
 
-define('WEB_PAGE_ARCHIVE_BATCH_SIZE', 30);
-
 use Drupal\web_page_archive\Entity\WebPageArchiveTypeInfo;
 
 /**
