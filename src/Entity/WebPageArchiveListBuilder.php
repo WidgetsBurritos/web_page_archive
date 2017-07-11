@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\web_page_archive;
+namespace Drupal\web_page_archive\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityListBuilder;
 use Drupal\Core\Entity\EntityInterface;

@@ -224,8 +224,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $entity = \Drupal::entityTypeManager()->getStorage('web_page_archive')->load('process_and_run_archive');
 
     // Retrieve queue.
-    $queue_factory = \Drupal::service('queue');
-    $queue = $queue_factory->get("web_page_archive_capture.{$entity->uuid()}");
+    $queue = $entity->getQueue();
 
     // Ensure queue is empty.
     $this->assertEqual(0, $queue->numberOfItems());

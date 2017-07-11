@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\web_page_archive;
+namespace Drupal\web_page_archive\Entity\Routing;
 
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\Routing\AdminHtmlRouteProvider;
