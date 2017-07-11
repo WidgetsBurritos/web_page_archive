@@ -74,11 +74,11 @@ class WebPageArchiveQueueForm extends EntityForm {
     $web_page_archive->startNewRun();
 
     $queue = $web_page_archive->getQueue();
-    $queue_worker = $this->queueManager->createInstance("web_page_archive_capture");
+    $queue_worker = $this->queueManager->createInstance('web_page_archive_capture');
 
     // Create capture job batch.
     $batch = [
-      'title' => $this->t("Process all capture queue jobs with batch"),
+      'title' => $this->t('Process all capture queue jobs with batch'),
       'operations' => [],
       'finished' => 'Drupal\web_page_archive\Controller\WebPageArchiveController::batchFinished',
     ];
