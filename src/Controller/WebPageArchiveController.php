@@ -5,6 +5,7 @@ namespace Drupal\web_page_archive\Controller;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueWorkerManagerInterface;
+use Drupal\Core\Queue\RequeueException;
 use Drupal\web_page_archive\Entity\WebPageArchive;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -23,9 +24,17 @@ class WebPageArchiveController extends ControllerBase {
   protected $queue;
 
   /**
+   * Drupal\Core\Queue\QueueWorkerManagerInterface definition.
+   *
+   * @var \Drupal\Core\Queue\QueueWorkerManagerInterface
+   */
+  protected $queueManager;
+
+  /**
    * Constructs a new WebPageArchiveController object.
    */
   public function __construct(QueueFactory $queue, QueueWorkerManagerInterface $queue_manager) {
+    // TODO: Evaluate need for these.
     $this->queue = $queue;
     $this->queueManager = $queue_manager;
   }
@@ -75,10 +84,18 @@ class WebPageArchiveController extends ControllerBase {
           $queue_worker->processItem($item->data);
           $queue->deleteItem($item);
         }
+        catch (RequeueException $e) {
+          $queue->releaseItem($item);
+        }
         catch (SuspendQueueException $e) {
           $queue->releaseItem($item);
           watchdog_exception($e);
           break;
+        }
+        catch (\Exception $e) {
+          // In case of any other kind of exception, log it and leave the item
+          // in the queue to be processed again later.
+          watchdog_exception('cron', $e);
         }
       }
     }
