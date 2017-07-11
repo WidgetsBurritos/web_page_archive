@@ -84,7 +84,7 @@ class WebPageArchiveQueueForm extends EntityForm {
     ];
 
     // Create batch operations.
-    for ($i = 0; $i < ceil($queue->numberOfItems() / WEB_PAGE_ARCHIVE_BATCH_SIZE); $i++) {
+    for ($i = 0; $i < $queue->numberOfItems(); $i++) {
       $batch['operations'][] = ['Drupal\web_page_archive\Controller\WebPageArchiveController::batchProcess', [$web_page_archive]];
     }
 

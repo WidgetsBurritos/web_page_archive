@@ -73,32 +73,25 @@ class WebPageArchiveController extends ControllerBase {
     $queue = $web_page_archive->getQueue();
     $queue_worker = \Drupal::service('plugin.manager.queue_worker')->createInstance('web_page_archive_capture');
 
-    // TODO: Move threshold into admin panel.
-    // Per-entity or global for all settings?
-    $number_of_queue = ($queue->numberOfItems() < WEB_PAGE_ARCHIVE_BATCH_SIZE) ? $queue->numberOfItems() : WEB_PAGE_ARCHIVE_BATCH_SIZE;
-
-    for ($i = 0; $i < $number_of_queue; $i++) {
-      // Claim item and attempt to process it.
-      if ($item = $queue->claimItem()) {
-        try {
-          $queue_worker->processItem($item->data);
-          $queue->deleteItem($item);
-        }
-        catch (RequeueException $e) {
-          $queue->releaseItem($item);
-        }
-        catch (SuspendQueueException $e) {
-          $queue->releaseItem($item);
-          watchdog_exception($e);
-          break;
-        }
-        catch (\Exception $e) {
-          // In case of any other kind of exception, log it and leave the item
-          // in the queue to be processed again later.
-          watchdog_exception('cron', $e);
-        }
+    if ($item = $queue->claimItem()) {
+      try {
+        $queue_worker->processItem($item->data);
+        $queue->deleteItem($item);
+      }
+      catch (RequeueException $e) {
+        $queue->releaseItem($item);
+      }
+      catch (SuspendQueueException $e) {
+        $queue->releaseItem($item);
+        watchdog_exception($e);
+      }
+      catch (\Exception $e) {
+        // In case of any other kind of exception, log it and leave the item
+        // in the queue to be processed again later.
+        watchdog_exception('cron', $e);
       }
     }
+
   }
 
   /**
