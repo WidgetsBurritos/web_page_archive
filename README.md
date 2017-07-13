@@ -67,9 +67,10 @@ http://cgit.drupalcode.org/examples/tree/STANDARDS.md
 
 ### Helpful Links
 
-- [Drupal.org Repo](https://www.drupal.org/sandbox/pobster/2888559)
+- [Drupal.org Repo](https://www.drupal.org/project/web_page_archive)
 - [Drupal.org Issue Queue](https://www.drupal.org/project/issues/2888559)
 - [GitHub.com Repo](https://github.com/WidgetsBurritos/web_page_archive)
+- [UML Diagrams](diagrams)
 
 ### Ways You Can Help
 
