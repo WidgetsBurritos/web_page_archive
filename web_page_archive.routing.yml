@@ -12,7 +12,7 @@ entity.web_page_archive.add_form:
     _entity_form: 'web_page_archive.add'
     _title: 'Add Archive'
   requirements:
-    _entity_create_access: 'web_page_archive'
+    _permission: 'administer web page archive'
 
 entity.web_page_archive.canonical:
   path: 'admin/config/development/web-page-archive/{web_page_archive}'
@@ -24,7 +24,7 @@ entity.web_page_archive.canonical:
       web_page_archive:
         type: web_page_archive
   requirements:
-    _permission: 'web_page_archive.view'
+    _permission: 'administer web page archive'
 
 entity.web_page_archive.edit_form:
   path: 'admin/config/development/web-page-archive/{web_page_archive}/edit'
@@ -32,7 +32,7 @@ entity.web_page_archive.edit_form:
     _entity_form: 'web_page_archive.edit'
     _title: 'Edit Archive'
   requirements:
-    _entity_access: 'web_page_archive.update'
+    _permission: 'administer web page archive'
 
 entity.web_page_archive.delete_form:
   path: 'admin/config/development/web-page-archive/{web_page_archive}/delete'
@@ -40,7 +40,7 @@ entity.web_page_archive.delete_form:
     _entity_form: 'web_page_archive.delete'
     _title: 'Delete Archive'
   requirements:
-    _entity_access: 'web_page_archive.delete'
+    _permission: 'administer web page archive'
 
 entity.web_page_archive.queue_form:
   path: 'admin/config/development/web-page-archive/{web_page_archive}/queue'
