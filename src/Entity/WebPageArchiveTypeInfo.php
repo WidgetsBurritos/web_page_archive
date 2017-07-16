@@ -56,8 +56,8 @@ class WebPageArchiveTypeInfo implements ContainerInjectionInterface {
    */
   public function entityTypeAlter(array &$entity_types) {
     $entity_type = $entity_types['web_page_archive'];
-    $entity_type->setLinkTemplate('canonical', "/admin/config/development/web-page-archive/{web_page_archive}");
-    $entity_type->setLinkTemplate('queue_form', "/admin/config/development/web-page-archive/{web_page_archive}/queue");
+    $entity_type->setLinkTemplate('canonical', "/admin/config/system/web-page-archive/{web_page_archive}");
+    $entity_type->setLinkTemplate('queue_form', "/admin/config/system/web-page-archive/{web_page_archive}/queue");
   }
 
   /**
