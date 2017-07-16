@@ -49,8 +49,6 @@ use GuzzleHttp\HandlerStack;
  *     "label",
  *     "sitemap_url",
  *     "cron_schedule",
- *     "capture_screenshot",
- *     "capture_html",
  *     "capture_utilities",
  *     "runs"
  *   }
@@ -87,20 +85,6 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
   protected $cron_schedule;
 
   /**
-   * Boolean indicating if entity captures HTML.
-   *
-   * @var bool
-   */
-  protected $capture_html;
-
-  /**
-   * Boolean indicating if entity captures screenshot.
-   *
-   * @var bool
-   */
-  protected $capture_screenshot;
-
-  /**
    * The array of capture utilities for this archive.
    *
    * @var array
@@ -134,20 +118,6 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
    */
   public function getCronSchedule() {
     return $this->cron_schedule;
-  }
-
-  /**
-   * Retrieves whether or not entity captures HTML.
-   */
-  public function isHtmlCapturing() {
-    return $this->capture_html;
-  }
-
-  /**
-   * Returns whether or not entity captures screenshot.
-   */
-  public function isScreenshotCapturing() {
-    return $this->capture_screenshot;
   }
 
   /**
@@ -196,11 +166,14 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
    *
    * @param string $id
    *   Capture utility plugin id.
+   *
+   * @return string|boolean
+   *   Returns uuid on success, false on failure.
    */
   public function hasCaptureUtilityInstance($id) {
     foreach ($this->capture_utilities as $utility) {
       if ($utility['id'] == $id) {
-        return TRUE;
+        return $utility;
       }
     }
 
@@ -218,6 +191,21 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
       if ($utility['id'] == $id) {
         $this->getCaptureUtilities()->removeInstanceId($utility['uuid']);
       }
+    }
+    return $this;
+  }
+
+  /**
+   * Configures a capture utility by id.
+   *
+   * @param string $id
+   *   Capture utility plugin id.
+   */
+  public function configureCaptureUtilityById($id, array $configuration) {
+    $plugin_instance = $this->hasCaptureUtilityInstance($id);
+
+    if ($plugin_instance) {
+      $plugin_instance->setInstanceConfiguration($id, $configuration);
     }
     return $this;
   }
@@ -325,27 +313,38 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
    * {@inheritdoc}
    */
   public function save() {
-    // TODO: Handle this nonsense in plugins instead (future task).
-    $plugin_options = [
-      [
-        'id' => 'HtmlCaptureUtility',
-        'isCapturing' => $this->isHtmlCapturing(),
-      ],
-      [
-        'id' => 'ScreenshotCaptureUtility',
-        'isCapturing' => $this->isScreenshotCapturing(),
-      ],
-    ];
-
-    foreach ($plugin_options as $option) {
-      if (!$this->hasCaptureUtilityInstance($option['id']) && $option['isCapturing']) {
-        $this->addCaptureUtility(['id' => $option['id']]);
+    // Retrieve field information from plugins.
+    $pm = $this->captureUtilityPluginManager();
+    foreach ($pm->getDefinitions() as $plugin_id => $definition) {
+      // Assemble plugin configuration.
+      $config = [];
+      $plugin_instance = $pm->createInstance($plugin_id);
+      $fields = $plugin_instance->getFormFields();
+      foreach($fields as $field) {
+        if (property_exists($this, $field)) {
+          $config[$field] = $this->{$field};
+        }
       }
-      elseif (!$option['isCapturing']) {
-        $this->deleteCaptureUtilityById($option['id']);
+
+      // Determine if this plugin is turned on or off.
+      $isCapturing = property_exists($this, $plugin_id) && $this->{$plugin_id};
+      $plugin_uuid = $this->hasCaptureUtilityInstance($plugin_id)['uuid'];
+
+      // Add the utility.
+      if (!$plugin_uuid && $isCapturing) {
+        $this->addCaptureUtility(['id' => $plugin_id, 'config' => $config]);
+      }
+      // Delete the utility and it's configuration.
+      elseif (!$isCapturing) {
+        $this->deleteCaptureUtilityById($plugin_id);
+      }
+      // Update the utility's configuration.
+      else {
+        $full_config = $this->getCaptureUtilities()->getConfiguration()[$plugin_uuid];
+        $full_config['config'] = $config;
+        $this->getCaptureUtilities()->setInstanceConfiguration($plugin_uuid, $full_config);
       }
     }
-
     return parent::save();
   }
 

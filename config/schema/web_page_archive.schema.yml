@@ -16,12 +16,6 @@ web_page_archive.web_page_archive.*:
     cron_schedule:
       type: string
       label: 'Cron Schedule'
-    capture_screenshot:
-      type: boolean
-      label: 'Capture Screenshot'
-    capture_html:
-      type: boolean
-      label: 'Capture HTML'
     capture_utilities:
       type: sequence
       sequence:

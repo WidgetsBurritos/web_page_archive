@@ -2,6 +2,7 @@
 
 namespace Drupal\web_page_archive\Plugin\CaptureUtility;
 
+use Drupal\web_page_archive\Entity\WebPageArchive;
 use Drupal\web_page_archive\Plugin\CaptureResponse\ScreenshotCaptureResponse;
 use Drupal\web_page_archive\Plugin\CaptureUtilityBase;
 
@@ -37,6 +38,42 @@ class ScreenshotCaptureUtility extends CaptureUtilityBase {
    */
   public function getResponse() {
     return $this->response;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function addConfigFormFields(array $form, WebPageArchive $web_page_archive = NULL) {
+    // Default form options:
+    $config = [
+      "{$this->pluginId}" => FALSE,
+      "{$this->pluginId}_width" => 1280,
+    ];
+
+    // Look for set values.
+    if (isset($web_page_archive)) {
+      $instance = $web_page_archive->hasCaptureUtilityInstance($this->pluginId);
+      $config = $instance['config'];
+    }
+
+    // Setup form fields.
+    $form[$this->pluginId] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Capture Screenshot?'),
+      '#description' => $this->t('If checked, this job will include download and compare screenshots.'),
+      // '#default_value' => $web_page_archive->isScreenshotCapturing(),
+      '#default_value' => $config[$this->pluginId],
+    ];
+    $form["{$this->pluginId}_width"] = [
+      '#type' => 'number',
+      '#title' => $this->t('Capture width (in pixels)'),
+      '#description' => $this->t('Specify the width you would like to capture.'),
+      // '#default_value' => $web_page_archive->isScreenshotCapturing(),
+      // '#default_value' => TRUE,
+      '#default_value' => $config["{$this->pluginId}_width"],
+    ];
+
+    return $form;
   }
 
 }
