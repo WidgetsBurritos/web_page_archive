@@ -5,7 +5,6 @@ namespace Drupal\web_page_archive\Entity;
 use Drupal\Core\Config\Entity\ConfigEntityBase;
 use Drupal\Core\Entity\EntityWithPluginCollectionInterface;
 use Drupal\Core\Plugin\DefaultLazyPluginCollection;
-use Drupal\web_page_archive\Parser\SitemapParser;
 use Drupal\web_page_archive\Plugin\CaptureUtilityInterface;
 use GuzzleHttp\HandlerStack;
 
@@ -258,8 +257,7 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
     try {
       // Retrieve sitemap contents.
       // TODO: Move functionality into controller?
-      $sitemap_parser = new SitemapParser($handler);
-      $urls = $sitemap_parser->parse($this->getSitemapUrl());
+      $urls = $this->sitemapParser($handler)->parse($this->getSitemapUrl());
       $queue = $this->getQueue();
       $run_uuid = $this->uuidGenerator()->generate();
       $run_entity = $this->getRunEntity();
@@ -371,6 +369,16 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
       $this->getRunEntity()->delete();
     }
     parent::delete();
+  }
+
+  /**
+   * Wraps the sitemap parser.
+   *
+   * @return \Drupal\web_page_archive\Parser\SitemapParser
+   *   A sitemap parser object.
+   */
+  protected function sitemapParser(HandlerStack $handler = NULL) {
+    return \Drupal::service('web_page_archive.parser.xml.sitemap')->initializeConnection($handler);
   }
 
   /**

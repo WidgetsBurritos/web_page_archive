@@ -19,17 +19,19 @@ class SitemapParser {
   private $httpClient;
 
   /**
-   * Constructor for Sitemap Parser.
+   * Initializes an http client for fetching sitemaps.
    *
    * @param \GuzzleHttp\HandlerStack $handler
    *   Non-default http client handler.
    */
-  public function __construct(HandlerStack $handler = NULL) {
+  public function initializeConnection(HandlerStack $handler = NULL) {
     $client_options = [];
     if (isset($handler)) {
       $client_options['handler'] = $handler;
     }
     $this->httpClient = new Client($client_options);
+
+    return $this;
   }
 
   /**
@@ -48,6 +50,11 @@ class SitemapParser {
    *   If XML decoding fails.
    */
   public function parse($url) {
+    // Use default client if not previously set.
+    if (!isset($this->httpClient)) {
+      $this->initializeConnection();
+    }
+
     // Retrieve sitemap contents.
     $response = $this->httpClient->request('GET', $url);
 
