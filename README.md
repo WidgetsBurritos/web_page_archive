@@ -21,7 +21,7 @@ installation) and enable in `/admin/modules`.
 ## Setting Up an Archive
 
 - Install and enable module per instructions above.
-- Navigate to `/admin/config/development/web-page-archive`.
+- Navigate to `/admin/config/system/web-page-archive`.
 - Click `Add Archive` button.
 - Set options for your archive:
   - `Label`
@@ -36,7 +36,7 @@ installation) and enable in `/admin/modules`.
 
 ## Running Manually
 
-- Navigate to `/admin/config/development/web-page-archive`.
+- Navigate to `/admin/config/system/web-page-archive`.
 - In the far right hand column of the archive you wish to start click the
 dropdown arrow, and click the `Start Run` button.
 - Read the instructions and then click the `Start Run` button to start the
@@ -50,7 +50,7 @@ run. You will be navigated to the snapshot overview page upon completion.
 
 ## Viewing the Snapshots
 
-- Navigate to `/admin/config/development/web-page-archive`.
+- Navigate to `/admin/config/system/web-page-archive`.
 - Click the `View Run History` button next the archive you wish to view in
 more detail.
 - TODO: This isn't implemented yet.

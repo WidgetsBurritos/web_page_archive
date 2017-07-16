@@ -1,5 +1,5 @@
 entity.web_page_archive.collection:
-  path: 'admin/config/development/web-page-archive'
+  path: 'admin/config/system/web-page-archive'
   defaults:
     _entity_list: 'web_page_archive'
     _title: 'Web Page Archive'
@@ -7,7 +7,7 @@ entity.web_page_archive.collection:
     _permission: 'administer web page archive'
 
 entity.web_page_archive.add_form:
-  path: 'admin/config/development/web-page-archive/add'
+  path: 'admin/config/system/web-page-archive/add'
   defaults:
     _entity_form: 'web_page_archive.add'
     _title: 'Add Archive'
@@ -15,7 +15,7 @@ entity.web_page_archive.add_form:
     _entity_create_access: 'web_page_archive'
 
 entity.web_page_archive.canonical:
-  path: 'admin/config/development/web-page-archive/{web_page_archive}'
+  path: 'admin/config/system/web-page-archive/{web_page_archive}'
   defaults:
     _controller: '\Drupal\web_page_archive\Controller\WebPageArchiveController::viewRuns'
     _title_callback: '\Drupal\web_page_archive\Controller\WebPageArchiveController::title'
@@ -27,7 +27,7 @@ entity.web_page_archive.canonical:
     _permission: 'web_page_archive.view'
 
 entity.web_page_archive.edit_form:
-  path: 'admin/config/development/web-page-archive/{web_page_archive}/edit'
+  path: 'admin/config/system/web-page-archive/{web_page_archive}/edit'
   defaults:
     _entity_form: 'web_page_archive.edit'
     _title: 'Edit Archive'
@@ -35,7 +35,7 @@ entity.web_page_archive.edit_form:
     _entity_access: 'web_page_archive.update'
 
 entity.web_page_archive.delete_form:
-  path: 'admin/config/development/web-page-archive/{web_page_archive}/delete'
+  path: 'admin/config/system/web-page-archive/{web_page_archive}/delete'
   defaults:
     _entity_form: 'web_page_archive.delete'
     _title: 'Delete Archive'
@@ -43,7 +43,7 @@ entity.web_page_archive.delete_form:
     _entity_access: 'web_page_archive.delete'
 
 entity.web_page_archive.queue_form:
-  path: 'admin/config/development/web-page-archive/{web_page_archive}/queue'
+  path: 'admin/config/system/web-page-archive/{web_page_archive}/queue'
   defaults:
     _entity_form: 'web_page_archive.queue'
     _title: 'Web Page Archive Queue'

@@ -3,5 +3,5 @@ entity.web_page_archive.collection:
   title: 'Web Page Archive'
   route_name: entity.web_page_archive.collection
   description: 'Settings for Web Page Archives'
-  parent: system.admin_config_development
+  parent: system.admin_config_system
   weight: 99
