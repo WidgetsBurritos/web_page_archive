@@ -2,8 +2,10 @@
 
 namespace Drupal\web_page_archive\Form;
 
+use Drupal\Component\Plugin\PluginManagerInterface;
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Form\FormStateInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Class WebPageArchiveForm.
@@ -11,6 +13,30 @@ use Drupal\Core\Form\FormStateInterface;
  * @package Drupal\web_page_archive\Form
  */
 class WebPageArchiveForm extends EntityForm {
+
+  /**
+   * Plugin manager interface.
+   *
+   * @var \Drupal\Component\Plugin\PluginManagerInterface
+   */
+  protected $pluginManager;
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct(PluginManagerInterface $plugin_manager) {
+    $this->pluginManager = $plugin_manager;
+  }
+
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('plugin.manager.capture_utility')
+    );
+  }
 
   /**
    * {@inheritdoc}
@@ -54,20 +80,12 @@ class WebPageArchiveForm extends EntityForm {
       '#disabled' => TRUE,
     ];
 
-    // TODO: Make plugins inject their form fields instead (future task).
-    $form['capture_screenshot'] = [
-      '#type' => 'checkbox',
-      '#title' => $this->t('Capture Screenshot?'),
-      '#description' => $this->t('If checked, this job will include download and compare screenshots.'),
-      '#default_value' => $web_page_archive->isScreenshotCapturing(),
-    ];
-
-    $form['capture_html'] = [
-      '#type' => 'checkbox',
-      '#title' => $this->t('Capture HTML?'),
-      '#description' => $this->t('If checked, this job will include download and compare html.'),
-      '#default_value' => $web_page_archive->isHtmlCapturing(),
-    ];
+    // Add plugin fields.
+    $pm = $this->pluginManager;
+    foreach ($pm->getDefinitions() as $definition) {
+      $plugin_instance = $pm->createInstance($definition['id']);
+      $form = array_merge($form, $plugin_instance->addConfigFormFields($form, $web_page_archive));
+    }
 
     return $form;
   }
