@@ -64,10 +64,10 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $this->drupalLogin($this->authorizedUser);
 
     // Verify list exists with add button.
-    $this->drupalGet('admin/config/development/web-page-archive');
-    $this->assertLinkByHref('admin/config/development/web-page-archive/add');
+    $this->drupalGet('admin/config/system/web-page-archive');
+    $this->assertLinkByHref('admin/config/system/web-page-archive/add');
     // Add an entity using the entity form.
-    $this->drupalGet('admin/config/development/web-page-archive/add');
+    $this->drupalGet('admin/config/system/web-page-archive/add');
     $this->drupalPostForm(
       NULL,
       [
@@ -89,12 +89,12 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
 
     // Verify entity view, edit, and delete buttons are present.
     // This is to ensure the entity config is correct for user operations.
-    $this->assertLinkByHref('admin/config/development/web-page-archive/test_archive');
-    $this->assertLinkByHref('admin/config/development/web-page-archive/test_archive/edit');
-    $this->assertLinkByHref('admin/config/development/web-page-archive/test_archive/delete');
+    $this->assertLinkByHref('admin/config/system/web-page-archive/test_archive');
+    $this->assertLinkByHref('admin/config/system/web-page-archive/test_archive/edit');
+    $this->assertLinkByHref('admin/config/system/web-page-archive/test_archive/delete');
 
     // Verify previous values are retained.
-    $this->drupalGet('admin/config/development/web-page-archive/test_archive/edit');
+    $this->drupalGet('admin/config/system/web-page-archive/test_archive/edit');
     $this->assertFieldByName('sitemap_url', 'http://localhost/sitemap.xml');
     $this->assertFieldChecked('capture_screenshot');
     $this->assertNoFieldChecked('capture_html');
@@ -119,7 +119,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $this->assertEqual('HtmlCaptureUtility', array_shift($capture_utilities)['id']);
 
     // Verify previous values are retained.
-    $this->drupalGet('admin/config/development/web-page-archive/test_archive/edit');
+    $this->drupalGet('admin/config/system/web-page-archive/test_archive/edit');
     $this->assertFieldByName('sitemap_url', 'http://localhost:1234/sitemap.xml');
     $this->assertNoFieldChecked('capture_screenshot');
     $this->assertFieldChecked('capture_html');
@@ -146,7 +146,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
 
     // Login.
     $this->drupalLogin($this->authorizedUser);
-    $this->drupalGet('admin/config/development/web-page-archive/programmatic_archive/edit');
+    $this->drupalGet('admin/config/system/web-page-archive/programmatic_archive/edit');
     $this->assertResponse(Response::HTTP_OK);
     $this->assertFieldByName('label', 'Programmatic Archive');
     $this->assertFieldByName('sitemap_url', 'http://localhost/sitemap.xml');
@@ -184,12 +184,12 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $this->drupalLogin($this->unauthorizedUser);
 
     $urls = [
-      'admin/config/development/web-page-archive',
-      'admin/config/development/web-page-archive/add',
-      'admin/config/development/web-page-archive/test_archive',
-      'admin/config/development/web-page-archive/test_archive/edit',
-      'admin/config/development/web-page-archive/test_archive/delete',
-      'admin/config/development/web-page-archive/test_archive/queue',
+      'admin/config/system/web-page-archive',
+      'admin/config/system/web-page-archive/add',
+      'admin/config/system/web-page-archive/test_archive',
+      'admin/config/system/web-page-archive/test_archive/edit',
+      'admin/config/system/web-page-archive/test_archive/delete',
+      'admin/config/system/web-page-archive/test_archive/queue',
     ];
     foreach ($urls as $url) {
       $this->drupalGet($url);

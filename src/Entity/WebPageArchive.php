@@ -36,12 +36,12 @@ use GuzzleHttp\HandlerStack;
  *     "label" = "label"
  *   },
  *   links = {
- *     "canonical" = "/admin/config/development/web-page-archive/{web_page_archive}",
- *     "add-form" = "/admin/config/development/web-page-archive/add",
- *     "edit-form" = "/admin/config/development/web-page-archive/{web_page_archive}/edit",
- *     "delete-form" = "/admin/config/development/web-page-archive/{web_page_archive}/delete",
- *     "queue-form" = "/admin/config/development/web-page-archive/{web_page_archive}/queue",
- *     "collection" = "/admin/config/development/web-page-archive"
+ *     "canonical" = "/admin/config/system/web-page-archive/{web_page_archive}",
+ *     "add-form" = "/admin/config/system/web-page-archive/add",
+ *     "edit-form" = "/admin/config/system/web-page-archive/{web_page_archive}/edit",
+ *     "delete-form" = "/admin/config/system/web-page-archive/{web_page_archive}/delete",
+ *     "queue-form" = "/admin/config/system/web-page-archive/{web_page_archive}/queue",
+ *     "collection" = "/admin/config/system/web-page-archive"
  *   },
  *   config_export = {
  *     "id",
