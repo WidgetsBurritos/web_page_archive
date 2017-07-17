@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\web_page_archive;
+namespace Drupal\web_page_archive\Entity;
 
 use Drupal\Core\Entity\EntityAccessControlHandler;
 use Drupal\Core\Entity\EntityInterface;

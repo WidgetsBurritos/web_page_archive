@@ -18,9 +18,9 @@ use Drupal\user\UserInterface;
  *   id = "web_page_archive_run",
  *   label = @Translation("Web page archive run"),
  *   handlers = {
- *     "storage" = "Drupal\web_page_archive\WebPageArchiveRunStorage",
+ *     "storage" = "Drupal\web_page_archive\Entity\Sql\WebPageArchiveRunStorage",
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
- *     "list_builder" = "Drupal\web_page_archive\WebPageArchiveRunListBuilder",
+ *     "list_builder" = "Drupal\web_page_archive\Entity\WebPageArchiveRunListBuilder",
  *     "views_data" = "Drupal\web_page_archive\Entity\WebPageArchiveRunViewsData",
  *
  *     "form" = {
@@ -29,9 +29,9 @@ use Drupal\user\UserInterface;
  *       "edit" = "Drupal\web_page_archive\Form\WebPageArchiveRunForm",
  *       "delete" = "Drupal\web_page_archive\Form\WebPageArchiveRunDeleteForm",
  *     },
- *     "access" = "Drupal\web_page_archive\WebPageArchiveRunAccessControlHandler",
+ *     "access" = "Drupal\web_page_archive\Entity\WebPageArchiveRunAccessControlHandler",
  *     "route_provider" = {
- *       "html" = "Drupal\web_page_archive\WebPageArchiveRunHtmlRouteProvider",
+ *       "html" = "Drupal\web_page_archive\Entity\Routing\WebPageArchiveRunHtmlRouteProvider",
  *     },
  *   },
  *   base_table = "web_page_archive_run",

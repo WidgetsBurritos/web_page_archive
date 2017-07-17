@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\web_page_archive;
+namespace Drupal\web_page_archive\Entity\Sql;
 
 use Drupal\Core\Entity\Sql\SqlContentEntityStorage;
 use Drupal\Core\Session\AccountInterface;
