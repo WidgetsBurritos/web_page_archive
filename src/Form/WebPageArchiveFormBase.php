@@ -3,14 +3,47 @@
 namespace Drupal\web_page_archive\Form;
 
 use Drupal\Core\Entity\EntityForm;
+use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Class WebPageArchiveForm.
- *
- * @package Drupal\web_page_archive\Form
+ * Base form for web page archive add and edit forms.
  */
-class WebPageArchiveForm extends EntityForm {
+abstract class WebPageArchiveFormBase extends EntityForm {
+
+  /**
+   * The entity being used by this form.
+   *
+   * @var \Drupal\image\WebPageArchiveInterface
+   */
+  protected $entity;
+
+  /**
+   * The web page archive entity storage.
+   *
+   * @var \Drupal\Core\Entity\EntityStorageInterface
+   */
+  protected $webPageArchiveStorage;
+
+  /**
+   * Constructs a base class for web page archive add and edit forms.
+   *
+   * @param \Drupal\Core\Entity\EntityStorageInterface $image_style_storage
+   *   The web page archive entity storage.
+   */
+  public function __construct(EntityStorageInterface $image_style_storage) {
+    $this->webPageArchiveStorage = $image_style_storage;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('entity.manager')->getStorage('image_style')
+    );
+  }
 
   /**
    * {@inheritdoc}
@@ -53,21 +86,21 @@ class WebPageArchiveForm extends EntityForm {
       '#default_value' => $web_page_archive->getCronSchedule(),
       '#disabled' => TRUE,
     ];
-
-    // TODO: Make plugins inject their form fields instead (future task).
-    $form['capture_screenshot'] = [
-      '#type' => 'checkbox',
-      '#title' => $this->t('Capture Screenshot?'),
-      '#description' => $this->t('If checked, this job will include download and compare screenshots.'),
-      '#default_value' => $web_page_archive->isScreenshotCapturing(),
-    ];
-
-    $form['capture_html'] = [
-      '#type' => 'checkbox',
-      '#title' => $this->t('Capture HTML?'),
-      '#description' => $this->t('If checked, this job will include download and compare html.'),
-      '#default_value' => $web_page_archive->isHtmlCapturing(),
-    ];
+    //
+    // // TODO: Make plugins inject their form fields instead (future task).
+    // $form['capture_screenshot'] = [
+    //   '#type' => 'checkbox',
+    //   '#title' => $this->t('Capture Screenshot?'),
+    //   '#description' => $this->t('If checked, this job will include download and compare screenshots.'),
+    //   '#default_value' => $web_page_archive->isScreenshotCapturing(),
+    // ];
+    //
+    // $form['capture_html'] = [
+    //   '#type' => 'checkbox',
+    //   '#title' => $this->t('Capture HTML?'),
+    //   '#description' => $this->t('If checked, this job will include download and compare html.'),
+    //   '#default_value' => $web_page_archive->isHtmlCapturing(),
+    // ];
 
     return $form;
   }

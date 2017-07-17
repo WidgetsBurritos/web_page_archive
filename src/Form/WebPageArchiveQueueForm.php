@@ -11,7 +11,7 @@ use Drupal\Core\Queue\QueueWorkerManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Class WebPageArchiveForm.
+ * Class WebPageArchiveQueueForm.
  *
  * @package Drupal\web_page_archive\Form
  */

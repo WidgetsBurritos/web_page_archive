@@ -36,4 +36,28 @@ interface CaptureUtilityInterface extends PluginInspectionInterface {
    */
   public function missingDependencies();
 
+  /**
+   * Returns a render array summarizing the configuration of the capture utility.
+   *
+   * @return array
+   *   A render array.
+   */
+  public function getSummary();
+
+  /**
+   * Returns the capture utility label.
+   *
+   * @return string
+   *   The capture utility label.
+   */
+  public function label();
+
+  /**
+   * Returns the unique ID representing the capture utility.
+   *
+   * @return string
+   *   The capture utility ID.
+   */
+  public function getUuid();
+
 }
