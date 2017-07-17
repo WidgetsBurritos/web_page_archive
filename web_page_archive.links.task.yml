@@ -1,0 +1,27 @@
+# Web page archive run routing definition
+web_page_archive_run.settings_tab:
+  route_name: web_page_archive_run.settings
+  title: 'Settings'
+  base_route: web_page_archive_run.settings
+
+entity.web_page_archive_run.canonical:
+  route_name: entity.web_page_archive_run.canonical
+  base_route: entity.web_page_archive_run.canonical
+  title: 'View'
+
+entity.web_page_archive_run.edit_form:
+  route_name: entity.web_page_archive_run.edit_form
+  base_route: entity.web_page_archive_run.canonical
+  title: 'Edit'
+
+entity.web_page_archive_run.version_history:
+  route_name: entity.web_page_archive_run.version_history
+  base_route: entity.web_page_archive_run.canonical
+  title: 'Revisions'
+
+entity.web_page_archive_run.delete_form:
+  route_name:  entity.web_page_archive_run.delete_form
+  base_route:  entity.web_page_archive_run.canonical
+  title: Delete
+  weight: 10
+
