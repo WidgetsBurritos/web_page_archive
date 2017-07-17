@@ -1,0 +1,22 @@
+{#
+/**
+ * @file web_page_archive_run.html.twig
+ * Default theme implementation to present Web page archive run data.
+ *
+ * This template is used when viewing Web page archive run pages.
+ *
+ *
+ * Available variables:
+ * - content: A list of content items. Use 'content' to print all content, or
+ * - attributes: HTML attributes for the container element.
+ *
+ * @see template_preprocess_web_page_archive_run()
+ *
+ * @ingroup themeable
+ */
+#}
+<div{{ attributes.addClass('web_page_archive_run') }}>
+  {% if content %}
+    {{- content -}}
+  {% endif %}
+</div>
