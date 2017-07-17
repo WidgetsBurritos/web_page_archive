@@ -67,7 +67,6 @@ class WebPageArchiveRunController extends ControllerBase implements ContainerInj
     $build['#title'] = $has_translations ? $this->t('@langname revisions for %title', ['@langname' => $langname, '%title' => $web_page_archive_run->label()]) : $this->t('Revisions for %title', ['%title' => $web_page_archive_run->label()]);
     $header = [$this->t('Revision'), $this->t('Operations')];
 
-    $revert_permission = (($account->hasPermission("revert all web page archive run revisions") || $account->hasPermission('administer web page archive run entities')));
     $delete_permission = (($account->hasPermission("delete all web page archive run revisions") || $account->hasPermission('administer web page archive run entities')));
 
     $rows = [];
@@ -125,12 +124,6 @@ class WebPageArchiveRunController extends ControllerBase implements ContainerInj
         }
         else {
           $links = [];
-          if ($revert_permission) {
-            $links['revert'] = [
-              'title' => $this->t('Revert'),
-              'url' => Url::fromRoute('entity.web_page_archive_run.revision_revert', ['web_page_archive_run' => $web_page_archive_run->id(), 'web_page_archive_run_revision' => $vid]),
-            ];
-          }
 
           if ($delete_permission) {
             $links['delete'] = [

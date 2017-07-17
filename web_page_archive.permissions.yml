@@ -26,10 +26,6 @@ view unpublished web page archive run entities:
 view all web page archive run revisions:
   title: 'View all Web page archive run revisions'
 
-revert all web page archive run revisions:
-  title: 'Revert all Web page archive run revisions'
-  description: 'Role requires permission <em>view Web page archive run revisions</em> and <em>edit rights</em> for web page archive run entities in question or <em>administer web page archive run entities</em>.'
-
 delete all web page archive run revisions:
   title: 'Delete all revisions'
   description: 'Role requires permission to <em>view Web page archive run revisions</em> and <em>delete rights</em> for web page archive run entities in question or <em>administer web page archive run entities</em>.'

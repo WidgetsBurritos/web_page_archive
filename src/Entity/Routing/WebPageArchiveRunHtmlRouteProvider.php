@@ -34,10 +34,6 @@ class WebPageArchiveRunHtmlRouteProvider extends AdminHtmlRouteProvider {
       $collection->add("entity.{$entity_type_id}.revision", $revision_route);
     }
 
-    if ($revert_route = $this->getRevisionRevertRoute($entity_type)) {
-      $collection->add("entity.{$entity_type_id}.revision_revert", $revert_route);
-    }
-
     if ($delete_route = $this->getRevisionDeleteRoute($entity_type)) {
       $collection->add("entity.{$entity_type_id}.revision_delete", $delete_route);
     }
@@ -116,30 +112,6 @@ class WebPageArchiveRunHtmlRouteProvider extends AdminHtmlRouteProvider {
           '_title_callback' => '\Drupal\web_page_archive\Controller\WebPageArchiveRunController::revisionPageTitle',
         ])
         ->setRequirement('_permission', 'access web page archive run revisions')
-        ->setOption('_admin_route', TRUE);
-
-      return $route;
-    }
-  }
-
-  /**
-   * Gets the revision revert route.
-   *
-   * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
-   *   The entity type.
-   *
-   * @return \Symfony\Component\Routing\Route|null
-   *   The generated route, if available.
-   */
-  protected function getRevisionRevertRoute(EntityTypeInterface $entity_type) {
-    if ($entity_type->hasLinkTemplate('revision_revert')) {
-      $route = new Route($entity_type->getLinkTemplate('revision_revert'));
-      $route
-        ->setDefaults([
-          '_form' => '\Drupal\web_page_archive\Form\WebPageArchiveRunRevisionRevertForm',
-          '_title' => 'Revert to earlier revision',
-        ])
-        ->setRequirement('_permission', 'revert all web page archive run revisions')
         ->setOption('_admin_route', TRUE);
 
       return $route;
