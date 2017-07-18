@@ -1,28 +1,2 @@
 administer web page archive:
   title: 'Administer Web Page Archive'
-add web page archive run entities:
-  title: 'Create new Web page archive run entities'
-
-administer web page archive run entities:
-  title: 'Administer Web page archive run entities'
-  description: 'Allow to access the administration form to configure Web page archive run entities.'
-  restrict access: true
-
-delete web page archive run entities:
-  title: 'Delete Web page archive run entities'
-
-edit web page archive run entities:
-  title: 'Edit Web page archive run entities'
-
-access web page archive run overview:
-  title: 'Access the Web page archive run overview page'
-
-view web page archive run entities:
-  title: 'View Web page archive run entities'
-
-view all web page archive run revisions:
-  title: 'View all Web page archive run revisions'
-
-delete all web page archive run revisions:
-  title: 'Delete all revisions'
-  description: 'Role requires permission to <em>view Web page archive run revisions</em> and <em>delete rights</em> for web page archive run entities in question or <em>administer web page archive run entities</em>.'

@@ -52,7 +52,7 @@ use GuzzleHttp\HandlerStack;
  *     "capture_screenshot",
  *     "capture_html",
  *     "capture_utilities",
- *     "entity_run"
+ *     "run_entity"
  *   }
  * )
  */
@@ -119,7 +119,7 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
    *
    * @var array
    */
-  protected $entity_run = NULL;
+  protected $run_entity = NULL;
 
   /**
    * Retrieves the Sitemap URL.
@@ -302,8 +302,8 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
    */
   public function getRunEntity() {
     $entity = NULL;
-    if (isset($this->entity_run)) {
-      $entity = $this->entityRepository()->loadEntityByUuid('web_page_archive_run', $this->entity_run);
+    if (isset($this->run_entity)) {
+      $entity = $this->entityRepository()->loadEntityByUuid('web_page_archive_run', $this->run_entity);
     }
     return $entity;
   }
@@ -328,7 +328,7 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
         ->create($data);
       $entity->save();
 
-      $this->entity_run = $data['uuid'];
+      $this->run_entity = $data['uuid'];
     }
   }
 
@@ -367,7 +367,9 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
    */
   public function delete() {
     // Delete run entity before deleting self.
-    $this->getRunEntity()->delete();
+    if ($this->getRunEntity()) {
+      $this->getRunEntity()->delete();
+    }
     parent::delete();
   }
 

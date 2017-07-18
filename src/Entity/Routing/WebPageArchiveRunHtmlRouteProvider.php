@@ -63,7 +63,7 @@ class WebPageArchiveRunHtmlRouteProvider extends AdminHtmlRouteProvider {
           '_entity_list' => $entity_type_id,
           '_title' => "{$entity_type->getLabel()} list",
         ])
-        ->setRequirement('_permission', 'access web page archive run overview')
+        ->setRequirement('_permission', $entity_type->getAdminPermission())
         ->setOption('_admin_route', TRUE);
 
       return $route;
@@ -87,7 +87,7 @@ class WebPageArchiveRunHtmlRouteProvider extends AdminHtmlRouteProvider {
           '_title' => "{$entity_type->getLabel()} revisions",
           '_controller' => '\Drupal\web_page_archive\Controller\WebPageArchiveRunController::revisionOverview',
         ])
-        ->setRequirement('_permission', 'access web page archive run revisions')
+        ->setRequirement('_permission', $entity_type->getAdminPermission())
         ->setOption('_admin_route', TRUE);
 
       return $route;
@@ -111,7 +111,7 @@ class WebPageArchiveRunHtmlRouteProvider extends AdminHtmlRouteProvider {
           '_controller' => '\Drupal\web_page_archive\Controller\WebPageArchiveRunController::revisionShow',
           '_title_callback' => '\Drupal\web_page_archive\Controller\WebPageArchiveRunController::revisionPageTitle',
         ])
-        ->setRequirement('_permission', 'access web page archive run revisions')
+        ->setRequirement('_permission', $entity_type->getAdminPermission())
         ->setOption('_admin_route', TRUE);
 
       return $route;
@@ -135,7 +135,7 @@ class WebPageArchiveRunHtmlRouteProvider extends AdminHtmlRouteProvider {
           '_form' => '\Drupal\web_page_archive\Form\WebPageArchiveRunRevisionDeleteForm',
           '_title' => 'Delete earlier revision',
         ])
-        ->setRequirement('_permission', 'delete all web page archive run revisions')
+        ->setRequirement('_permission', $entity_type->getAdminPermission())
         ->setOption('_admin_route', TRUE);
 
       return $route;

@@ -34,3 +34,15 @@ web_page_archive.web_page_archive.*:
     run_entity:
       type: string
       label: 'Run Entity'
+
+
+field.widget.settings.capture_widget:
+  type: mapping
+  label: 'Capture widget settings'
+  mapping:
+    size:
+      type: integer
+      label: 'Size'
+    placeholder:
+      type: string
+      label: 'Placeholder'
