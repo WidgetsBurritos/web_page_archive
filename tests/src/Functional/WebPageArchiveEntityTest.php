@@ -126,12 +126,12 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
 
     // Verify run entity was created.
     $this->drupalGet('admin/config/system/web-page-archive/runs');
-    $assert->pageTextContains('Test Archiver');
+    $assert->pageTextContains('Test Archive');
     $this->assertLinkByHref('admin/config/system/web-page-archive/runs/1');
     $this->assertLinkByHref('admin/config/system/web-page-archive/runs/1/edit');
     $this->assertLinkByHref('admin/config/system/web-page-archive/runs/1/delete');
     $this->drupalGet('admin/config/system/web-page-archive/runs/1');
-    $assert->pageTextContains('Test Archiver');
+    $assert->pageTextContains('Test Archive');
   }
 
   /**
