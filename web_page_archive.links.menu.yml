@@ -5,3 +5,17 @@ entity.web_page_archive.collection:
   description: 'Settings for Web Page Archives'
   parent: system.admin_config_system
   weight: 99
+
+# Web page archive run menu items definition
+entity.web_page_archive_run.collection:
+  title: 'Web page archive run list'
+  route_name: entity.web_page_archive_run.collection
+  description: 'List Web page archive run entities'
+  parent: system.admin_structure
+  weight: 100
+
+web_page_archive_run.admin.structure.settings:
+  title: Web page archive run settings
+  description: 'Configure Web page archive run entities'
+  route_name: web_page_archive_run.settings
+  parent: system.admin_structure

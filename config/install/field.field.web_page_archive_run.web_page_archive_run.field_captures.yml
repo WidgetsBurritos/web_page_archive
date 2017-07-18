@@ -1,0 +1,19 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.web_page_archive_run.field_captures
+  module:
+    - web_page_archive
+id: web_page_archive_run.web_page_archive_run.field_captures
+field_name: field_captures
+entity_type: web_page_archive_run
+bundle: web_page_archive_run
+label: Captures
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: web_page_archive_capture

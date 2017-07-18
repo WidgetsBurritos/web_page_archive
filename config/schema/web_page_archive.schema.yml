@@ -31,41 +31,18 @@ web_page_archive.web_page_archive.*:
             type: string
           id:
             type: string
-    runs:
-      type: sequence
-      sequence:
-        type: mapping
-        mapping:
-          uuid:
-            type: string
-          status:
-            type: string
-            label: 'Status'
-          timestamp:
-            type: string
-            label: 'Timestamp'
-          queue_ct:
-            type: integer
-            label: 'Queue Ct'
-          captures:
-            type: sequence
-            sequence:
-              type: mapping
-              mapping:
-                uuid:
-                  type: string
-                status:
-                  type: string
-                  label: 'Status'
-                timestamp:
-                  type: string
-                  label: 'Timestamp'
-                capture_url:
-                  type: uri
-                  label: 'Capture URL'
-                capture_type:
-                  type: string
-                  label: 'Capture Type'
-                content:
-                  type: string
-                  label: 'Capture Content'
+    run_entity:
+      type: string
+      label: 'Run Entity'
+
+
+field.widget.settings.web_page_archive_capture_widget:
+  type: mapping
+  label: 'Capture widget settings'
+  mapping:
+    size:
+      type: integer
+      label: 'Size'
+    placeholder:
+      type: string
+      label: 'Placeholder'

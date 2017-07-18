@@ -1,0 +1,17 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - web_page_archive
+id: web_page_archive_run.field_captures
+field_name: field_captures
+entity_type: web_page_archive_run
+type: web_page_archive_capture
+settings: {  }
+module: web_page_archive
+locked: false
+cardinality: -1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

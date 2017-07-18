@@ -52,7 +52,7 @@ use GuzzleHttp\HandlerStack;
  *     "capture_screenshot",
  *     "capture_html",
  *     "capture_utilities",
- *     "runs"
+ *     "run_entity"
  *   }
  * )
  */
@@ -114,13 +114,12 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
    */
   protected $capture_utility_collection;
 
-
   /**
-   * Holds run data.
+   * Holds uuid for entity run.
    *
    * @var array
    */
-  protected $runs = [];
+  protected $run_entity = NULL;
 
   /**
    * Retrieves the Sitemap URL.
@@ -263,6 +262,7 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
       $urls = $sitemap_parser->parse($this->getSitemapUrl());
       $queue = $this->getQueue();
       $run_uuid = $this->uuidGenerator()->generate();
+      $run_entity = $this->getRunEntity();
 
       foreach ($urls as $url) {
         foreach ($this->getCaptureUtilities() as $utility) {
@@ -271,12 +271,22 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
             'utility' => $utility,
             'url' => $url,
             'run_uuid' => $run_uuid,
+            'run_entity' => $run_entity,
           ];
           $queue->createItem($item);
         }
       }
 
-      $this->storeNewRun($run_uuid, $queue->numberOfItems());
+      $run_entity->setQueueCt($queue->numberOfItems());
+      $run_entity->setNewRevision();
+      $run_entity->setCapturedArray([]);
+      $strings = [
+        '@name' => $this->label(),
+        '@uuid' => $run_uuid,
+        '@queue_ct' => $queue->numberOfItems(),
+      ];
+      $run_entity->setRevisionLogMessage(t('Name: @name -- Run ID: @uuid -- Queue Ct: @queue_ct', $strings));
+      $run_entity->save();
     }
     catch (\Exception $e) {
       // TODO: What to do here? (future task)
@@ -285,40 +295,39 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
   }
 
   /**
-   * Stores run info into the database.
+   * Retrieves the run entity for this config entity.
+   *
+   * @return \Drupal\web_page_archive\Entity\WebPageArchiveRun
+   *   Corresponding run content entity.
    */
-  protected function storeNewRun($uuid, $queue_ct) {
-    // TODO: Move functionality into controller?
-    $config = $this->getEditableConfig();
-    $new_run = [
-      'uuid' => $uuid,
-      'timestamp' => \Drupal::service('datetime.time')->getCurrentTime(),
-      'queue_ct' => $queue_ct,
-      'status' => 'pending',
-      'captures' => [],
-    ];
-
-    $config->set("runs.{$uuid}", $new_run);
-    $config->save();
+  public function getRunEntity() {
+    $entity = NULL;
+    if (isset($this->run_entity)) {
+      $entity = $this->entityRepository()->loadEntityByUuid('web_page_archive_run', $this->run_entity);
+    }
+    return $entity;
   }
 
   /**
-   * Marks a capture task complete.
+   * Initializes run entity.
    */
-  public function markCaptureComplete($data) {
-    // TODO: Move functionality into controller?
-    $config = $this->getEditableConfig();
-    $uuid = $this->uuidGenerator()->generate();
-    $capture = [
-      'uuid' => $uuid,
-      'timestamp' => \Drupal::service('datetime.time')->getCurrentTime(),
-      'status' => 'complete',
-      'capture_url' => $data['url'],
-      'capture_type' => $data['capture_response']->getType(),
-      'content' => $data['capture_response']->getContent(),
-    ];
-    $config->set("runs.{$data['run_uuid']}.captures.{$uuid}", $capture);
-    $config->save();
+  protected function initializeRunEntity() {
+    if (!isset($this->run_entity)) {
+      $data = [
+        'uid' => \Drupal::currentUser()->id(),
+        'name' => $this->label(),
+        'uuid' => $this->uuidGenerator()->generate(),
+        'status' => 0,
+        'queue_ct' => 0,
+        'config_entity' => $this->id(),
+      ];
+      $entity = $this->entityTypeManager()
+        ->getStorage('web_page_archive_run')
+        ->create($data);
+      $entity->save();
+
+      $this->run_entity = $data['uuid'];
+    }
   }
 
   /**
@@ -346,7 +355,42 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
       }
     }
 
+    if ($this->isNew()) {
+      $this->initializeRunEntity();
+    }
+
     return parent::save();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function delete() {
+    // Delete run entity before deleting self.
+    if ($this->getRunEntity()) {
+      $this->getRunEntity()->delete();
+    }
+    parent::delete();
+  }
+
+  /**
+   * Wraps the entity manager.
+   *
+   * @return \Drupal\Core\Entity\EntityRepositoryInterface
+   *   A entity manager object.
+   */
+  protected function entityRepository() {
+    return \Drupal::service('entity.repository');
+  }
+
+  /**
+   * Wraps the entity type manager.
+   *
+   * @return \Drupal\Core\Entity\EntityTypeManagerInterface
+   *   A entity manager object.
+   */
+  protected function entityTypeManager() {
+    return \Drupal::service('entity_type.manager');
   }
 
   /**

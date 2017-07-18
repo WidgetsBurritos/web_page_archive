@@ -6,7 +6,6 @@ use Drupal\Tests\UnitTestCase;
 use Drupal\Tests\web_page_archive\Unit\Mock\MockAlwaysThrowingCaptureUtility;
 use Drupal\Tests\web_page_archive\Unit\Mock\MockHtmlCaptureUtility;
 use Drupal\Tests\web_page_archive\Unit\Mock\MockScreenshotCaptureUtility;
-use Drupal\Tests\web_page_archive\Unit\Mock\MockWebPageArchive;
 use Drupal\web_page_archive\Plugin\QueueWorker\CaptureQueueWorker;
 
 /**
@@ -15,6 +14,13 @@ use Drupal\web_page_archive\Plugin\QueueWorker\CaptureQueueWorker;
  * @group web_page_archive
  */
 class CaptureQueueWorkerTest extends UnitTestCase {
+
+  /**
+   * Mock web page archive run.
+   *
+   * @var \Drupal\web_page_archive\Entity\WebPageArchiveRun
+   */
+  protected $mockWebPageArchiveRun;
 
   /**
    * {@inheritdoc}
@@ -26,6 +32,11 @@ class CaptureQueueWorkerTest extends UnitTestCase {
       'title' => 'title',
     ];
     $this->queue = new CaptureQueueWorker([], 'id', $definition);
+
+    $this->mockWebPageArchiveRun = $this->getMockBuilder('\Drupal\web_page_archive\Entity\WebPageArchiveRun')
+      ->disableOriginalConstructor()
+      ->setMethods(['markCaptureComplete'])
+      ->getMock();
   }
 
   /**
@@ -36,7 +47,7 @@ class CaptureQueueWorkerTest extends UnitTestCase {
       'utility' => new MockScreenshotCaptureUtility(),
       'url' => 'http://www.whatever.com',
       'run_uuid' => '12345678-1234-1234-1234-123456789000',
-      'web_page_archive' => new MockWebPageArchive(),
+      'run_entity' => $this->mockWebPageArchiveRun,
     ];
     $response = $this->queue->processItem($data);
     $this->assertSame('uri', $response->getType());
@@ -53,7 +64,7 @@ class CaptureQueueWorkerTest extends UnitTestCase {
     $data = [
       'url' => 'http://www.whatever.com',
       'run_uuid' => '12345678-1234-1234-1234-123456789000',
-      'web_page_archive' => new MockWebPageArchive(),
+      'run_entity' => $this->mockWebPageArchiveRun,
     ];
     $response = $this->queue->processItem($data);
   }
@@ -68,7 +79,7 @@ class CaptureQueueWorkerTest extends UnitTestCase {
     $data = [
       'utility' => new MockHtmlCaptureUtility(),
       'run_uuid' => '12345678-1234-1234-1234-123456789000',
-      'web_page_archive' => new MockWebPageArchive(),
+      'run_entity' => $this->mockWebPageArchiveRun,
     ];
     $response = $this->queue->processItem($data);
   }
@@ -83,18 +94,18 @@ class CaptureQueueWorkerTest extends UnitTestCase {
     $data = [
       'utility' => new MockHtmlCaptureUtility(),
       'url' => 'http://www.whatever.com',
-      'web_page_archive' => new MockWebPageArchive(),
+      'run_entity' => $this->mockWebPageArchiveRun,
     ];
     $response = $this->queue->processItem($data);
   }
 
   /**
-   * Tests missing web_page_archive writes message.
+   * Tests missing run_entity writes message.
    *
    * @expectedException Exception
-   * @expectedExceptionMessage web_page_archive is required
+   * @expectedExceptionMessage run_entity is required
    */
-  public function testMissingWebPageArchiveWritesMessage() {
+  public function testMissingRunEntityWritesMessage() {
     $data = [
       'utility' => new MockHtmlCaptureUtility(),
       'url' => 'http://www.whatever.com',
@@ -114,7 +125,7 @@ class CaptureQueueWorkerTest extends UnitTestCase {
       'utility' => new MockAlwaysThrowingCaptureUtility(),
       'url' => 'http://www.whatever.com',
       'run_uuid' => '12345678-1234-1234-1234-123456789000',
-      'web_page_archive' => new MockWebPageArchive(),
+      'run_entity' => $this->mockWebPageArchiveRun,
     ];
     $response = $this->queue->processItem($data);
   }
