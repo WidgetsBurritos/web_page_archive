@@ -13,7 +13,6 @@ use Drupal\Core\Link;
  */
 class WebPageArchiveRunListBuilder extends EntityListBuilder {
 
-
   /**
    * {@inheritdoc}
    */

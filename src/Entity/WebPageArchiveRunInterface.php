@@ -14,8 +14,6 @@ use Drupal\user\EntityOwnerInterface;
  */
 interface WebPageArchiveRunInterface extends RevisionableInterface, RevisionLogInterface, EntityChangedInterface, EntityOwnerInterface {
 
-  // Add get/set methods for your configuration properties here.
-
   /**
    * Gets the Web page archive run name.
    *
@@ -66,12 +64,13 @@ interface WebPageArchiveRunInterface extends RevisionableInterface, RevisionLogI
    * Sets the completed status of a Web page archive run.
    *
    * @param bool $completed
-   *   TRUE to set this Web page archive run to completed, FALSE to set it to incomplete.
+   *   TRUE to set this Web page archive run to completed.
+   *   FALSE to set it to incomplete.
    *
    * @return \Drupal\web_page_archive\Entity\WebPageArchiveRunInterface
    *   The called Web page archive run entity.
    */
-  public function setCompleted($published);
+  public function setCompleted($completed);
 
   /**
    * Gets the Web page archive run revision creation timestamp.

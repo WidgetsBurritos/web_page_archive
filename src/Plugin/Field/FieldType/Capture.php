@@ -78,7 +78,7 @@ class Capture extends FieldItemBase {
             'max' => $max_length,
             'maxMessage' => t('%name: may not be longer than @max characters.', [
               '%name' => $this->getFieldDefinition()->getLabel(),
-              '@max' => $max_length
+              '@max' => $max_length,
             ]),
           ],
         ],
