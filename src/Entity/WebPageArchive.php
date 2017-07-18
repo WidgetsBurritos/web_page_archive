@@ -312,9 +312,7 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
    * Initializes run entity.
    */
   protected function initializeRunEntity() {
-    $entity = NULL;
-
-    if (!isset($entity)) {
+    if (!isset($this->run_entity)) {
       $data = [
         'uid' => \Drupal::currentUser()->id(),
         'name' => $this->label(),
@@ -357,7 +355,9 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
       }
     }
 
-    $this->initializeRunEntity();
+    if ($this->isNew()) {
+      $this->initializeRunEntity();
+    }
 
     return parent::save();
   }
