@@ -28,8 +28,6 @@ class WebPageArchiveRunForm extends ContentEntityForm {
       ];
     }
 
-    $entity = $this->entity;
-
     return $form;
   }
 
