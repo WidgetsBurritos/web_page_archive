@@ -123,6 +123,15 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $this->assertFieldByName('sitemap_url', 'http://localhost:1234/sitemap.xml');
     $this->assertNoFieldChecked('capture_screenshot');
     $this->assertFieldChecked('capture_html');
+
+    // Verify run entity was created.
+    $this->drupalGet('admin/config/system/web-page-archive/runs');
+    $assert->pageTextContains('Test Archiver');
+    $this->assertLinkByHref('admin/config/system/web-page-archive/runs/1');
+    $this->assertLinkByHref('admin/config/system/web-page-archive/runs/1/edit');
+    $this->assertLinkByHref('admin/config/system/web-page-archive/runs/1/delete');
+    $this->drupalGet('admin/config/system/web-page-archive/runs/1');
+    $assert->pageTextContains('Test Archiver');
   }
 
   /**
@@ -159,6 +168,15 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $this->assertEqual(2, count($capture_utilities));
     $this->assertEqual('HtmlCaptureUtility', array_shift($capture_utilities)['id']);
     $this->assertEqual('ScreenshotCaptureUtility', array_shift($capture_utilities)['id']);
+
+    // Verify run entity was created.
+    $this->drupalGet('admin/config/system/web-page-archive/runs');
+    $assert->pageTextContains('Programmatic Archive');
+    $this->assertLinkByHref('admin/config/system/web-page-archive/runs/1');
+    $this->assertLinkByHref('admin/config/system/web-page-archive/runs/1/edit');
+    $this->assertLinkByHref('admin/config/system/web-page-archive/runs/1/delete');
+    $this->drupalGet('admin/config/system/web-page-archive/runs/1');
+    $assert->pageTextContains('Programmatic Archive');
   }
 
   /**
@@ -190,6 +208,10 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
       'admin/config/system/web-page-archive/test_archive/edit',
       'admin/config/system/web-page-archive/test_archive/delete',
       'admin/config/system/web-page-archive/test_archive/queue',
+      'admin/config/system/web-page-archive/runs',
+      'admin/config/system/web-page-archive/runs/1',
+      'admin/config/system/web-page-archive/runs/1/edit',
+      'admin/config/system/web-page-archive/runs/1/delete',
     ];
     foreach ($urls as $url) {
       $this->drupalGet($url);

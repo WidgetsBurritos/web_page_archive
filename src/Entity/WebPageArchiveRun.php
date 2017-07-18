@@ -29,7 +29,6 @@ use Drupal\user\UserInterface;
  *       "edit" = "Drupal\web_page_archive\Form\WebPageArchiveRunForm",
  *       "delete" = "Drupal\web_page_archive\Form\WebPageArchiveRunDeleteForm",
  *     },
- *     "access" = "Drupal\web_page_archive\Entity\WebPageArchiveRunAccessControlHandler",
  *     "route_provider" = {
  *       "html" = "Drupal\web_page_archive\Entity\Routing\WebPageArchiveRunHtmlRouteProvider",
  *     },
@@ -37,7 +36,7 @@ use Drupal\user\UserInterface;
  *   base_table = "web_page_archive_run",
  *   revision_table = "web_page_archive_run_revision",
  *   revision_data_table = "web_page_archive_run_field_revision",
- *   admin_permission = "administer web page archive run entities",
+ *   admin_permission = "administer web page archive",
  *   fieldable = TRUE,
  *   entity_keys = {
  *     "id" = "id",
