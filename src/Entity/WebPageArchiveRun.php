@@ -91,7 +91,7 @@ class WebPageArchiveRun extends RevisionableContentEntityBase implements WebPage
       }
     }
 
-    // If no revision author has been set explicitly, make the web_page_archive_run owner the
+    // If no revision author has been set explicitly, make the entity owner the
     // revision author.
     if (!$this->getRevisionUser()) {
       $this->setRevisionUserId($this->getOwnerId());
@@ -157,7 +157,6 @@ class WebPageArchiveRun extends RevisionableContentEntityBase implements WebPage
     $this->set('user_id', $account->id());
     return $this;
   }
-
 
   /**
    * {@inheritdoc}
@@ -326,12 +325,5 @@ class WebPageArchiveRun extends RevisionableContentEntityBase implements WebPage
     return $fields;
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function delete() {
-    // TODO: Delete all stored files.
-    parent::delete();
-  }
-
+  // TODO: Implement delete() to delete any stored files.
 }

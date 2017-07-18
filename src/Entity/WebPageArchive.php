@@ -298,6 +298,7 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
    * Retrieves the run entity for this config entity.
    *
    * @return \Drupal\web_page_archive\Entity\WebPageArchiveRun
+   *   Corresponding run content entity.
    */
   public function getRunEntity() {
     $entity = NULL;

@@ -112,15 +112,6 @@ class WebPageArchiveRunRevisionDeleteForm extends ConfirmFormBase {
       'entity.web_page_archive_run.canonical',
        ['web_page_archive_run' => $this->revision->id()]
     );
-    // TODO: Figure out why this isn't working.
-    // Issue: `web_page_archive_run_field_revision` isn't created.
-    // Is it necessary?
-    // if ($this->connection->query('SELECT COUNT(DISTINCT vid) FROM {web_page_archive_run_field_revision} WHERE id = :id', [':id' => $this->revision->id()])->fetchField() > 1) {
-    //   $form_state->setRedirect(
-    //     'entity.web_page_archive_run.version_history',
-    //      ['web_page_archive_run' => $this->revision->id()]
-    //   );
-    // }
   }
 
 }

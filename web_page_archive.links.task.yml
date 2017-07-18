@@ -24,4 +24,3 @@ entity.web_page_archive_run.delete_form:
   base_route:  entity.web_page_archive_run.canonical
   title: Delete
   weight: 10
-

@@ -18,7 +18,7 @@ use Drupal\web_page_archive\Entity\WebPageArchiveRunInterface;
 interface WebPageArchiveRunStorageInterface extends ContentEntityStorageInterface {
 
   /**
-   * Gets a list of Web page archive run revision IDs for a specific Web page archive run.
+   * Gets a list of Web page archive run revision IDs for a specific run.
    *
    * @param \Drupal\web_page_archive\Entity\WebPageArchiveRunInterface $entity
    *   The Web page archive run entity.
@@ -29,7 +29,7 @@ interface WebPageArchiveRunStorageInterface extends ContentEntityStorageInterfac
   public function revisionIds(WebPageArchiveRunInterface $entity);
 
   /**
-   * Gets a list of revision IDs having a given user as Web page archive run author.
+   * Gets a list of revision IDs having a given user as run author.
    *
    * @param \Drupal\Core\Session\AccountInterface $account
    *   The user entity.
