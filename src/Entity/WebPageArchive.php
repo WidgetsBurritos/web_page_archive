@@ -262,7 +262,7 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
       $urls = $sitemap_parser->parse($this->getSitemapUrl());
       $queue = $this->getQueue();
       $run_uuid = $this->uuidGenerator()->generate();
-      $run_entity = $this->initializeRunEntity();
+      $run_entity = $this->getRunEntity();
 
       foreach ($urls as $url) {
         foreach ($this->getCaptureUtilities() as $utility) {
@@ -279,6 +279,7 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
 
       $run_entity->setQueueCt($queue->numberOfItems());
       $run_entity->setNewRevision();
+      $run_entity->setCapturedArray([]);
       $strings = [
         '@name' => $this->label(),
         '@uuid' => $run_uuid,
@@ -294,16 +295,25 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
   }
 
   /**
-   * Initializes and retrieves run entity.
+   * Retrieves the run entity for this config entity.
+   *
+   * @return \Drupal\web_page_archive\Entity\WebPageArchiveRun
    */
-  protected function initializeRunEntity() {
+  public function getRunEntity() {
     $entity = NULL;
     if (isset($this->entity_run)) {
       $entity = $this->entityRepository()->loadEntityByUuid('web_page_archive_run', $this->entity_run);
     }
+    return $entity;
+  }
+
+  /**
+   * Initializes run entity.
+   */
+  protected function initializeRunEntity() {
+    $entity = NULL;
 
     if (!isset($entity)) {
-      // TODO: Move this behavior to post save?
       $data = [
         'uid' => \Drupal::currentUser()->id(),
         'name' => $this->label(),
@@ -315,12 +325,10 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
       $entity = $this->entityTypeManager()
         ->getStorage('web_page_archive_run')
         ->create($data);
+      $entity->save();
 
       $this->entity_run = $data['uuid'];
-      $this->save();
     }
-
-    return $entity;
   }
 
   /**
@@ -348,7 +356,18 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
       }
     }
 
+    $this->initializeRunEntity();
+
     return parent::save();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function delete() {
+    // Delete run entity before deleting self.
+    $this->getRunEntity()->delete();
+    parent::delete();
   }
 
   /**

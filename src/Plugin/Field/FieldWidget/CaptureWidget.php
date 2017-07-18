@@ -70,13 +70,12 @@ class CaptureWidget extends WidgetBase {
    * {@inheritdoc}
    */
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
-    $element['value'] = $element + [
-      '#type' => 'textfield',
-      '#default_value' => isset($items[$delta]->value) ? $items[$delta]->value : NULL,
-      '#size' => $this->getSetting('size'),
-      '#placeholder' => $this->getSetting('placeholder'),
-      '#maxlength' => $this->getFieldSetting('max_length'),
-    ];
+    $value = isset($items[$delta]->value) ? $items[$delta]->value : NULL;
+    if ($values = unserialize($value)) {
+      $element['capture_details'] = [
+        '#markup' => "<strong>{$values['capture_type']}:</strong> {$values['capture_url']}",
+      ];
+    }
 
     return $element;
   }

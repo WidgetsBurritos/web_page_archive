@@ -48,7 +48,6 @@ use Drupal\user\UserInterface;
  *     "langcode" = "langcode",
  *     "status" = "status",
  *     "queue_ct" = "queue_ct",
- *     "capture_data" = "capture_data",
  *   },
  *   links = {
  *     "canonical" = "/admin/config/system/web-page-archive/runs/{web_page_archive_run}",
@@ -191,23 +190,40 @@ class WebPageArchiveRun extends RevisionableContentEntityBase implements WebPage
   }
 
   /**
+   * Sets the captured array.
+   */
+  public function setCapturedArray(array $array) {
+    $this->set('field_captures', $array);
+    return $this;
+  }
+
+  /**
    * Marks a capture task complete.
    */
   public function markCaptureComplete($data) {
+    // TODO: Lock acquired too late?
+    // TODO: Lock per entity?
+    // TODO: More performant option here:
+    // This get and append method gets slower as the list grows.
+    $lock = \Drupal::lock();
+    if ($lock->acquire('web_page_archive_run')) {
+      $entity = \Drupal::service('entity.repository')->loadEntityByUuid('web_page_archive_run', $this->uuid());
 
-    // // TODO: Move functionality into controller?
-    // $config = $this->getEditableConfig();
-    // $uuid = $this->uuidGenerator()->generate();
-    // $capture = [
-    //   'uuid' => $uuid,
-    //   'timestamp' => \Drupal::service('datetime.time')->getCurrentTime(),
-    //   'status' => 'complete',
-    //   'capture_url' => $data['url'],
-    //   'capture_type' => $data['capture_response']->getType(),
-    //   'content' => $data['capture_response']->getContent(),
-    // ];
-    // $config->set("runs.{$data['run_uuid']}.captures.{$uuid}", $capture);
-    // $config->save();
+      $field_captures = $entity->get('field_captures');
+      $uuid = $this->uuidGenerator()->generate();
+      $capture = [
+        'uuid' => $uuid,
+        'timestamp' => \Drupal::service('datetime.time')->getCurrentTime(),
+        'status' => 'complete',
+        'capture_url' => $data['url'],
+        'capture_type' => $data['capture_response']->getType(),
+        'content' => $data['capture_response']->getContent(),
+      ];
+      $field_captures->appendItem(serialize($capture));
+      $entity->save();
+
+      $lock->release('web_page_archive_run');
+    }
   }
 
   /**
@@ -308,6 +324,14 @@ class WebPageArchiveRun extends RevisionableContentEntityBase implements WebPage
       ->setDescription(t('The time that the entity was last edited.'));
 
     return $fields;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function delete() {
+    // TODO: Delete all stored files.
+    parent::delete();
   }
 
 }
