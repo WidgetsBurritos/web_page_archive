@@ -36,6 +36,7 @@ class WebPageArchiveDeleteForm extends EntityConfirmFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
+    // TODO: Delete related content entities and storage.
     $this->entity->delete();
 
     drupal_set_message(

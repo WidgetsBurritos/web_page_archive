@@ -19,6 +19,7 @@ class WebPageArchiveRunListBuilder extends EntityListBuilder {
    */
   public function buildHeader() {
     $header['id'] = $this->t('Web page archive run ID');
+    $header['uuid'] = $this->t('Uuid');
     $header['name'] = $this->t('Name');
     return $header + parent::buildHeader();
   }
@@ -29,6 +30,7 @@ class WebPageArchiveRunListBuilder extends EntityListBuilder {
   public function buildRow(EntityInterface $entity) {
     /* @var $entity \Drupal\web_page_archive\Entity\WebPageArchiveRun */
     $row['id'] = $entity->id();
+    $row['uuid'] = $entity->uuid();
     $row['name'] = Link::createFromRoute(
       $entity->label(),
       'entity.web_page_archive_run.edit_form',

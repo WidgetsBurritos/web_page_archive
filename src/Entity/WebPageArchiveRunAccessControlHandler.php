@@ -21,10 +21,7 @@ class WebPageArchiveRunAccessControlHandler extends EntityAccessControlHandler {
     /** @var \Drupal\web_page_archive\Entity\WebPageArchiveRunInterface $entity */
     switch ($operation) {
       case 'view':
-        if (!$entity->isPublished()) {
-          return AccessResult::allowedIfHasPermission($account, 'view unpublished web page archive run entities');
-        }
-        return AccessResult::allowedIfHasPermission($account, 'view published web page archive run entities');
+        return AccessResult::allowedIfHasPermission($account, 'view web page archive run entities');
 
       case 'update':
         return AccessResult::allowedIfHasPermission($account, 'edit web page archive run entities');

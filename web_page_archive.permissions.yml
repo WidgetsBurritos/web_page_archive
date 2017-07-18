@@ -17,11 +17,8 @@ edit web page archive run entities:
 access web page archive run overview:
   title: 'Access the Web page archive run overview page'
 
-view published web page archive run entities:
-  title: 'View published Web page archive run entities'
-
-view unpublished web page archive run entities:
-  title: 'View unpublished Web page archive run entities'
+view web page archive run entities:
+  title: 'View Web page archive run entities'
 
 view all web page archive run revisions:
   title: 'View all Web page archive run revisions'

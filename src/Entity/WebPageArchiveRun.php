@@ -47,6 +47,8 @@ use Drupal\user\UserInterface;
  *     "uid" = "user_id",
  *     "langcode" = "langcode",
  *     "status" = "status",
+ *     "queue_ct" = "queue_ct",
+ *     "capture_data" = "capture_data",
  *   },
  *   links = {
  *     "canonical" = "/admin/config/system/web-page-archive/runs/{web_page_archive_run}",
@@ -157,19 +159,55 @@ class WebPageArchiveRun extends RevisionableContentEntityBase implements WebPage
     return $this;
   }
 
+
   /**
    * {@inheritdoc}
    */
-  public function isPublished() {
+  public function getQueueCt() {
+    return $this->get('queue_ct');
+  }
+
+  /**
+   * Sets number of items in the queue.
+   */
+  public function setQueueCt($ct) {
+    $this->set('queue_ct', $ct);
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function isCompleted() {
     return (bool) $this->getEntityKey('status');
   }
 
   /**
    * {@inheritdoc}
    */
-  public function setPublished($published) {
-    $this->set('status', $published ? TRUE : FALSE);
+  public function setCompleted($completed) {
+    $this->set('status', $completed ? TRUE : FALSE);
     return $this;
+  }
+
+  /**
+   * Marks a capture task complete.
+   */
+  public function markCaptureComplete($data) {
+
+    // // TODO: Move functionality into controller?
+    // $config = $this->getEditableConfig();
+    // $uuid = $this->uuidGenerator()->generate();
+    // $capture = [
+    //   'uuid' => $uuid,
+    //   'timestamp' => \Drupal::service('datetime.time')->getCurrentTime(),
+    //   'status' => 'complete',
+    //   'capture_url' => $data['url'],
+    //   'capture_type' => $data['capture_response']->getType(),
+    //   'content' => $data['capture_response']->getContent(),
+    // ];
+    // $config->set("runs.{$data['run_uuid']}.captures.{$uuid}", $capture);
+    // $config->save();
   }
 
   /**
@@ -229,6 +267,37 @@ class WebPageArchiveRun extends RevisionableContentEntityBase implements WebPage
       ->setDescription(t('A boolean indicating whether the Web page archive run is published.'))
       ->setRevisionable(TRUE)
       ->setDefaultValue(TRUE);
+
+    $fields['queue_ct'] = BaseFieldDefinition::create('integer')
+      ->setLabel(t('Number of items in the queue.'))
+      ->setDescription(t('A boolean indicating whether the Web page archive run is published.'))
+      ->setRevisionable(TRUE)
+      ->setDefaultValue(0);
+
+    $fields['config_entity'] = BaseFieldDefinition::create('entity_reference')
+      ->setLabel(t('Config entity'))
+      ->setDescription(t('The ID of web page archive configuration entity.'))
+      ->setRevisionable(FALSE)
+      ->setSetting('target_type', 'web_page_archive')
+      ->setSetting('handler', 'default')
+      ->setTranslatable(TRUE)
+      ->setDisplayOptions('view', [
+        'label' => 'hidden',
+        'type' => 'author',
+        'weight' => 0,
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'entity_reference_autocomplete',
+        'weight' => 5,
+        'settings' => [
+          'match_operator' => 'CONTAINS',
+          'size' => '60',
+          'autocomplete_type' => 'tags',
+          'placeholder' => '',
+        ],
+      ])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayConfigurable('view', TRUE);
 
     $fields['created'] = BaseFieldDefinition::create('created')
       ->setLabel(t('Created'))

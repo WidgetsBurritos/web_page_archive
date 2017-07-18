@@ -55,25 +55,23 @@ interface WebPageArchiveRunInterface extends RevisionableInterface, RevisionLogI
   public function setCreatedTime($timestamp);
 
   /**
-   * Returns the Web page archive run published status indicator.
-   *
-   * Unpublished Web page archive run are only visible to restricted users.
+   * Returns the Web page archive run completion status indicator.
    *
    * @return bool
    *   TRUE if the Web page archive run is published.
    */
-  public function isPublished();
+  public function isCompleted();
 
   /**
-   * Sets the published status of a Web page archive run.
+   * Sets the completed status of a Web page archive run.
    *
-   * @param bool $published
-   *   TRUE to set this Web page archive run to published, FALSE to set it to unpublished.
+   * @param bool $completed
+   *   TRUE to set this Web page archive run to completed, FALSE to set it to incomplete.
    *
    * @return \Drupal\web_page_archive\Entity\WebPageArchiveRunInterface
    *   The called Web page archive run entity.
    */
-  public function setPublished($published);
+  public function setCompleted($published);
 
   /**
    * Gets the Web page archive run revision creation timestamp.
