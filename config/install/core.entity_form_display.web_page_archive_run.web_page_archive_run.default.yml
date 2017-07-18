@@ -20,7 +20,7 @@ content:
     region: content
     third_party_settings: {  }
   field_captures:
-    type: capture_widget
+    type: web_page_archive_capture_widget
     weight: 3
     region: content
     settings:

@@ -9,13 +9,13 @@ use Drupal\Core\Field\FormatterBase;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
- * Plugin implementation of the 'capture_formatter' formatter.
+ * Plugin implementation of the 'web_page_archive_capture_formatter' formatter.
  *
  * @FieldFormatter(
- *   id = "capture_formatter",
- *   label = @Translation("Capture formatter"),
+ *   id = "web_page_archive_capture_formatter",
+ *   label = @Translation("Web Page Archive capture formatter"),
  *   field_types = {
- *     "capture"
+ *     "web_page_archive_capture"
  *   }
  * )
  */

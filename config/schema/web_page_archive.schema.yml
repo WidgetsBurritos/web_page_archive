@@ -36,7 +36,7 @@ web_page_archive.web_page_archive.*:
       label: 'Run Entity'
 
 
-field.widget.settings.capture_widget:
+field.widget.settings.web_page_archive_capture_widget:
   type: mapping
   label: 'Capture widget settings'
   mapping:

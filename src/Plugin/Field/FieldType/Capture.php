@@ -13,11 +13,11 @@ use Drupal\Core\TypedData\DataDefinition;
  * Plugin implementation of the 'capture' field type.
  *
  * @FieldType(
- *   id = "capture",
- *   label = @Translation("Capture"),
+ *   id = "web_page_archive_capture",
+ *   label = @Translation("Web Page Archive Capture"),
  *   description = @Translation("Data for an individual capture"),
- *   default_widget = "capture_widget",
- *   default_formatter = "capture_formatter"
+ *   default_widget = "web_page_archive_capture_widget",
+ *   default_formatter = "web_page_archive_capture_formatter"
  * )
  */
 class Capture extends FieldItemBase {

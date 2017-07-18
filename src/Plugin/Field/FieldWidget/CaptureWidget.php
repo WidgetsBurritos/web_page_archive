@@ -7,13 +7,13 @@ use Drupal\Core\Field\WidgetBase;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
- * Plugin implementation of the 'capture_widget' widget.
+ * Plugin implementation of the 'web_page_archive_capture_widget' widget.
  *
  * @FieldWidget(
- *   id = "capture_widget",
- *   label = @Translation("Capture widget"),
+ *   id = "web_page_archive_capture_widget",
+ *   label = @Translation("Web Page Archive capture widget"),
  *   field_types = {
- *     "capture"
+ *     "web_page_archive_capture"
  *   }
  * )
  */
