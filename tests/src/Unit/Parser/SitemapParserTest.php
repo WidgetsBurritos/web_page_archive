@@ -38,7 +38,8 @@ class SitemapParserTest extends UnitTestCase {
       new RequestException("Error Communicating with Server", new Request('GET', 'test')),
     ]);
     $handler = HandlerStack::create($mock);
-    static::$sitemapParser = new SitemapParser($handler);
+    static::$sitemapParser = new SitemapParser();
+    static::$sitemapParser->initializeConnection($handler);
   }
 
   /**
