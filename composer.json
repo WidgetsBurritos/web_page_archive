@@ -20,8 +20,8 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "microweber/screen": "dev-master",
-        "jakoch/phantomjs-installer": "dev-master"
+        "microweber/screen": "1.0.*",
+        "jakoch/phantomjs-installer": "2.1.1"
     },
     "scripts": {
         "post-install-cmd": [

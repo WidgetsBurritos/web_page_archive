@@ -4,36 +4,27 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "04a4a539fd8ecdd40d6dc9ae5db665a2",
+    "content-hash": "796349bcfe5afa5f6eea3120bba1fbd9",
     "packages": [
         {
             "name": "jakoch/phantomjs-installer",
-            "version": "dev-master",
+            "version": "2.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jakoch/phantomjs-installer.git",
-                "reference": "f826b1fe7cc51497a0ee2d6b3de78314f79e380f"
+                "reference": "b8ee2aac9b95f9a9ee30a05a4df4a0984a8a8b85"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jakoch/phantomjs-installer/zipball/f826b1fe7cc51497a0ee2d6b3de78314f79e380f",
-                "reference": "f826b1fe7cc51497a0ee2d6b3de78314f79e380f",
+                "url": "https://api.github.com/repos/jakoch/phantomjs-installer/zipball/b8ee2aac9b95f9a9ee30a05a4df4a0984a8a8b85",
+                "reference": "b8ee2aac9b95f9a9ee30a05a4df4a0984a8a8b85",
                 "shasum": ""
             },
             "require": {
-                "ext-bz2": "*",
-                "ext-openssl": "*",
-                "php": ">5.3"
-            },
-            "require-dev": {
-                "composer/composer": "^1.2",
-                "phpunit/phpunit": "^4.8"
+                "ext-openssl": "*"
             },
             "type": "custom-installer",
             "autoload": {
-                "psr-4": {
-                    "PhantomInstaller\\Test\\": "tests/"
-                },
                 "psr-0": {
                     "PhantomInstaller\\": "src/"
                 }
@@ -54,20 +45,20 @@
                 "headless",
                 "phantomjs"
             ],
-            "time": "2017-03-26 15:32:18"
+            "time": "2016-01-25T16:30:30+00:00"
         },
         {
             "name": "microweber/screen",
-            "version": "dev-master",
+            "version": "v1.0.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/microweber/screen.git",
-                "reference": "f9e3a452f8978d90e51cde4c33349eea453e7619"
+                "reference": "a7865099d2fbb8960052cfb408b4cbe463b31774"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/microweber/screen/zipball/f9e3a452f8978d90e51cde4c33349eea453e7619",
-                "reference": "f9e3a452f8978d90e51cde4c33349eea453e7619",
+                "url": "https://api.github.com/repos/microweber/screen/zipball/a7865099d2fbb8960052cfb408b4cbe463b31774",
+                "reference": "a7865099d2fbb8960052cfb408b4cbe463b31774",
                 "shasum": ""
             },
             "require": {
@@ -105,16 +96,13 @@
                 "print-screen",
                 "screen"
             ],
-            "time": "2017-03-30 10:55:33"
+            "time": "2017-01-20T15:21:43+00:00"
         }
     ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {
-        "microweber/screen": 20,
-        "jakoch/phantomjs-installer": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],

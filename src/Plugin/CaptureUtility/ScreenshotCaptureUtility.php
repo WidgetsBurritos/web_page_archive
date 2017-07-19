@@ -5,6 +5,7 @@ namespace Drupal\web_page_archive\Plugin\CaptureUtility;
 use Drupal\web_page_archive\Plugin\CaptureResponse\ScreenshotCaptureResponse;
 use Drupal\web_page_archive\Plugin\CaptureUtilityBase;
 use Screen\Capture;
+use PhantomInstaller\PhantomBinary;
 
 /**
  * Captures screenshot of a remote uri.
@@ -15,7 +16,6 @@ use Screen\Capture;
  * )
  */
 class ScreenshotCaptureUtility extends CaptureUtilityBase {
-
   /**
    * Most recent response.
    *
@@ -30,8 +30,7 @@ class ScreenshotCaptureUtility extends CaptureUtilityBase {
     $url = $data['url'];
 
     $screenCapture = new Capture($url);
-    // TODO: Where will this get installed?
-    $screenCapture->binPath = drupal_get_path('module', 'web_page_archive') . '/vendor/bin/';
+    $screenCapture->binPath = PhantomBinary::getDir() . '/';
     // TODO: Convert these options to config settings.
     // @see https://www.drupal.org/node/2894732
     $screenCapture->setWidth(1200);
@@ -54,6 +53,28 @@ class ScreenshotCaptureUtility extends CaptureUtilityBase {
    */
   public function getResponse() {
     return $this->response;
+  }
+
+  /**
+   * Determines whether or not dependencies are missing.
+   *
+   * @return array
+   *   Array containing missing dependencies.
+   */
+  public static function missingDependencies() {
+    $required_dependencies = [
+      '\\Screen\\Capture',
+      '\\PhantomInstaller\\Installer',
+      '\\PhantomInstaller\\PhantomBinary',
+    ];
+    $missing_dependencies = [];
+    foreach ($required_dependencies as $dependency) {
+      if (!class_exists($dependency)) {
+        $missing_dependencies[] = $dependency;
+      }
+    }
+
+    return $missing_dependencies;
   }
 
 }

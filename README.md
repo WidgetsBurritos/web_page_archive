@@ -10,13 +10,25 @@ alpha stages.
 
 - Drupal 8.x
 - PHP 5.6+
-- [ImageMagick](http://php.net/manual/en/book.imagick.php)
-  - See: [Installing/Configuring](http://php.net/manual/en/imagick.setup.php)
+- PHP extensions: ext-openssl
 
 ## Installation
 
-- Unpack in the *modules* folder (currently in the root of your Drupal 8
-installation) and enable in `/admin/modules`.
+- This module must be installed using composer. To do so the following should be
+included in your `composer.json` file:
+
+```
+"require": {
+  "drupal/web_page_archive": "*"
+},
+"scripts": {
+  "post-install-cmd": [
+    "PhantomInstaller\\Installer::installPhantomJS"
+  ]
+}
+```
+
+- Then run `composer update`.
 
 ## Setting Up an Archive
 
