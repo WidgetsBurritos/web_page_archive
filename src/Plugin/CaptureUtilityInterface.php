@@ -28,4 +28,12 @@ interface CaptureUtilityInterface extends PluginInspectionInterface {
    */
   public function getResponse();
 
+  /**
+   * Determines whether or not dependencies are missing.
+   *
+   * @return array
+   *   Array containing missing dependencies.
+   */
+  public function missingDependencies();
+
 }

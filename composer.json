@@ -18,5 +18,17 @@
             "email": "pobster@25159.no-reply.drupal.org"
         }
     ],
-    "minimum-stability": "dev"
+    "minimum-stability": "dev",
+    "require": {
+        "microweber/screen": "1.0.*",
+        "jakoch/phantomjs-installer": "2.1.1"
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "PhantomInstaller\\Installer::installPhantomJS"
+        ],
+        "post-update-cmd": [
+            "PhantomInstaller\\Installer::installPhantomJS"
+        ]
+    }
 }
