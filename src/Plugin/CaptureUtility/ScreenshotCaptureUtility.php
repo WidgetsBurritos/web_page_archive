@@ -56,21 +56,24 @@ class ScreenshotCaptureUtility extends CaptureUtilityBase {
   }
 
   /**
-   * Determines whether or not dependencies are missing.
-   *
-   * @return array
-   *   Array containing missing dependencies.
+   * {@inheritdoc}
    */
-  public static function missingDependencies() {
+  public function missingDependencies() {
+    $capture_message = $this->t('Screen Capture package missing.');
+    $install_message = $this->t('The Web Page Archive module must be installed via composer.');
+    $installer_message = $this->t('Phantom Installer package missing.');
+    $binary_message = $this->t('PhantomJS binary missing. composer.json missing "post-install-cmd" command.');
+
     $required_dependencies = [
-      '\\Screen\\Capture',
-      '\\PhantomInstaller\\Installer',
-      '\\PhantomInstaller\\PhantomBinary',
+      '\\Screen\\Capture' => "\\Screen\\Capture: {$capture_message} {$install_message}",
+      '\\PhantomInstaller\\Installer' => "\\PhantomInstaller\\Installer: {$installer_message} {$install_message}",
+      '\\PhantomInstaller\\PhantomBinary' => "\\PhantomInstaller\\PhantomBinary: {$binary_message}",
     ];
+
     $missing_dependencies = [];
-    foreach ($required_dependencies as $dependency) {
+    foreach ($required_dependencies as $dependency => $message) {
       if (!class_exists($dependency)) {
-        $missing_dependencies[] = $dependency;
+        $missing_dependencies[$dependency] = $message;
       }
     }
 
