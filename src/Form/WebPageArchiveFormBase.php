@@ -29,11 +29,11 @@ abstract class WebPageArchiveFormBase extends EntityForm {
   /**
    * Constructs a base class for web page archive add and edit forms.
    *
-   * @param \Drupal\Core\Entity\EntityStorageInterface $image_style_storage
+   * @param \Drupal\Core\Entity\EntityStorageInterface $web_page_archive_storage
    *   The web page archive entity storage.
    */
-  public function __construct(EntityStorageInterface $image_style_storage) {
-    $this->webPageArchiveStorage = $image_style_storage;
+  public function __construct(EntityStorageInterface $web_page_archive_storage) {
+    $this->webPageArchiveStorage = $web_page_archive_storage;
   }
 
   /**

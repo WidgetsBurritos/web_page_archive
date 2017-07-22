@@ -164,7 +164,7 @@ class WebPageArchiveEditForm extends WebPageArchiveFormBase {
           ],
         ],
       ],
-      '#prefix' => '<div class="web_page_archive-style-new">',
+      '#prefix' => '<div class="web-page-archive-capture-utility-new">',
       '#suffix' => '</div>',
     ];
 
@@ -187,7 +187,7 @@ class WebPageArchiveEditForm extends WebPageArchiveFormBase {
    */
   public function captureUtilityValidate($form, FormStateInterface $form_state) {
     if (!$form_state->getValue('new')) {
-      $form_state->setErrorByName('new', $this->t('Select an capture utility to add.'));
+      $form_state->setErrorByName('new', $this->t('Select a capture utility to add.'));
     }
   }
 
