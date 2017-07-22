@@ -179,7 +179,7 @@ class WebPageArchiveEditForm extends WebPageArchiveFormBase {
       'data' => [],
     ];
 
-    return $form;
+    return parent::form($form, $form_state);
   }
 
   /**

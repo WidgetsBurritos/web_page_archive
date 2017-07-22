@@ -67,7 +67,6 @@ abstract class CaptureUtilityFormBase extends FormBase {
       throw new NotFoundHttpException();
     }
 
-    // TODO: What's this do?
     $form['#attached']['library'][] = 'web_page_archive/admin';
     $form['uuid'] = [
       '#type' => 'value',
