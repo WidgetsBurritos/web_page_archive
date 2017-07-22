@@ -7,6 +7,7 @@ use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Drupal\web_page_archive\Plugin\CaptureUtilityManager;
+use Drupal\web_page_archive\Plugin\ConfigurableCaptureUtilityInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -254,7 +255,7 @@ class WebPageArchiveEditForm extends WebPageArchiveFormBase {
    */
   public function actions(array $form, FormStateInterface $form_state) {
     $actions = parent::actions($form, $form_state);
-    $actions['submit']['#value'] = $this->t('Update capture utility');
+    $actions['submit']['#value'] = $this->t('Update archive');
 
     return $actions;
   }
