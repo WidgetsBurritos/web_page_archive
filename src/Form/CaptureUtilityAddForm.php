@@ -42,9 +42,6 @@ class CaptureUtilityAddForm extends CaptureUtilityFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state, WebPageArchiveInterface $web_page_archive = NULL, $capture_utility = NULL) {
-    // kint($web_page_archive);
-    // kint($capture_utility);
-
     $form = parent::buildForm($form, $form_state, $web_page_archive, $capture_utility);
 
     $form['#title'] = $this->t('Add %label', ['%label' => $this->captureUtility->label()]);
@@ -58,9 +55,7 @@ class CaptureUtilityAddForm extends CaptureUtilityFormBase {
    */
   protected function prepareCaptureUtility($capture_utility) {
     $capture_utility = $this->captureUtilityManager->createInstance($capture_utility);
-    // TODO: Do we even need this? Seems unnecessary in this context.
-    // Set the initial weight so this capture utility comes last.
-    // $capture_utility->setWeight(count($this->webPageArchive->getCaptureUtilities()));
+    $capture_utility->setWeight(count($this->webPageArchive->getCaptureUtilities()));
     return $capture_utility;
   }
 

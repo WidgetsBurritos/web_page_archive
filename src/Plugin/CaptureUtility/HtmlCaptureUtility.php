@@ -11,7 +11,8 @@ use Drupal\web_page_archive\Plugin\ConfigurableCaptureUtilityBase;
  *
  * @CaptureUtility(
  *   id = "html_capture_utility",
- *   label = @Translation("Html capture utility", context = "Web Page Archive"),
+ *   label = @Translation("HTML capture utility", context = "Web Page Archive"),
+ *   description = @Translation("Captures HTML for given URL", context = "Web Page Archive")
  * )
  */
 class HtmlCaptureUtility extends ConfigurableCaptureUtilityBase {
@@ -40,6 +41,14 @@ class HtmlCaptureUtility extends ConfigurableCaptureUtilityBase {
     return $this->response;
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function defaultConfiguration() {
+    return [
+      'capture' => TRUE,
+    ];
+  }
 
   /**
    * {@inheritdoc}
@@ -49,12 +58,18 @@ class HtmlCaptureUtility extends ConfigurableCaptureUtilityBase {
       '#type' => 'checkbox',
       '#title' => $this->t('Capture Html?'),
       '#description' => $this->t('If checked, this archive will download and compare html.'),
-      // '#default_value' => $web_page_archive->isScreenshotCapturing(),
-      // '#default_value' => $config[$this->pluginId],
-      // TODO: How to determine this?
-      '#default_value' => TRUE,
+      '#default_value' => $this->configuration['capture'],
     ];
     return $form;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
+    parent::submitConfigurationForm($form, $form_state);
+
+    $this->configuration['capture'] = $form_state->getValue('capture');
   }
 
 }

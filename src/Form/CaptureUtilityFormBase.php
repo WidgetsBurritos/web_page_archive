@@ -39,6 +39,10 @@ abstract class CaptureUtilityFormBase extends FormBase {
   /**
    * {@inheritdoc}
    *
+   * @param array $form
+   *   The form array.
+   * @param Drupal\Core\Form\FormStateInterface $form_state
+   *   The form state.
    * @param \Drupal\web_page_archive\Entity\WebPageArchiveInterface $web_page_archive
    *   The web page archive.
    * @param string $capture_utility
@@ -79,12 +83,11 @@ abstract class CaptureUtilityFormBase extends FormBase {
     $form['data'] = $this->captureUtility->buildConfigurationForm($form['data'], $subform_state);
     $form['data']['#tree'] = TRUE;
 
-    // TODO: What to do here?
-    // Check the URL for a weight, then the capture utility, otherwise use default.
-    // $form['weight'] = [
-    //   '#type' => 'hidden',
-    //   '#value' => $request->query->has('weight') ? (int) $request->query->get('weight') : $this->captureUtility->getWeight(),
-    // ];
+    // Check the URL for a weight, then the capture utility, or use default.
+    $form['weight'] = [
+      '#type' => 'hidden',
+      '#value' => $request->query->has('weight') ? (int) $request->query->get('weight') : $this->captureUtility->getWeight(),
+    ];
 
     $form['actions'] = ['#type' => 'actions'];
     $form['actions']['submit'] = [
@@ -104,7 +107,7 @@ abstract class CaptureUtilityFormBase extends FormBase {
    * {@inheritdoc}
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
-    // The capture utility configuration is stored in the 'data' key in the form,
+    // The capture utility config is stored in the 'data' key in the form,
     // pass that through for validation.
     $this->captureUtility->validateConfigurationForm($form['data'], SubformState::createForSubform($form['data'], $form, $form_state));
   }
@@ -115,12 +118,11 @@ abstract class CaptureUtilityFormBase extends FormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $form_state->cleanValues();
 
-    // The capture utility configuration is stored in the 'data' key in the form,
+    // The capture utility config is stored in the 'data' key in the form,
     // pass that through for submission.
     $this->captureUtility->submitConfigurationForm($form['data'], SubformState::createForSubform($form['data'], $form, $form_state));
 
-    // TODO: Do we need this?  Seems unnecessary in this context.
-    // $this->captureUtility->setWeight($form_state->getValue('weight'));
+    $this->captureUtility->setWeight($form_state->getValue('weight'));
     if (!$this->captureUtility->getUuid()) {
       $this->webPageArchive->addCaptureUtility($this->captureUtility->getConfiguration());
     }

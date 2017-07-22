@@ -2,12 +2,13 @@
 
 namespace Drupal\web_page_archive\Plugin;
 
+use Drupal\Component\Plugin\ConfigurablePluginInterface;
 use Drupal\Component\Plugin\PluginInspectionInterface;
 
 /**
- * Defines an interface for Capture utility plugins.
+ * Defines an interface for capture utility plugins.
  */
-interface CaptureUtilityInterface extends PluginInspectionInterface {
+interface CaptureUtilityInterface extends PluginInspectionInterface, ConfigurablePluginInterface {
 
   /**
    * Captures the specified URL.
@@ -37,7 +38,7 @@ interface CaptureUtilityInterface extends PluginInspectionInterface {
   public function missingDependencies();
 
   /**
-   * Returns a render array summarizing the configuration of the capture utility.
+   * Returns a render array of the configuration of the capture utility.
    *
    * @return array
    *   A render array.
@@ -59,5 +60,23 @@ interface CaptureUtilityInterface extends PluginInspectionInterface {
    *   The capture utility ID.
    */
   public function getUuid();
+
+  /**
+   * Returns the weight of the image effect.
+   *
+   * @return int|string
+   *   Either the integer weight of the image effect, or an empty string.
+   */
+  public function getWeight();
+
+  /**
+   * Sets the weight for this image effect.
+   *
+   * @param int $weight
+   *   The weight for this image effect.
+   *
+   * @return $this
+   */
+  public function setWeight($weight);
 
 }

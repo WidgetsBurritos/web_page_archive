@@ -31,4 +31,15 @@ class CaptureUtility extends Plugin {
    */
   public $label;
 
+  /**
+   * A brief description of the capture utility.
+   *
+   * This will be shown when adding or configuring this capture utility.
+   *
+   * @var \Drupal\Core\Annotation\Translation
+   *
+   * @ingroup plugin_translatable
+   */
+  public $description = '';
+
 }

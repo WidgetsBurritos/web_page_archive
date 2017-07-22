@@ -50,7 +50,6 @@ entity.web_page_archive.queue_form:
   requirements:
     _permission: 'administer web page archive'
 
-
 web_page_archive.capture_utility_add_form:
   path: 'admin/config/development/web-page-archive/{web_page_archive}/add/{capture_utility}'
   defaults:

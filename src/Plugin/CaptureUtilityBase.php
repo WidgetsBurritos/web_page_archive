@@ -2,13 +2,16 @@
 
 namespace Drupal\web_page_archive\Plugin;
 
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Component\Plugin\PluginBase;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 
 /**
  * Base class for Capture utility plugins.
  */
-abstract class CaptureUtilityBase extends PluginBase implements CaptureUtilityInterface {
+abstract class CaptureUtilityBase extends PluginBase implements CaptureUtilityInterface, ContainerFactoryPluginInterface {
 
   use StringTranslationTrait;
 
@@ -20,10 +23,39 @@ abstract class CaptureUtilityBase extends PluginBase implements CaptureUtilityIn
   protected $uuid;
 
   /**
+   * The weight of the capture utility.
+   *
+   * @var int|string
+   */
+  protected $weight = '';
+
+  /**
+   * A logger instance.
+   *
+   * @var \Psr\Log\LoggerInterface
+   */
+  protected $logger;
+
+  /**
    * {@inheritdoc}
    */
-  public function getUuid() {
-    return $this->uuid;
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, LoggerInterface $logger) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition);
+
+    $this->setConfiguration($configuration);
+    $this->logger = $logger;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    return new static(
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
+      $container->get('logger.factory')->get('web_page_archive')
+    );
   }
 
   /**
@@ -32,7 +64,7 @@ abstract class CaptureUtilityBase extends PluginBase implements CaptureUtilityIn
   public function getSummary() {
     return [
       '#markup' => '',
-      '#effect' => [
+      '#capture_utility' => [
         'id' => $this->pluginDefinition['id'],
         'label' => $this->label(),
         'description' => $this->pluginDefinition['description'],
@@ -50,10 +82,33 @@ abstract class CaptureUtilityBase extends PluginBase implements CaptureUtilityIn
   /**
    * {@inheritdoc}
    */
+  public function getUuid() {
+    return $this->uuid;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setWeight($weight) {
+    $this->weight = $weight;
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getWeight() {
+    return $this->weight;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getConfiguration() {
     return [
       'uuid' => $this->getUuid(),
       'id' => $this->getPluginId(),
+      'weight' => $this->getWeight(),
       'data' => $this->configuration,
     ];
   }
@@ -65,10 +120,26 @@ abstract class CaptureUtilityBase extends PluginBase implements CaptureUtilityIn
     $configuration += [
       'data' => [],
       'uuid' => '',
+      'weight' => '',
     ];
     $this->configuration = $configuration['data'] + $this->defaultConfiguration();
     $this->uuid = $configuration['uuid'];
+    $this->weight = $configuration['weight'];
     return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function defaultConfiguration() {
+    return [];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function calculateDependencies() {
+    return [];
   }
 
   /**

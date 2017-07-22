@@ -21,14 +21,37 @@ web_page_archive.web_page_archive.*:
       sequence:
         type: mapping
         mapping:
-          uuid:
-            type: string
           id:
+            type: string
+          data:
+            type: web_page_archive.capture_utility.[%parent.id]
+          weight:
+            type: integer
+          uuid:
             type: string
     run_entity:
       type: string
       label: 'Run Entity'
 
+web_page_archive.capture_utility.*:
+  type: mapping
+  label: 'Capture utility settings'
+
+web_page_archive.capture_utility.html_capture_utility:
+  type: mapping
+  label: 'HTML Capture utility'
+  mapping:
+    capture:
+      type: boolean
+      label: 'Capture?'
+
+web_page_archive.capture_utility.screenshot_capture_utility:
+  type: mapping
+  label: 'Screenshot Capture utility'
+  mapping:
+    width:
+      type: integer
+      label: 'Width'
 
 field.widget.settings.web_page_archive_capture_widget:
   type: mapping

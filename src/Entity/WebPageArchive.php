@@ -302,26 +302,6 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
    * {@inheritdoc}
    */
   public function save() {
-    // // TODO: Handle this nonsense in plugins instead (future task).
-    // $plugin_options = [
-    //   [
-    //     'id' => 'html_capture_utility',
-    //     'isCapturing' => $this->isHtmlCapturing(),
-    //   ],
-    //   [
-    //     'id' => 'screenshot_capture_utility',
-    //     'isCapturing' => $this->isScreenshotCapturing(),
-    //   ],
-    // ];
-    //
-    // foreach ($plugin_options as $option) {
-    //   if (!$this->hasCaptureUtilityInstance($option['id']) && $option['isCapturing']) {
-    //     $this->addCaptureUtility(['id' => $option['id']]);
-    //   }
-    //   elseif (!$option['isCapturing']) {
-    //     $this->deleteCaptureUtilityById($option['id']);
-    //   }
-    // }
 
     if ($this->isNew()) {
       $this->initializeRunEntity();
