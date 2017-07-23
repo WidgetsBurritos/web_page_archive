@@ -156,6 +156,7 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
    */
   public function deleteCaptureUtility(CaptureUtilityInterface $capture_utility) {
     $this->getCaptureUtilities()->removeInstanceId($capture_utility->getUuid());
+    $this->save();
     return $this;
   }
 
