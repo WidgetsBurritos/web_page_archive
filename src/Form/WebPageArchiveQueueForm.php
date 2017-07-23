@@ -76,13 +76,27 @@ class WebPageArchiveQueueForm extends EntityForm {
     // If there are no missing items give instructions on starting a run.
     $missing_ct = count($this->missingDependencies);
     if ($missing_ct === 0) {
-      $url = Url::fromUri($web_page_archive->getSitemapUrl());
-      $url->setOptions(['attributes' => ['target' => '_blank']]);
-      $values = ['@sitemap_url' => Link::fromTextAndUrl($web_page_archive->getSitemapUrl(), $url)->toString()];
-      $form['help'] = [
-        '#type' => 'markup',
-        '#markup' => $this->t('Click "Start Run" to capture all urls from @sitemap_url.', $values),
-      ];
+      switch ($web_page_archive->getUrlType()) {
+        case 'sitemap':
+        case 'url':
+          $list = [];
+          foreach ($web_page_archive->getUrlList() as $url) {
+            $urlObj = Url::fromUri($url);
+            $urlObj->setOptions(['attributes' => ['target' => '_blank']]);
+            $list[] = Link::fromTextAndUrl($url, $urlObj)->toString();
+          }
+          $form['help'] = [
+            '#theme' => 'item_list',
+            '#prefix' => $this->t('Click "Start Run" to capture these @types:', ['@type' => $web_page_archive->getUrlType()]),
+            '#items' => $list,
+          ];
+          break;
+
+        default:
+          $form['help'] = [
+            '#markup' => $this->t('Click "Start Run" to initiate capture.'),
+          ];
+      }
     }
     // If there are missing dependencies, display message.
     else {

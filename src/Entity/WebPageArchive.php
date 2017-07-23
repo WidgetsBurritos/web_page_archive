@@ -46,7 +46,8 @@ use GuzzleHttp\HandlerStack;
  *     "id",
  *     "uuid",
  *     "label",
- *     "sitemap_url",
+ *     "url_type",
+ *     "urls",
  *     "cron_schedule",
  *     "capture_utilities",
  *     "run_entity"
@@ -70,11 +71,18 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
   protected $label;
 
   /**
-   * The XML sitemap URL.
+   * URL type.
    *
-   * @var uri
+   * @var string
    */
-  protected $sitemap_url;
+  protected $url_type;
+
+  /**
+   * URLs.
+   *
+   * @var string
+   */
+  protected $urls;
 
   /**
    * The cron schedule.
@@ -105,10 +113,24 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
   protected $run_entity = NULL;
 
   /**
-   * Retrieves the Sitemap URL.
+   * Retrieves URL type.
    */
-  public function getSitemapUrl() {
-    return $this->sitemap_url;
+  public function getUrlType() {
+    return $this->url_type;
+  }
+
+  /**
+   * Retrieves URLs as text.
+   */
+  public function getUrlsText() {
+    return trim($this->urls);
+  }
+
+  /**
+   * Retrieves URLs as array.
+   */
+  public function getUrlList() {
+    return array_map('trim', explode(PHP_EOL, $this->getUrlsText()));
   }
 
   /**
@@ -228,7 +250,15 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
     try {
       // Retrieve sitemap contents.
       // TODO: Move functionality into controller?
-      $urls = $this->sitemapParser($handler)->parse($this->getSitemapUrl());
+      $urls = $this->getUrlList();
+      if ($this->getUrlType() == 'sitemap') {
+        $parsed_urls = [];
+        foreach ($urls as $url) {
+          $parsed_urls = array_merge($parsed_urls, $this->sitemapParser($handler)->parse($url));
+        }
+        $urls = $parsed_urls;
+      }
+
       $queue = $this->getQueue();
       $run_uuid = $this->uuidGenerator()->generate();
       $run_entity = $this->getRunEntity();

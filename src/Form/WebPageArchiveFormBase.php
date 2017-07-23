@@ -68,12 +68,28 @@ abstract class WebPageArchiveFormBase extends EntityForm {
       '#disabled' => !$this->entity->isNew(),
     ];
 
-    $form['sitemap_url'] = [
-      '#type' => 'url',
-      '#title' => $this->t('XML Sitemap URL'),
-      '#description' => $this->t('Path to sitemap.'),
+    $form['url_type'] = [
+      '#type' => 'select',
+      '#title' => $this->t('URL Type'),
+      '#options' => [
+        '' => $this->t('None'),
+        'url' => $this->t('URL'),
+        'sitemap' => $this->t('Sitemap URL'),
+      ],
+      '#default_value' => $this->entity->getUrlType(),
+    ];
+
+    $form['urls'] = [
+      '#type' => 'textarea',
+      '#title' => $this->t('URLs to Capture'),
+      '#description' => $this->t('A list of urls to capture.'),
       '#required' => TRUE,
-      '#default_value' => $this->entity->getSitemapUrl(),
+      '#default_value' => $this->entity->getUrlsText(),
+      '#states' => [
+        'invisible' => [
+          'select[name="url_type"]' => ['value' => ''],
+        ],
+      ],
     ];
 
     return parent::form($form, $form_state);

@@ -73,7 +73,8 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
       [
         'label' => 'Test Archive',
         'id' => 'test_archive',
-        'sitemap_url' => 'http://localhost/sitemap.xml',
+        'url_type' => 'sitemap',
+        'urls' => 'http://localhost/sitemap.xml',
       ],
       t('Create new archive')
     );
@@ -81,21 +82,30 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
 
     // Verify previous values are retained.
     $this->assertContains('admin/config/system/web-page-archive/test_archive/edit', $this->getSession()->getCurrentUrl());
-    $this->assertFieldByName('sitemap_url', 'http://localhost/sitemap.xml');
+    $this->assertFieldByName('url_type', 'sitemap');
+    $this->assertFieldByName('urls', 'http://localhost/sitemap.xml');
 
     // Update the new entity using the entity form.
     $this->drupalPostForm(
       NULL,
       [
         'label' => 'Test Archiver',
-        'sitemap_url' => 'http://localhost:1234/sitemap.xml',
+        'url_type' => 'url',
+        'urls' => implode(PHP_EOL, [
+          'http://localhost:1234/some-page',
+          'http://localhost:1234/some-other-page',
+        ]),
       ],
       t('Update archive')
     );
     $assert->pageTextContains('Saved the Test Archiver Web page archive entity.');
 
     // Verify previous values are retained.
-    $this->assertFieldByName('sitemap_url', 'http://localhost:1234/sitemap.xml');
+    $this->assertFieldByName('url_type', 'url');
+    $this->assertFieldByName('urls', implode(PHP_EOL, [
+      'http://localhost:1234/some-page',
+      'http://localhost:1234/some-other-page',
+    ]));
 
     // Verify entity view, edit, and delete buttons are present in collection.
     // This is to ensure the entity config is correct for user operations.
@@ -115,7 +125,8 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $data = [
       'label' => 'Programmatic Archive',
       'id' => 'programmatic_archive',
-      'sitemap_url' => 'http://localhost/sitemap.xml',
+      'url_type' => 'sitemap',
+      'urls' => 'http://localhost/sitemap.xml',
     ];
     $wpa = \Drupal::entityManager()
       ->getStorage('web_page_archive')
@@ -127,7 +138,8 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $this->drupalGet('admin/config/system/web-page-archive/programmatic_archive/edit');
     $this->assertResponse(Response::HTTP_OK);
     $this->assertFieldByName('label', 'Programmatic Archive');
-    $this->assertFieldByName('sitemap_url', 'http://localhost/sitemap.xml');
+    $this->assertFieldByName('url_type', 'sitemap');
+    $this->assertFieldByName('urls', 'http://localhost/sitemap.xml');
 
     // Verify run entity was created.
     $this->drupalGet('admin/config/system/web-page-archive/runs');
@@ -149,7 +161,8 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $data = [
       'label' => 'Test Archive',
       'id' => 'test_archive',
-      'sitemap_url' => 'http://localhost/sitemap.xml',
+      'url_type' => 'sitemap',
+      'urls' => 'http://localhost/sitemap.xml',
     ];
     $wpa = \Drupal::entityManager()
       ->getStorage('web_page_archive')
@@ -185,7 +198,8 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $data = [
       'label' => 'Process and Run Archive',
       'id' => 'process_and_run_archive',
-      'sitemap_url' => 'http://localhost/sitemap.xml',
+      'url_type' => 'sitemap',
+      'urls' => 'http://localhost/sitemap.xml',
       'capture_utilities' => [
         '12345678-9999-0000-5555-000000000000' => [
           'uuid' => '12345678-9999-0000-5555-000000000000',

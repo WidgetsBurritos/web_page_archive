@@ -10,9 +10,12 @@ web_page_archive.web_page_archive.*:
       label: 'Label'
     uuid:
       type: string
-    sitemap_url:
-      type: uri
-      label: 'XML Sitemap URL'
+    url_type:
+      type: string
+      label: 'URL Type'
+    urls:
+      type: string
+      label: 'URLs'
     cron_schedule:
       type: string
       label: 'Cron Schedule'
