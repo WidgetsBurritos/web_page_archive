@@ -16,25 +16,54 @@ web_page_archive.web_page_archive.*:
     cron_schedule:
       type: string
       label: 'Cron Schedule'
-    capture_screenshot:
-      type: boolean
-      label: 'Capture Screenshot'
-    capture_html:
-      type: boolean
-      label: 'Capture HTML'
     capture_utilities:
       type: sequence
       sequence:
         type: mapping
         mapping:
-          uuid:
-            type: string
           id:
+            type: string
+          data:
+            type: web_page_archive.capture_utility.[%parent.id]
+          weight:
+            type: integer
+          uuid:
             type: string
     run_entity:
       type: string
       label: 'Run Entity'
 
+web_page_archive.capture_utility.*:
+  type: mapping
+  label: 'Capture utility settings'
+
+web_page_archive.capture_utility.html_capture_utility:
+  type: mapping
+  label: 'HTML Capture utility'
+  mapping:
+    capture:
+      type: boolean
+      label: 'Capture?'
+
+web_page_archive.capture_utility.screenshot_capture_utility:
+  type: mapping
+  label: 'Screenshot Capture utility'
+  mapping:
+    width:
+      type: integer
+      label: 'Width'
+    clip_width:
+      type: integer
+      label: 'Clip Width'
+    background_color:
+      type: string
+      label: 'Background color'
+    user_agent:
+      type: string
+      label: 'User agent'
+    image_type:
+      type: string
+      label: 'Image type'
 
 field.widget.settings.web_page_archive_capture_widget:
   type: mapping

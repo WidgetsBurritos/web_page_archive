@@ -74,30 +74,14 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
         'label' => 'Test Archive',
         'id' => 'test_archive',
         'sitemap_url' => 'http://localhost/sitemap.xml',
-        'capture_html' => FALSE,
-        'capture_screenshot' => TRUE,
       ],
-      t('Save')
+      t('Create new archive')
     );
     $assert->pageTextContains('Created the Test Archive Web page archive entity.');
 
-    // Verify entity has appropriate capture utilities.
-    $entity = \Drupal::entityTypeManager()->getStorage('web_page_archive')->load('test_archive');
-    $capture_utilities = $entity->getCaptureUtilities()->getConfiguration();
-    $this->assertEqual(1, count($capture_utilities));
-    $this->assertEqual('ScreenshotCaptureUtility', array_shift($capture_utilities)['id']);
-
-    // Verify entity view, edit, and delete buttons are present.
-    // This is to ensure the entity config is correct for user operations.
-    $this->assertLinkByHref('admin/config/system/web-page-archive/test_archive');
-    $this->assertLinkByHref('admin/config/system/web-page-archive/test_archive/edit');
-    $this->assertLinkByHref('admin/config/system/web-page-archive/test_archive/delete');
-
     // Verify previous values are retained.
-    $this->drupalGet('admin/config/system/web-page-archive/test_archive/edit');
+    $this->assertContains('admin/config/system/web-page-archive/test_archive/edit', $this->getSession()->getCurrentUrl());
     $this->assertFieldByName('sitemap_url', 'http://localhost/sitemap.xml');
-    $this->assertFieldChecked('capture_screenshot');
-    $this->assertNoFieldChecked('capture_html');
 
     // Update the new entity using the entity form.
     $this->drupalPostForm(
@@ -105,33 +89,20 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
       [
         'label' => 'Test Archiver',
         'sitemap_url' => 'http://localhost:1234/sitemap.xml',
-        'capture_html' => TRUE,
-        'capture_screenshot' => FALSE,
       ],
-      t('Save')
+      t('Update archive')
     );
     $assert->pageTextContains('Saved the Test Archiver Web page archive entity.');
 
-    // Verify entity has appropriate capture utilities.
-    $entity = \Drupal::entityTypeManager()->getStorage('web_page_archive')->load('test_archive');
-    $capture_utilities = $entity->getCaptureUtilities()->getConfiguration();
-    $this->assertEqual(1, count($capture_utilities));
-    $this->assertEqual('HtmlCaptureUtility', array_shift($capture_utilities)['id']);
-
     // Verify previous values are retained.
-    $this->drupalGet('admin/config/system/web-page-archive/test_archive/edit');
     $this->assertFieldByName('sitemap_url', 'http://localhost:1234/sitemap.xml');
-    $this->assertNoFieldChecked('capture_screenshot');
-    $this->assertFieldChecked('capture_html');
 
-    // Verify run entity was created.
-    $this->drupalGet('admin/config/system/web-page-archive/runs');
-    $assert->pageTextContains('Test Archive');
-    $this->assertLinkByHref('admin/config/system/web-page-archive/runs/1');
-    $this->assertLinkByHref('admin/config/system/web-page-archive/runs/1/edit');
-    $this->assertLinkByHref('admin/config/system/web-page-archive/runs/1/delete');
-    $this->drupalGet('admin/config/system/web-page-archive/runs/1');
-    $assert->pageTextContains('Test Archive');
+    // Verify entity view, edit, and delete buttons are present in collection.
+    // This is to ensure the entity config is correct for user operations.
+    $this->drupalGet('admin/config/system/web-page-archive');
+    $this->assertLinkByHref('admin/config/system/web-page-archive/test_archive');
+    $this->assertLinkByHref('admin/config/system/web-page-archive/test_archive/edit');
+    $this->assertLinkByHref('admin/config/system/web-page-archive/test_archive/delete');
   }
 
   /**
@@ -145,8 +116,6 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
       'label' => 'Programmatic Archive',
       'id' => 'programmatic_archive',
       'sitemap_url' => 'http://localhost/sitemap.xml',
-      'capture_html' => TRUE,
-      'capture_screenshot' => TRUE,
     ];
     $wpa = \Drupal::entityManager()
       ->getStorage('web_page_archive')
@@ -159,15 +128,6 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $this->assertResponse(Response::HTTP_OK);
     $this->assertFieldByName('label', 'Programmatic Archive');
     $this->assertFieldByName('sitemap_url', 'http://localhost/sitemap.xml');
-    $this->assertFieldChecked('capture_screenshot');
-    $this->assertFieldChecked('capture_html');
-
-    // Verify entity has appropriate capture utilities.
-    $entity = \Drupal::entityTypeManager()->getStorage('web_page_archive')->load('programmatic_archive');
-    $capture_utilities = $entity->getCaptureUtilities()->getConfiguration();
-    $this->assertEqual(2, count($capture_utilities));
-    $this->assertEqual('HtmlCaptureUtility', array_shift($capture_utilities)['id']);
-    $this->assertEqual('ScreenshotCaptureUtility', array_shift($capture_utilities)['id']);
 
     // Verify run entity was created.
     $this->drupalGet('admin/config/system/web-page-archive/runs');
@@ -190,8 +150,6 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
       'label' => 'Test Archive',
       'id' => 'test_archive',
       'sitemap_url' => 'http://localhost/sitemap.xml',
-      'capture_html' => FALSE,
-      'capture_screenshot' => TRUE,
     ];
     $wpa = \Drupal::entityManager()
       ->getStorage('web_page_archive')
@@ -228,8 +186,28 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
       'label' => 'Process and Run Archive',
       'id' => 'process_and_run_archive',
       'sitemap_url' => 'http://localhost/sitemap.xml',
-      'capture_html' => TRUE,
-      'capture_screenshot' => TRUE,
+      'capture_utilities' => [
+        '12345678-9999-0000-5555-000000000000' => [
+          'uuid' => '12345678-9999-0000-5555-000000000000',
+          'id' => 'screenshot_capture_utility',
+          'weight' => 1,
+          'data' => [
+            'width' => 1280,
+            'clip_width' => 1280,
+            'background_color' => '#cc0000',
+            'user_agent' => 'testbot',
+            'image_type' => 'png',
+          ],
+        ],
+        '87654321-9999-0000-5555-999999999999' => [
+          'uuid' => '87654321-9999-0000-5555-999999999999',
+          'id' => 'html_capture_utility',
+          'weight' => 1,
+          'data' => [
+            'capture' => TRUE,
+          ],
+        ],
+      ],
     ];
     $wpa = \Drupal::entityManager()
       ->getStorage('web_page_archive')
@@ -249,13 +227,13 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $queue = $entity->getQueue();
 
     // Ensure queue is empty.
-    $this->assertEqual(0, $queue->numberOfItems());
+    $this->assertEquals(0, $queue->numberOfItems());
 
     // Queue up items.
     $entity->startNewRun($handler);
 
     // Check queue.
-    $this->assertEqual(4, $queue->numberOfItems());
+    $this->assertEquals(4, $queue->numberOfItems());
   }
 
 }

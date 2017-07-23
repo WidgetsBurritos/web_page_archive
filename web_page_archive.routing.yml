@@ -49,3 +49,27 @@ entity.web_page_archive.queue_form:
     _title: 'Web Page Archive Queue'
   requirements:
     _permission: 'administer web page archive'
+
+web_page_archive.capture_utility_add_form:
+  path: 'admin/config/development/web-page-archive/{web_page_archive}/add/{capture_utility}'
+  defaults:
+    _form: '\Drupal\web_page_archive\Form\CaptureUtilityAddForm'
+    _title: 'Add capture utility'
+  requirements:
+    _permission: 'administer web page archive'
+
+web_page_archive.capture_utility_edit_form:
+  path: 'admin/config/development/web-page-archive/{web_page_archive}/utilities/{capture_utility}'
+  defaults:
+    _form: '\Drupal\web_page_archive\Form\CaptureUtilityEditForm'
+    _title: 'Edit capture utility'
+  requirements:
+    _permission: 'administer web page archive'
+
+web_page_archive.capture_utility_delete_form:
+  path: 'admin/config/development/web-page-archive/{web_page_archive}/utilities/{capture_utility}/delete'
+  defaults:
+    _form: '\Drupal\web_page_archive\Form\CaptureUtilityDeleteForm'
+    _title: 'Delete capture utility'
+  requirements:
+    _permission: 'administer web page archive'

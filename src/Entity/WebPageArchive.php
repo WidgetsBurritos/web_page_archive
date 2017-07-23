@@ -18,8 +18,8 @@ use GuzzleHttp\HandlerStack;
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
  *     "list_builder" = "Drupal\web_page_archive\Entity\WebPageArchiveListBuilder",
  *     "form" = {
- *       "add" = "Drupal\web_page_archive\Form\WebPageArchiveForm",
- *       "edit" = "Drupal\web_page_archive\Form\WebPageArchiveForm",
+ *       "add" = "Drupal\web_page_archive\Form\WebPageArchiveAddForm",
+ *       "edit" = "Drupal\web_page_archive\Form\WebPageArchiveEditForm",
  *       "delete" = "Drupal\web_page_archive\Form\WebPageArchiveDeleteForm",
  *       "queue" = "Drupal\web_page_archive\Form\WebPageArchiveQueueForm"
  *     },
@@ -48,8 +48,6 @@ use GuzzleHttp\HandlerStack;
  *     "label",
  *     "sitemap_url",
  *     "cron_schedule",
- *     "capture_screenshot",
- *     "capture_html",
  *     "capture_utilities",
  *     "run_entity"
  *   }
@@ -86,20 +84,6 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
   protected $cron_schedule;
 
   /**
-   * Boolean indicating if entity captures HTML.
-   *
-   * @var bool
-   */
-  protected $capture_html;
-
-  /**
-   * Boolean indicating if entity captures screenshot.
-   *
-   * @var bool
-   */
-  protected $capture_screenshot;
-
-  /**
    * The array of capture utilities for this archive.
    *
    * @var array
@@ -132,20 +116,6 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
    */
   public function getCronSchedule() {
     return $this->cron_schedule;
-  }
-
-  /**
-   * Retrieves whether or not entity captures HTML.
-   */
-  public function isHtmlCapturing() {
-    return $this->capture_html;
-  }
-
-  /**
-   * Returns whether or not entity captures screenshot.
-   */
-  public function isScreenshotCapturing() {
-    return $this->capture_screenshot;
   }
 
   /**
@@ -186,6 +156,7 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
    */
   public function deleteCaptureUtility(CaptureUtilityInterface $capture_utility) {
     $this->getCaptureUtilities()->removeInstanceId($capture_utility->getUuid());
+    $this->save();
     return $this;
   }
 
@@ -332,26 +303,6 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
    * {@inheritdoc}
    */
   public function save() {
-    // TODO: Handle this nonsense in plugins instead (future task).
-    $plugin_options = [
-      [
-        'id' => 'HtmlCaptureUtility',
-        'isCapturing' => $this->isHtmlCapturing(),
-      ],
-      [
-        'id' => 'ScreenshotCaptureUtility',
-        'isCapturing' => $this->isScreenshotCapturing(),
-      ],
-    ];
-
-    foreach ($plugin_options as $option) {
-      if (!$this->hasCaptureUtilityInstance($option['id']) && $option['isCapturing']) {
-        $this->addCaptureUtility(['id' => $option['id']]);
-      }
-      elseif (!$option['isCapturing']) {
-        $this->deleteCaptureUtilityById($option['id']);
-      }
-    }
 
     if ($this->isNew()) {
       $this->initializeRunEntity();
