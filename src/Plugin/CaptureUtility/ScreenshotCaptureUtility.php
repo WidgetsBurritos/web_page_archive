@@ -34,13 +34,15 @@ class ScreenshotCaptureUtility extends ConfigurableCaptureUtilityBase {
 
     $screenCapture = new Capture($url);
     $screenCapture->binPath = PhantomBinary::getDir() . '/';
-    // TODO: Convert these options to config settings.
-    // @see https://www.drupal.org/node/2894732
-    $screenCapture->setWidth($this->configuration['width']);
-    $screenCapture->setClipWidth($this->configuration['clip_width']);
-    $screenCapture->setBackgroundColor($this->configuration['background_color']);
+    $screenCapture->setWidth((int) $this->configuration['width']);
+    $screenCapture->setClipWidth((int) $this->configuration['clip_width']);
+    if (!empty($this->configuration['background_color'])) {
+      $screenCapture->setBackgroundColor($this->configuration['background_color']);
+    }
     $screenCapture->setImageType($this->configuration['image_type']);
-    $screenCapture->setUserAgentString($this->configuration['user_agent']);
+    if (!empty($this->configuration['user_agent'])) {
+      $screenCapture->setUserAgentString($this->configuration['user_agent']);
+    }
 
     $file_path = \Drupal::service('file_system')->realpath(file_default_scheme() . "://");
     $save_dir = "{$file_path}/screenshots/{$data['web_page_archive']->id()}/{$data['run_uuid']}";
@@ -96,24 +98,14 @@ class ScreenshotCaptureUtility extends ConfigurableCaptureUtilityBase {
       '#title' => $this->t('Capture width (in pixels)'),
       '#description' => $this->t('Specify the width you would like to capture.'),
       '#default_value' => isset($this->configuration['width']) ? $this->configuration['width'] : 1280,
+      '#required' => TRUE,
     ];
     $form['clip_width'] = [
       '#type' => 'number',
       '#title' => $this->t('Capture clip width (in pixels)'),
       '#description' => $this->t('Specify the clip width you would like to capture.'),
       '#default_value' => isset($this->configuration['clip_width']) ? $this->configuration['clip_width'] : 1280,
-    ];
-    $form['background_color'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Browser background color'),
-      '#description' => $this->t('Specify the browser background color. Please use a hex color value.'),
-      '#default_value' => isset($this->configuration['background_color']) ? $this->configuration['background_color'] : '#ffffff',
-    ];
-    $form['user_agent'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Browser user agent'),
-      '#description' => $this->t('Specify the browser user agent. e.g. "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36"'),
-      '#default_value' => isset($this->configuration['user_agent']) ? $this->configuration['user_agent'] : '',
+      '#required' => TRUE,
     ];
     $image_types = Types::available();
     $image_types = array_combine($image_types, $image_types);
@@ -123,6 +115,19 @@ class ScreenshotCaptureUtility extends ConfigurableCaptureUtilityBase {
       '#options' => $image_types,
       '#empty_option' => $this->t('Select an image type'),
       '#default_value' => isset($this->configuration['image_type']) ? $this->configuration['image_type'] : '',
+      '#required' => TRUE,
+    ];
+    $form['background_color'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Browser background color'),
+      '#description' => $this->t('Specify the browser background color in hexidecimal format. e.g. "#ffffff"'),
+      '#default_value' => isset($this->configuration['background_color']) ? $this->configuration['background_color'] : '#ffffff',
+    ];
+    $form['user_agent'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Browser user agent'),
+      '#description' => $this->t('Specify the browser user agent. e.g. "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36"'),
+      '#default_value' => isset($this->configuration['user_agent']) ? $this->configuration['user_agent'] : '',
     ];
 
     return $form;
