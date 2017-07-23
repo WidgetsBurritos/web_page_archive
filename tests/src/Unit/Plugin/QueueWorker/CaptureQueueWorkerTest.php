@@ -3,9 +3,7 @@
 namespace Drupal\Tests\web_page_archive\Unit\Plugin\QueueWorker;
 
 use Drupal\Tests\UnitTestCase;
-use Drupal\Tests\web_page_archive\Unit\Mock\MockAlwaysThrowingCaptureUtility;
-use Drupal\Tests\web_page_archive\Unit\Mock\MockHtmlCaptureUtility;
-use Drupal\Tests\web_page_archive\Unit\Mock\MockScreenshotCaptureUtility;
+use Drupal\web_page_archive\Plugin\CaptureResponse\ScreenshotCaptureResponse;
 use Drupal\web_page_archive\Plugin\QueueWorker\CaptureQueueWorker;
 
 /**
@@ -16,11 +14,25 @@ use Drupal\web_page_archive\Plugin\QueueWorker\CaptureQueueWorker;
 class CaptureQueueWorkerTest extends UnitTestCase {
 
   /**
+   * Capture queue.
+   *
+   * @var \Drupal\web_page_archive\Plugin\QueueWorker\CaptureQueueWorker
+   */
+  protected $queue;
+
+  /**
    * Mock web page archive run.
    *
    * @var \Drupal\web_page_archive\Entity\WebPageArchiveRun
    */
   protected $mockWebPageArchiveRun;
+
+  /**
+   * Mock screenshot capture utility.
+   *
+   * @var \Drupal\web_page_archive\Plugin\ScreenshotCaptureUtility
+   */
+  protected $mockScreenshotCaptureUtility;
 
   /**
    * {@inheritdoc}
@@ -37,6 +49,16 @@ class CaptureQueueWorkerTest extends UnitTestCase {
       ->disableOriginalConstructor()
       ->setMethods(['markCaptureComplete'])
       ->getMock();
+
+    $this->mockScreenshotCaptureUtility = $this->getMockBuilder('\Drupal\web_page_archive\Plugin\CaptureUtility\ScreenshotCaptureUtility')
+      ->disableOriginalConstructor()
+      ->getMock();
+    $this->mockScreenshotCaptureUtility->expects($this->any())
+      ->method('capture')
+      ->will($this->returnSelf());
+    $this->mockScreenshotCaptureUtility
+      ->method('getResponse')
+      ->will($this->returnValue(new ScreenshotCaptureResponse('https://upload.wikimedia.org/wikipedia/commons/c/c1/Drupal-wordmark.svg')));
   }
 
   /**
@@ -44,7 +66,7 @@ class CaptureQueueWorkerTest extends UnitTestCase {
    */
   public function testProcessItemReturnsResponse() {
     $data = [
-      'utility' => new MockScreenshotCaptureUtility(),
+      'utility' => $this->mockScreenshotCaptureUtility,
       'url' => 'http://www.whatever.com',
       'run_uuid' => '12345678-1234-1234-1234-123456789000',
       'run_entity' => $this->mockWebPageArchiveRun,
@@ -77,7 +99,7 @@ class CaptureQueueWorkerTest extends UnitTestCase {
    */
   public function testMissingUrlWritesMessage() {
     $data = [
-      'utility' => new MockHtmlCaptureUtility(),
+      'utility' => $this->mockScreenshotCaptureUtility,
       'run_uuid' => '12345678-1234-1234-1234-123456789000',
       'run_entity' => $this->mockWebPageArchiveRun,
     ];
@@ -92,7 +114,7 @@ class CaptureQueueWorkerTest extends UnitTestCase {
    */
   public function testMissingRunUuidWritesMessage() {
     $data = [
-      'utility' => new MockHtmlCaptureUtility(),
+      'utility' => $this->mockScreenshotCaptureUtility,
       'url' => 'http://www.whatever.com',
       'run_entity' => $this->mockWebPageArchiveRun,
     ];
@@ -107,7 +129,7 @@ class CaptureQueueWorkerTest extends UnitTestCase {
    */
   public function testMissingRunEntityWritesMessage() {
     $data = [
-      'utility' => new MockHtmlCaptureUtility(),
+      'utility' => $this->mockScreenshotCaptureUtility,
       'url' => 'http://www.whatever.com',
       'run_uuid' => '12345678-1234-1234-1234-123456789000',
     ];
@@ -121,8 +143,15 @@ class CaptureQueueWorkerTest extends UnitTestCase {
    * @expectedExceptionMessage Oh no! I could not capture the URL.
    */
   public function testProcessItemWritesMessage() {
+    $failing_utility = $this->getMockBuilder('\Drupal\web_page_archive\Plugin\CaptureUtility\HtmlCaptureUtility')
+      ->disableOriginalConstructor()
+      ->getMock();
+    $failing_utility->expects($this->any())
+      ->method('capture')
+      ->will($this->throwException(new \Exception('Oh no! I could not capture the URL.')));
+
     $data = [
-      'utility' => new MockAlwaysThrowingCaptureUtility(),
+      'utility' => $failing_utility,
       'url' => 'http://www.whatever.com',
       'run_uuid' => '12345678-1234-1234-1234-123456789000',
       'run_entity' => $this->mockWebPageArchiveRun,

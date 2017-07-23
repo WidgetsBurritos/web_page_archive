@@ -6,6 +6,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\web_page_archive\Plugin\CaptureResponse\ScreenshotCaptureResponse;
 use Drupal\web_page_archive\Plugin\ConfigurableCaptureUtilityBase;
 use Screen\Capture;
+use Screen\Image\Types;
 use PhantomInstaller\PhantomBinary;
 
 /**
@@ -94,34 +95,34 @@ class ScreenshotCaptureUtility extends ConfigurableCaptureUtilityBase {
       '#type' => 'number',
       '#title' => $this->t('Capture width (in pixels)'),
       '#description' => $this->t('Specify the width you would like to capture.'),
-      '#default_value' => isset($this->configuration['width']) ? $this->configuration['width']: 1280,
+      '#default_value' => isset($this->configuration['width']) ? $this->configuration['width'] : 1280,
     ];
     $form['clip_width'] = [
       '#type' => 'number',
       '#title' => $this->t('Capture clip width (in pixels)'),
       '#description' => $this->t('Specify the clip width you would like to capture.'),
-      '#default_value' => isset($this->configuration['clip_width']) ? $this->configuration['clip_width']: 1280,
+      '#default_value' => isset($this->configuration['clip_width']) ? $this->configuration['clip_width'] : 1280,
     ];
     $form['background_color'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Browser background color'),
       '#description' => $this->t('Specify the browser background color. Please use a hex color value.'),
-      '#default_value' => isset($this->configuration['background_color']) ? $this->configuration['background_color']: '#ffffff',
+      '#default_value' => isset($this->configuration['background_color']) ? $this->configuration['background_color'] : '#ffffff',
     ];
     $form['user_agent'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Browser user agent'),
       '#description' => $this->t('Specify the browser user agent. e.g. "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36"'),
-      '#default_value' => isset($this->configuration['user_agent']) ? $this->configuration['user_agent']: '',
+      '#default_value' => isset($this->configuration['user_agent']) ? $this->configuration['user_agent'] : '',
     ];
-    $image_types = \Screen\Image\Types::available();
+    $image_types = Types::available();
     $image_types = array_combine($image_types, $image_types);
     $form['image_type'] = [
       '#type' => 'select',
       '#title' => $this->t('Image type'),
       '#options' => $image_types,
       '#empty_option' => $this->t('Select an image type'),
-      '#default_value' => isset($this->configuration['image_type']) ? $this->configuration['image_type']: '',
+      '#default_value' => isset($this->configuration['image_type']) ? $this->configuration['image_type'] : '',
     ];
 
     return $form;

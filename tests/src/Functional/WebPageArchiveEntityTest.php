@@ -186,6 +186,28 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
       'label' => 'Process and Run Archive',
       'id' => 'process_and_run_archive',
       'sitemap_url' => 'http://localhost/sitemap.xml',
+      'capture_utilities' => [
+        '12345678-9999-0000-5555-000000000000' => [
+          'uuid' => '12345678-9999-0000-5555-000000000000',
+          'id' => 'screenshot_capture_utility',
+          'weight' => 1,
+          'data' => [
+            'width' => 1280,
+            'clip_width' => 1280,
+            'background_color' => '#cc0000',
+            'user_agent' => 'testbot',
+            'image_type' => 'png',
+          ],
+        ],
+        '87654321-9999-0000-5555-999999999999' => [
+          'uuid' => '87654321-9999-0000-5555-999999999999',
+          'id' => 'html_capture_utility',
+          'weight' => 1,
+          'data' => [
+            'capture' => TRUE,
+          ],
+        ],
+      ],
     ];
     $wpa = \Drupal::entityManager()
       ->getStorage('web_page_archive')
