@@ -160,6 +160,17 @@ class WebPageArchiveRun extends RevisionableContentEntityBase implements WebPage
   /**
    * {@inheritdoc}
    */
+  public function getConfigEntity() {
+    $entities = $this->get('config_entity')->referencedEntities();
+    if (!empty($entities)) {
+      return $entities[0];
+    }
+    return NULL;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getQueueCt() {
     return $this->get('queue_ct');
   }
@@ -219,7 +230,9 @@ class WebPageArchiveRun extends RevisionableContentEntityBase implements WebPage
       ];
       $field_captures->appendItem(serialize($capture));
       $entity->save();
+      $timeout = $this->getConfigEntity()->getTimeout();
 
+      usleep(1000 * $timeout);
       $lock->release('web_page_archive_run');
     }
   }

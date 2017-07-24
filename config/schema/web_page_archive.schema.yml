@@ -19,6 +19,9 @@ web_page_archive.web_page_archive.*:
     cron_schedule:
       type: string
       label: 'Cron Schedule'
+    timeout:
+      type: integer
+      label: 'Timeout (ms)'
     capture_utilities:
       type: sequence
       sequence:
