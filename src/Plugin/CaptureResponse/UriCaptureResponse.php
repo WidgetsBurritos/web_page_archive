@@ -5,18 +5,18 @@ namespace Drupal\web_page_archive\Plugin\CaptureResponse;
 use Drupal\web_page_archive\Plugin\CaptureResponseBase;
 
 /**
- * Html capture response.
+ * URI capture response.
  */
-class HtmlCaptureResponse extends CaptureResponseBase {
+class UriCaptureResponse extends CaptureResponseBase {
 
   /**
-   * HtmlCaptureResponse constructor.
+   * UriCaptureResponse constructor.
    *
    * @param string $content
    *   The response contents.
    */
   public function __construct($content) {
-    $this->setType(self::TYPE_HTML)->setContent($content);
+    $this->setType(self::TYPE_URI)->setContent($content);
   }
 
 }

@@ -3,7 +3,7 @@
 namespace Drupal\Tests\web_page_archive\Unit\Plugin\QueueWorker;
 
 use Drupal\Tests\UnitTestCase;
-use Drupal\web_page_archive\Plugin\CaptureResponse\ScreenshotCaptureResponse;
+use Drupal\web_page_archive\Plugin\CaptureResponse\UriCaptureResponse;
 use Drupal\web_page_archive\Plugin\QueueWorker\CaptureQueueWorker;
 
 /**
@@ -58,7 +58,7 @@ class CaptureQueueWorkerTest extends UnitTestCase {
       ->will($this->returnSelf());
     $this->mockScreenshotCaptureUtility
       ->method('getResponse')
-      ->will($this->returnValue(new ScreenshotCaptureResponse('https://upload.wikimedia.org/wikipedia/commons/c/c1/Drupal-wordmark.svg')));
+      ->will($this->returnValue(new UriCaptureResponse('https://upload.wikimedia.org/wikipedia/commons/c/c1/Drupal-wordmark.svg')));
   }
 
   /**
