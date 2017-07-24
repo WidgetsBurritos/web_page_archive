@@ -3,7 +3,7 @@
 namespace Drupal\web_page_archive\Plugin\CaptureUtility;
 
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\web_page_archive\Plugin\CaptureResponse\ScreenshotCaptureResponse;
+use Drupal\web_page_archive\Plugin\CaptureResponse\UriCaptureResponse;
 use Drupal\web_page_archive\Plugin\ConfigurableCaptureUtilityBase;
 use Screen\Capture;
 use Screen\Image\Types;
@@ -45,11 +45,11 @@ class ScreenshotCaptureUtility extends ConfigurableCaptureUtilityBase {
     }
 
     $file_path = \Drupal::service('file_system')->realpath(file_default_scheme() . "://");
-    $save_dir = "{$file_path}/web-page-archive/{$data['web_page_archive']->id()}/{$data['run_uuid']}";
+    $save_dir = "{$file_path}/web-page-archive/screenshots/{$data['web_page_archive']->id()}/{$data['run_uuid']}";
     $file_name = preg_replace('/[^a-z0-9]+/', '-', strtolower($url));
     $file_location = "{$save_dir}/{$file_name}";
     $screenCapture->save($file_location);
-    $this->response = new ScreenshotCaptureResponse($screenCapture->getImageLocation());
+    $this->response = new UriCaptureResponse($screenCapture->getImageLocation());
 
     return $this;
   }
