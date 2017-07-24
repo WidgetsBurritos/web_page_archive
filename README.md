@@ -67,6 +67,13 @@ run. You will be navigated to the snapshot overview page upon completion.
 more detail.
 - TODO: This isn't implemented yet.
 
+## Uninstalling the Module
+
+If you need to uninstall web page archive, you will need to remove the runs and field config. This can be done in one of two ways:
+
+1. Navigate to `/admin/config/system/web-page-archive/uninstall` and click the button. Then proceed to uninstall the module.
+2. Run `drush web-page-archive-prepare-uninstall` (full command) or `drush wpa-pu` (shorthand). Then proceed to uninstall the module.
+
 ## Contributing
 
 This is still an alpha release module, and features are continuously being
