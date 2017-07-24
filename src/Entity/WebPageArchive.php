@@ -46,6 +46,7 @@ use GuzzleHttp\HandlerStack;
  *     "id",
  *     "uuid",
  *     "label",
+ *     "timeout",
  *     "url_type",
  *     "urls",
  *     "cron_schedule",
@@ -69,6 +70,13 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
    * @var string
    */
   protected $label;
+
+  /**
+   * URL type.
+   *
+   * @var int
+   */
+  protected $timeout;
 
   /**
    * URL type.
@@ -111,6 +119,13 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
    * @var array
    */
   protected $run_entity = NULL;
+
+  /**
+   * Retrieves capture timeout.
+   */
+  public function getTimeout() {
+    return $this->timeout;
+  }
 
   /**
    * Retrieves URL type.

@@ -73,6 +73,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
       [
         'label' => 'Test Archive',
         'id' => 'test_archive',
+        'timeout' => 500,
         'url_type' => 'sitemap',
         'urls' => 'http://localhost/sitemap.xml',
       ],
@@ -82,6 +83,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
 
     // Verify previous values are retained.
     $this->assertContains('admin/config/system/web-page-archive/test_archive/edit', $this->getSession()->getCurrentUrl());
+    $this->assertFieldByName('timeout', '500');
     $this->assertFieldByName('url_type', 'sitemap');
     $this->assertFieldByName('urls', 'http://localhost/sitemap.xml');
 
@@ -90,6 +92,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
       NULL,
       [
         'label' => 'Test Archiver',
+        'timeout' => 250,
         'url_type' => 'url',
         'urls' => implode(PHP_EOL, [
           'http://localhost:1234/some-page',
@@ -101,6 +104,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $assert->pageTextContains('Saved the Test Archiver Web page archive entity.');
 
     // Verify previous values are retained.
+    $this->assertFieldByName('timeout', '250');
     $this->assertFieldByName('url_type', 'url');
     $this->assertFieldByName('urls', implode(PHP_EOL, [
       'http://localhost:1234/some-page',
@@ -125,6 +129,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $data = [
       'label' => 'Programmatic Archive',
       'id' => 'programmatic_archive',
+      'timeout' => 500,
       'url_type' => 'sitemap',
       'urls' => 'http://localhost/sitemap.xml',
     ];
@@ -138,6 +143,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $this->drupalGet('admin/config/system/web-page-archive/programmatic_archive/edit');
     $this->assertResponse(Response::HTTP_OK);
     $this->assertFieldByName('label', 'Programmatic Archive');
+    $this->assertFieldByName('timeout', '500');
     $this->assertFieldByName('url_type', 'sitemap');
     $this->assertFieldByName('urls', 'http://localhost/sitemap.xml');
 
@@ -161,6 +167,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $data = [
       'label' => 'Test Archive',
       'id' => 'test_archive',
+      'timeout' => 500,
       'url_type' => 'sitemap',
       'urls' => 'http://localhost/sitemap.xml',
     ];
@@ -198,6 +205,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $data = [
       'label' => 'Process and Run Archive',
       'id' => 'process_and_run_archive',
+      'timeout' => 500,
       'url_type' => 'sitemap',
       'urls' => 'http://localhost/sitemap.xml',
       'capture_utilities' => [
