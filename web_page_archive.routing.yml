@@ -51,7 +51,7 @@ entity.web_page_archive.queue_form:
     _permission: 'administer web page archive'
 
 web_page_archive.capture_utility_add_form:
-  path: 'admin/config/development/web-page-archive/{web_page_archive}/add/{capture_utility}'
+  path: 'admin/config/system/web-page-archive/{web_page_archive}/add/{capture_utility}'
   defaults:
     _form: '\Drupal\web_page_archive\Form\CaptureUtilityAddForm'
     _title: 'Add capture utility'
@@ -59,7 +59,7 @@ web_page_archive.capture_utility_add_form:
     _permission: 'administer web page archive'
 
 web_page_archive.capture_utility_edit_form:
-  path: 'admin/config/development/web-page-archive/{web_page_archive}/utilities/{capture_utility}'
+  path: 'admin/config/system/web-page-archive/{web_page_archive}/utilities/{capture_utility}'
   defaults:
     _form: '\Drupal\web_page_archive\Form\CaptureUtilityEditForm'
     _title: 'Edit capture utility'
@@ -67,9 +67,17 @@ web_page_archive.capture_utility_edit_form:
     _permission: 'administer web page archive'
 
 web_page_archive.capture_utility_delete_form:
-  path: 'admin/config/development/web-page-archive/{web_page_archive}/utilities/{capture_utility}/delete'
+  path: 'admin/config/system/web-page-archive/{web_page_archive}/utilities/{capture_utility}/delete'
   defaults:
     _form: '\Drupal\web_page_archive\Form\CaptureUtilityDeleteForm'
     _title: 'Delete capture utility'
+  requirements:
+    _permission: 'administer web page archive'
+
+entity.web_page_archive.collection.prepare_uninstall:
+  path: 'admin/config/system/web-page-archive/uninstall'
+  defaults:
+    _form: '\Drupal\web_page_archive\Form\PrepareUninstallForm'
+    _title: 'Prepare uninstall'
   requirements:
     _permission: 'administer web page archive'

@@ -1,0 +1,49 @@
+<?php
+
+/**
+ * @file
+ * Install commands for web_page_archive.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function web_page_archive_uninstall() {
+  // Delete unbatched queues.
+  $query = \Drupal::database()->delete('queue');
+  $query->condition('name', 'web_page_archive_capture.%', 'LIKE');
+  $query->execute();
+
+  // Delete batched queues.
+  $query = \Drupal::database()->select('queue', 'q');
+  $query->fields('q', ['name', 'data']);
+  $query->condition('q.data', '%web_page_archive%', 'LIKE');
+  $rows = $query->execute()->fetchAllKeyed();
+
+  $batch_methods_to_remove = [
+    'Drupal\web_page_archive\Controller\WebPageArchiveController::batchProcess',
+    'Drupal\web_page_archive\Controller\PrepareUninstallController::deleteRunEntities',
+    'Drupal\web_page_archive\Controller\PrepareUninstallController::removeFields',
+  ];
+
+  foreach ($rows as $key => $value) {
+    $data = unserialize($value);
+    if (isset($data[0]) && in_array($data[0], $batch_methods_to_remove)) {
+      $query = \Drupal::database()->delete('queue');
+      $query->condition('name', $key);
+      $query->execute();
+    }
+    $tokens = explode(':', $key);
+    $query = \Drupal::database()->delete('batch');
+    $query->condition('bid', $tokens[1]);
+    $query->execute();
+  }
+
+  // Delete files.
+  file_unmanaged_delete_recursive(file_default_scheme() . '://web-page-archive');
+
+  // Delete locks.
+  $query = \Drupal::database()->delete('semaphore');
+  $query->condition('name', 'web_page_archive_run');
+  $query->execute();
+}

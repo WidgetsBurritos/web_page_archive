@@ -24,3 +24,15 @@ entity.web_page_archive_run.delete_form:
   base_route:  entity.web_page_archive_run.canonical
   title: Delete
   weight: 10
+
+entity.web_page_archive.collection:
+  title: 'Web Page Archive'
+  route_name: entity.web_page_archive.collection
+  base_route: entity.web_page_archive.collection
+
+entity.web_page_archive.collection.prepare_uninstall:
+  title: 'Prepare uninstall'
+  description: 'Remove fields and data created by web page archive module.'
+  base_route: entity.web_page_archive.collection
+  route_name: entity.web_page_archive.collection.prepare_uninstall
+  weight: -4
