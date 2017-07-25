@@ -1,0 +1,7 @@
+web_page_archive.capture_utility.skeleton_capture_utility:
+  type: mapping
+  label: 'Skeleton capture utility'
+  mapping:
+    capture:
+      type: int
+      label: 'Width'
