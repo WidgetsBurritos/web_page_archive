@@ -177,8 +177,9 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
    */
   public function getCaptureUtilityMap() {
     $ids = [];
+    $definitions = $this->captureUtilityPluginManager()->getDefinitions();
     foreach ($this->capture_utilities as $utility) {
-      $ids[$utility['id']] = $utility['uuid'];
+      $ids[$utility['id']] = $definitions[$utility['id']]['label'];
     }
     return $ids;
   }

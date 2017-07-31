@@ -6,7 +6,6 @@ use Drupal\Component\Utility\Html;
 use Drupal\Core\Field\FieldItemInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\FormatterBase;
-use Drupal\Core\Form\FormStateInterface;
 
 /**
  * Plugin implementation of the 'web_page_archive_capture_formatter' formatter.
@@ -20,33 +19,6 @@ use Drupal\Core\Form\FormStateInterface;
  * )
  */
 class CaptureUtilityMapFormatter extends FormatterBase {
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function defaultSettings() {
-    return [
-      // Implement default settings.
-    ] + parent::defaultSettings();
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function settingsForm(array $form, FormStateInterface $form_state) {
-    return [
-      // Implement settings form.
-    ] + parent::settingsForm($form, $form_state);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function settingsSummary() {
-    $summary = [];
-    // Implement settings summary.
-    return $summary;
-  }
 
   /**
    * {@inheritdoc}
@@ -70,7 +42,7 @@ class CaptureUtilityMapFormatter extends FormatterBase {
    *   The textual output generated.
    */
   protected function viewValue(FieldItemInterface $item) {
-    return nl2br(Html::escape(implode("\n", array_keys($item->toArray()))));
+    return nl2br(Html::escape(implode("\n", array_values($item->toArray()))));
   }
 
 }

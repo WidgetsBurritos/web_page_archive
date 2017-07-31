@@ -227,7 +227,6 @@ class WebPageArchiveRun extends RevisionableContentEntityBase implements WebPage
    */
   public function markCaptureComplete($data) {
     // TODO: Lock acquired too late?
-    // TODO: Lock per entity?
     // TODO: More performant option here:
     // This get and append method gets slower as the list grows.
     $lock = \Drupal::lock();
@@ -324,7 +323,7 @@ class WebPageArchiveRun extends RevisionableContentEntityBase implements WebPage
       ->setDefaultValue(TRUE);
 
     $fields['capture_utilities'] = BaseFieldDefinition::create('map')
-      ->setLabel(t('List of capture utilities used.'))
+      ->setLabel(t('Capture utilities'))
       ->setDescription(t('A list of capture utilities used for this run.'))
       ->setRevisionable(TRUE)
       ->setDefaultValue([])
@@ -338,14 +337,14 @@ class WebPageArchiveRun extends RevisionableContentEntityBase implements WebPage
       ]);
 
     $fields['queue_ct'] = BaseFieldDefinition::create('integer')
-      ->setLabel(t('Number of items in the queue.'))
-      ->setDescription(t('A boolean indicating whether the Web page archive run is published.'))
+      ->setLabel(t('Queue count'))
+      ->setDescription(t('Number of tasks in the queue.'))
       ->setRevisionable(TRUE)
       ->setDefaultValue(0);
 
     $fields['capture_size'] = BaseFieldDefinition::create('float')
-      ->setLabel(t('Size of the capture in bytes.'))
-      ->setDescription(t('A floating point number representing file size.'))
+      ->setLabel(t('Capture size'))
+      ->setDescription(t('A floating point number representing cumulative file size for a run.'))
       ->setRevisionable(TRUE)
       ->setDefaultValue(0);
 

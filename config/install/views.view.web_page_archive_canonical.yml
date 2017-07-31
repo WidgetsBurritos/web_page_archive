@@ -1,8 +1,11 @@
+uuid: 471383e7-5101-44c5-96cc-f97fe0e9b907
 langcode: en
 status: true
 dependencies:
   module:
     - web_page_archive
+_core:
+  default_config_hash: EnVCMYsgh9n88WMMeb3cEkrW0E4pAWVb6NVPSg6Ufb4
 id: web_page_archive_canonical
 label: 'Web Page Archive Canonical'
 module: views
@@ -231,7 +234,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: 'Queue Size'
+          label: 'Queue count'
           exclude: false
           alter:
             alter_text: false
@@ -297,7 +300,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: 'List of capture utilities used.'
+          label: 'Capture utilities'
           exclude: false
           alter:
             alter_text: false
@@ -361,7 +364,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: 'Size of the capture in bytes.'
+          label: 'Capture size (bytes)'
           exclude: false
           alter:
             alter_text: false
@@ -405,10 +408,10 @@ display:
           click_sort_column: value
           type: number_decimal
           settings:
-            thousand_separator: ''
+            thousand_separator: ','
             prefix_suffix: true
             decimal_separator: .
-            scale: 2
+            scale: 0
           group_column: value
           group_columns: {  }
           group_rows: true
@@ -531,7 +534,7 @@ display:
           exposed: true
           expose:
             operator_id: capture_utilities_op
-            label: 'List of capture utilities used.'
+            label: 'Capture utilities'
             description: ''
             use_operator: false
             operator: capture_utilities_op
@@ -585,22 +588,11 @@ display:
           order: ASC
           exposed: true
           expose:
-            label: 'Queue Size'
+            label: 'Queue count'
           entity_type: web_page_archive_run
           entity_field: queue_ct
           plugin_id: standard
-      header:
-        area_text_custom:
-          id: area_text_custom
-          table: views
-          field: area_text_custom
-          relationship: none
-          group_type: group
-          admin_label: ''
-          empty: true
-          tokenize: false
-          content: '<a href="#" class="button button--primary">Start a new run</a>'
-          plugin_id: text_custom
+      header: {  }
       footer: {  }
       empty:
         area_text_custom:

@@ -102,7 +102,7 @@ class CaptureUtilityFilter extends InOperator {
   public function getValueOptions() {
     if (!isset($this->valueOptions)) {
       $options = array_map(function ($option) {
-        return $option['id'];
+        return $option['label'];
       }, $this->pluginManager->getDefinitions());
       asort($options);
 
