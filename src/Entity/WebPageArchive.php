@@ -175,6 +175,17 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
   /**
    * {@inheritdoc}
    */
+  public function getCaptureUtilityMap() {
+    $ids = [];
+    foreach ($this->capture_utilities as $utility) {
+      $ids[$utility['id']] = $utility['uuid'];
+    }
+    return $ids;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getPluginCollections() {
     return ['capture_utilities' => $this->getCaptureUtilities()];
   }
@@ -294,6 +305,8 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
       $run_entity->setQueueCt($queue->numberOfItems());
       $run_entity->setNewRevision();
       $run_entity->setCapturedArray([]);
+      $run_entity->setCaptureUtilities($this->getCaptureUtilityMap());
+      $run_entity->set('capture_size', 0);
       $strings = [
         '@name' => $this->label(),
         '@uuid' => $run_uuid,

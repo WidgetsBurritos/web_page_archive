@@ -85,4 +85,11 @@ abstract class CaptureResponseBase implements CaptureResponseInterface {
     ]);
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function getCaptureSize() {
+    return 0;
+  }
+
 }
