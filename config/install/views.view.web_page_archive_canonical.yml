@@ -290,6 +290,138 @@ display:
           entity_type: web_page_archive_run
           entity_field: queue_ct
           plugin_id: field
+        capture_utilities:
+          id: capture_utilities
+          table: web_page_archive_run_revision
+          field: capture_utilities
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: 'List of capture utilities used.'
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: value
+          type: web_page_archive_capture_utility_map_formatter
+          settings: {  }
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+          entity_type: web_page_archive_run
+          entity_field: capture_utilities
+          plugin_id: field
+        capture_size:
+          id: capture_size
+          table: web_page_archive_run_revision
+          field: capture_size
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: 'Size of the capture in bytes.'
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: true
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: value
+          type: number_decimal
+          settings:
+            thousand_separator: ''
+            prefix_suffix: true
+            decimal_separator: .
+            scale: 2
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+          entity_type: web_page_archive_run
+          entity_field: capture_size
+          plugin_id: field
         dropbutton:
           id: dropbutton
           table: views
@@ -386,6 +518,47 @@ display:
           entity_type: web_page_archive_run
           entity_field: queue_ct
           plugin_id: numeric
+        capture_utilities:
+          id: capture_utilities
+          table: web_page_archive_run_revision
+          field: capture_utilities
+          relationship: none
+          group_type: group
+          admin_label: ''
+          operator: contains
+          value: {  }
+          group: 1
+          exposed: true
+          expose:
+            operator_id: capture_utilities_op
+            label: 'List of capture utilities used.'
+            description: ''
+            use_operator: false
+            operator: capture_utilities_op
+            identifier: capture_utilities
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              administrator: '0'
+            reduce: 0
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          entity_type: web_page_archive_run
+          entity_field: capture_utilities
+          plugin_id: web_page_archive_capture_utility_filter
       sorts:
         revision_created:
           id: revision_created
@@ -480,6 +653,10 @@ display:
           entity_field: id
           plugin_id: numeric
       display_extenders: {  }
+      filter_groups:
+        operator: AND
+        groups:
+          1: AND
     cache_metadata:
       max-age: 0
       contexts:
