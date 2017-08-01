@@ -24,16 +24,3 @@ function web_page_archive_entity_operation($entity) {
     ->getInstanceFromDefinition(WebPageArchiveTypeInfo::class)
     ->entityOperation($entity);
 }
-
-/**
- * Implements hook_theme().
- */
-function web_page_archive_theme($existing, $type, $theme, $path) {
-  return [
-    'web_page_archive' => [
-      'variables' => [
-        'test_var' => NULL,
-      ],
-    ],
-  ];
-}

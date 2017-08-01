@@ -6,6 +6,7 @@ use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueWorkerManagerInterface;
 use Drupal\Core\Queue\RequeueException;
+use Drupal\views\Views;
 use Drupal\web_page_archive\Entity\WebPageArchive;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -53,10 +54,30 @@ class WebPageArchiveController extends ControllerBase {
    * Returns render array for displaying run history.
    */
   public function viewRuns($web_page_archive) {
-    return [
-      '#theme' => 'web_page_archive',
-      '#test_var' => $this->t('Test Value'),
-    ];
+    $view = Views::getView('web_page_archive_canonical');
+    if (!isset($view)) {
+      // TODO: What to do here? If this happens, it means someone deleted the
+      // view that got installed when the module was enabled. Should we display
+      // some sort of message requesting they either reimport it, or try to
+      // automatically re-import it? Leaving this feedback here to resolve at
+      // a later time.
+      throw new \Exception("View not found!");
+    }
+    $run_entity = $web_page_archive->getRunEntity();
+    if (!isset($run_entity)) {
+      // TODO: What to do here? This is actually something we can correct.
+      // If a run entity does not exist for a config entity, we could generate
+      // one and then try again. That said, that may be indicative of a larger
+      // problem at which point we're just masking the error instead of
+      // correcting it. One case this may happen is if a user "Prepares for
+      // Uninstall" and then doesn't actually initiate an uninstall.
+      // Leaving this feedback here to resolve at a later time.
+      throw new \Exception("Missing run entity");
+    }
+
+    $view->setDisplay('canonical_embed');
+    $view->setArguments([$run_entity->id()]);
+    return $view->render();
   }
 
   /**

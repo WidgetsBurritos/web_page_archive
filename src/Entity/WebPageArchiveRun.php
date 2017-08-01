@@ -47,6 +47,7 @@ use Drupal\user\UserInterface;
  *     "langcode" = "langcode",
  *     "status" = "status",
  *     "queue_ct" = "queue_ct",
+ *     "capture_utilities" = "capture_utilities",
  *   },
  *   links = {
  *     "canonical" = "/admin/config/system/web-page-archive/runs/{web_page_archive_run}",
@@ -199,6 +200,21 @@ class WebPageArchiveRun extends RevisionableContentEntityBase implements WebPage
   }
 
   /**
+   * Retrieves capture utilties used in this run.
+   */
+  public function getCaptureUtilities() {
+    return $this->get('capture_utilities');
+  }
+
+  /**
+   * Sets the capture utilities.
+   */
+  public function setCaptureUtilities(array $array) {
+    $this->set('capture_utilities', $array);
+    return $this;
+  }
+
+  /**
    * Sets the captured array.
    */
   public function setCapturedArray(array $array) {
@@ -211,15 +227,24 @@ class WebPageArchiveRun extends RevisionableContentEntityBase implements WebPage
    */
   public function markCaptureComplete($data) {
     // TODO: Lock acquired too late?
-    // TODO: Lock per entity?
     // TODO: More performant option here:
     // This get and append method gets slower as the list grows.
     $lock = \Drupal::lock();
-    if ($lock->acquire('web_page_archive_run')) {
+    $lock_id = "web_page_archive_run:{$this->uuid()}";
+    if ($lock->acquire($lock_id)) {
       $entity = \Drupal::service('entity.repository')->loadEntityByUuid('web_page_archive_run', $this->uuid());
 
       $field_captures = $entity->get('field_captures');
+      // TODO: Seems like there should be a better way to get this value:
+      $total_capture_size = $entity->get('capture_size')->first()->getValue()['value'];
       $uuid = $this->uuidGenerator()->generate();
+      try {
+        $capture_size = $data['capture_response']->getCaptureSize();
+      }
+      catch (\Exception $e) {
+        // TODO: What to do here? Error log?
+        $capture_size = 0;
+      }
       $capture = [
         'uuid' => $uuid,
         'timestamp' => \Drupal::service('datetime.time')->getCurrentTime(),
@@ -227,13 +252,15 @@ class WebPageArchiveRun extends RevisionableContentEntityBase implements WebPage
         'capture_url' => $data['url'],
         'capture_type' => $data['capture_response']->getType(),
         'content' => $data['capture_response']->getContent(),
+        'capture_size' => $capture_size,
       ];
       $field_captures->appendItem(serialize($capture));
+      $entity->set('capture_size', $total_capture_size + $capture_size);
       $entity->save();
       $timeout = $this->getConfigEntity()->getTimeout();
 
       usleep(1000 * $timeout);
-      $lock->release('web_page_archive_run');
+      $lock->release($lock_id);
     }
   }
 
@@ -295,9 +322,29 @@ class WebPageArchiveRun extends RevisionableContentEntityBase implements WebPage
       ->setRevisionable(TRUE)
       ->setDefaultValue(TRUE);
 
+    $fields['capture_utilities'] = BaseFieldDefinition::create('map')
+      ->setLabel(t('Capture utilities'))
+      ->setDescription(t('A list of capture utilities used for this run.'))
+      ->setRevisionable(TRUE)
+      ->setDefaultValue([])
+      ->setDisplayOptions('view', [
+        'type' => 'web_page_archive_capture_utility_map_formatter',
+        'weight' => -4,
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'web_page_archive_capture_utility_map_widget',
+        'weight' => -4,
+      ]);
+
     $fields['queue_ct'] = BaseFieldDefinition::create('integer')
-      ->setLabel(t('Number of items in the queue.'))
-      ->setDescription(t('A boolean indicating whether the Web page archive run is published.'))
+      ->setLabel(t('Queue count'))
+      ->setDescription(t('Number of tasks in the queue.'))
+      ->setRevisionable(TRUE)
+      ->setDefaultValue(0);
+
+    $fields['capture_size'] = BaseFieldDefinition::create('float')
+      ->setLabel(t('Capture size'))
+      ->setDescription(t('A floating point number representing cumulative file size for a run.'))
       ->setRevisionable(TRUE)
       ->setDefaultValue(0);
 

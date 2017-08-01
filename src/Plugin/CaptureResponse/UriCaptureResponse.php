@@ -19,4 +19,15 @@ class UriCaptureResponse extends CaptureResponseBase {
     $this->setType(self::TYPE_URI)->setContent($content);
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function getCaptureSize() {
+    // TODO: What to do if remote URL instead of local file path?
+    if (!is_readable($this->getContent())) {
+      throw new \Exception("Can't read file.");
+    }
+    return filesize($this->getContent());
+  }
+
 }

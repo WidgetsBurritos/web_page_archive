@@ -31,4 +31,14 @@ interface CaptureResponseInterface {
    */
   public function getSerialized();
 
+  /**
+   * Retrieves the size of a capture in bytes.
+   *
+   * @todo Is there concern with maxint on 32-bit machines?
+   *
+   * @return int
+   *   Total bytes of capture.
+   */
+  public function getCaptureSize();
+
 }
