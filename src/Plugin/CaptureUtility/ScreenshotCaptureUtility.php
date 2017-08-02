@@ -49,6 +49,7 @@ class ScreenshotCaptureUtility extends ConfigurableCaptureUtilityBase {
     }
 
     // Determine file locations.
+    $file_name = preg_replace('/[^a-z0-9]+/', '-', strtolower($data['url']));
     $scheme = file_default_scheme();
     $folder_path = \Drupal::service('file_system')->realpath("{$scheme}://");
     $file_location = "web-page-archive/screenshots/{$data['web_page_archive']->id()}/{$data['run_uuid']}/{$file_name}.{$this->configuration['image_type']}";

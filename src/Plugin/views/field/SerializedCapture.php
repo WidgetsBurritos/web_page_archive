@@ -21,7 +21,7 @@ class SerializedCapture extends Serialized {
     if ($this->options['format'] == 'unserialized') {
       $options = unserialize($value);
       if (isset($options['capture_response'])) {
-        return $options['capture_response']->render();
+        return $options['capture_response']->renderable($options);
       }
     }
 

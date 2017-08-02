@@ -238,6 +238,8 @@ class WebPageArchiveRun extends RevisionableContentEntityBase implements WebPage
         'capture_url' => $data['url'],
         'capture_response' => $data['capture_response'],
         'capture_size' => $capture_size,
+        'vid' => $entity->getRevisionId(),
+        'delta' => $field_captures->count(),
       ];
       $field_captures->appendItem(serialize($capture));
       $entity->set('capture_size', $total_capture_size + $capture_size);

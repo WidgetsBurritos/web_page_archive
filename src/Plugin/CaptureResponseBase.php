@@ -2,10 +2,14 @@
 
 namespace Drupal\web_page_archive\Plugin;
 
+use Drupal\Core\StringTranslation\StringTranslationTrait;
+
 /**
  * Base class for capture responses.
  */
 abstract class CaptureResponseBase implements CaptureResponseInterface {
+
+  use StringTranslationTrait;
 
   /**
    * The response content.
@@ -83,7 +87,7 @@ abstract class CaptureResponseBase implements CaptureResponseInterface {
   /**
    * Set capture URL.
    *
-   * @param uri $url
+   * @param string $url
    *   Indicates the URL that is getting captured.
    *
    * @return \Drupal\web_page_archive\Plugin\CaptureResponseInterface
@@ -94,8 +98,6 @@ abstract class CaptureResponseBase implements CaptureResponseInterface {
 
     return $this;
   }
-
-
 
   /**
    * {@inheritdoc}
@@ -117,6 +119,6 @@ abstract class CaptureResponseBase implements CaptureResponseInterface {
   /**
    * Renders this response.
    */
-  abstract public function render();
+  abstract public function renderable(array $options = []);
 
 }

@@ -14,6 +14,9 @@ class UriCaptureResponse extends CaptureResponseBase {
    *
    * @param string $content
    *   The response contents.
+   *
+   * @param string $capture_url
+   *   URL that is getting captured.
    */
   public function __construct($content, $capture_url) {
     $this->setType('uri')
@@ -35,7 +38,8 @@ class UriCaptureResponse extends CaptureResponseBase {
   /**
    * {@inheritdoc}
    */
-  public function render() {
+  public function renderable(array $options = []) {
     return $this->content;
   }
+
 }
