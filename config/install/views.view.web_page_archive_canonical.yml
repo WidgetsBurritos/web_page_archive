@@ -5,7 +5,7 @@ dependencies:
   module:
     - web_page_archive
 _core:
-  default_config_hash: X0SS8l5mboi0FS0eYRM15L9um3dhnUhzJyKzTw0vRoc
+  default_config_hash: x2NkWfExjoD1oTt3qAThdY_bu9tDt0yCnQXlH638PEk
 id: web_page_archive_canonical
 label: 'Web Page Archive Canonical'
 module: views
@@ -622,11 +622,11 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          order: ASC
+          order: DESC
           exposed: true
           expose:
             label: 'Revision create time'
-          granularity: day
+          granularity: second
           entity_type: web_page_archive_run
           entity_field: revision_created
           plugin_id: date
