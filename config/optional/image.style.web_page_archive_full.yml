@@ -1,0 +1,15 @@
+uuid: 3bfdcf67-af87-424d-b5c7-e10f4d0ad3fa
+langcode: en
+status: true
+dependencies: {  }
+name: web_page_archive_full
+label: 'Web page archive full (1280x*)'
+effects:
+  59b16418-8667-485f-ad1e-75e9151e6658:
+    uuid: 59b16418-8667-485f-ad1e-75e9151e6658
+    id: image_scale
+    weight: 1
+    data:
+      width: 1280
+      height: null
+      upscale: false

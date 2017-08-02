@@ -75,6 +75,7 @@ class ScreenshotCaptureResponse extends UriCaptureResponse {
         '#theme' => 'image_style',
         '#style_name' => 'web_page_archive_full',
         '#uri' => $this->content,
+        '#attached' => ['library' => ['web_page_archive/admin']],
       ];
     }
 
