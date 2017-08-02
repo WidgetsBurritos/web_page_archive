@@ -14,7 +14,6 @@ class UriCaptureResponse extends CaptureResponseBase {
    *
    * @param string $content
    *   The response contents.
-   *
    * @param string $capture_url
    *   URL that is getting captured.
    */

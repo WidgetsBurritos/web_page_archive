@@ -207,10 +207,6 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
       'admin/config/system/web-page-archive/test_archive/edit',
       'admin/config/system/web-page-archive/test_archive/delete',
       'admin/config/system/web-page-archive/test_archive/queue',
-      'admin/config/system/web-page-archive/runs',
-      'admin/config/system/web-page-archive/runs/1',
-      'admin/config/system/web-page-archive/runs/1/edit',
-      'admin/config/system/web-page-archive/runs/1/delete',
     ];
     foreach ($urls as $url) {
       $this->drupalGet($url);
