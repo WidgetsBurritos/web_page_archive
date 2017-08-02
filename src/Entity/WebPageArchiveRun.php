@@ -49,16 +49,6 @@ use Drupal\user\UserInterface;
  *     "queue_ct" = "queue_ct",
  *     "capture_utilities" = "capture_utilities",
  *   },
- *   links = {
- *     "canonical" = "/admin/config/system/web-page-archive/runs/{web_page_archive_run}",
- *     "add-form" = "/admin/config/system/web-page-archive/runs/add",
- *     "edit-form" = "/admin/config/system/web-page-archive/runs/{web_page_archive_run}/edit",
- *     "delete-form" = "/admin/config/system/web-page-archive/runs/{web_page_archive_run}/delete",
- *     "version-history" = "/admin/config/system/web-page-archive/runs/{web_page_archive_run}/revisions",
- *     "revision" = "/admin/config/system/web-page-archive/runs/{web_page_archive_run}/revisions/{web_page_archive_run_revision}/view",
- *     "revision_delete" = "/admin/config/system/web-page-archive/runs/{web_page_archive_run}/revisions/{web_page_archive_run_revision}/delete",
- *     "collection" = "/admin/config/system/web-page-archive/runs",
- *   },
  *   field_ui_base_route = "web_page_archive_run.settings"
  * )
  */

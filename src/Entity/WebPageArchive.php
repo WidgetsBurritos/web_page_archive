@@ -313,6 +313,7 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
         '@uuid' => $run_uuid,
         '@queue_ct' => $queue->numberOfItems(),
       ];
+      $run_entity->setRevisionCreationTime(\Drupal::service('datetime.time')->getCurrentTime());
       $run_entity->setRevisionLogMessage(t('Name: @name -- Run ID: @uuid -- Queue Ct: @queue_ct', $strings));
       $run_entity->save();
     }

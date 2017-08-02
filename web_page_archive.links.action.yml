@@ -3,8 +3,3 @@ entity.web_page_archive.add_form:
   title: 'Add Archive'
   appears_on:
     - entity.web_page_archive.collection
-entity.web_page_archive_run.add_form:
-  route_name: entity.web_page_archive_run.add_form
-  title: 'Add Web page archive run'
-  appears_on:
-    - entity.web_page_archive_run.collection
