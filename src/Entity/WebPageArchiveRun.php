@@ -20,13 +20,9 @@ use Drupal\user\UserInterface;
  *   handlers = {
  *     "storage" = "Drupal\web_page_archive\Entity\Sql\WebPageArchiveRunStorage",
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
- *     "list_builder" = "Drupal\web_page_archive\Entity\WebPageArchiveRunListBuilder",
  *     "views_data" = "Drupal\web_page_archive\Entity\WebPageArchiveRunViewsData",
  *
  *     "form" = {
- *       "default" = "Drupal\web_page_archive\Form\WebPageArchiveRunForm",
- *       "add" = "Drupal\web_page_archive\Form\WebPageArchiveRunForm",
- *       "edit" = "Drupal\web_page_archive\Form\WebPageArchiveRunForm",
  *       "delete" = "Drupal\web_page_archive\Form\WebPageArchiveRunDeleteForm",
  *     },
  *     "route_provider" = {

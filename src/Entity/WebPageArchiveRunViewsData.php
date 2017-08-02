@@ -80,6 +80,7 @@ class WebPageArchiveRunViewsData extends EntityViewsData {
       'field' => [
         'id' => 'standard',
       ],
+
     ];
 
     return $data;
