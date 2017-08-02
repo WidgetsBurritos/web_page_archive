@@ -1,0 +1,17 @@
+uuid: 115d6090-d875-48c6-94a6-769928935304
+langcode: en
+status: true
+dependencies:
+  module:
+    - web_page_archive
+name: web_page_archive_thumbnail
+label: 'Web page archive thumbnail'
+effects:
+  875e84ab-750e-42de-9f51-e95b7b4724cd:
+    uuid: 875e84ab-750e-42de-9f51-e95b7b4724cd
+    id: image_scale
+    weight: 1
+    data:
+      width: 240
+      height: null
+      upscale: true

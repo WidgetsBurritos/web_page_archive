@@ -236,8 +236,7 @@ class WebPageArchiveRun extends RevisionableContentEntityBase implements WebPage
         'timestamp' => \Drupal::service('datetime.time')->getCurrentTime(),
         'status' => 'complete',
         'capture_url' => $data['url'],
-        'capture_type' => $data['capture_response']->getType(),
-        'content' => $data['capture_response']->getContent(),
+        'capture_response' => $data['capture_response'],
         'capture_size' => $capture_size,
       ];
       $field_captures->appendItem(serialize($capture));

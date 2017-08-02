@@ -78,9 +78,8 @@ class WebPageArchiveRunViewsData extends EntityViewsData {
         'label' => t('Capture (serialized)'),
       ],
       'field' => [
-        'id' => 'standard',
+        'id' => 'web_page_archive_serialized_capture',
       ],
-
     ];
 
     return $data;

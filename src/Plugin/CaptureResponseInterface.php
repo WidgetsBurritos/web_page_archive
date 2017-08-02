@@ -24,6 +24,14 @@ interface CaptureResponseInterface {
   public function getContent();
 
   /**
+   * Retrieve capture url.
+   *
+   * @return url
+   *   URL that was captured in this response.
+   */
+  public function getCaptureUrl();
+
+  /**
    * Retrieve serialized representation of object.
    *
    * @return string
