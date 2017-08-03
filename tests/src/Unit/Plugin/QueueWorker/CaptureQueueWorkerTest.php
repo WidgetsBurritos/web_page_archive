@@ -58,7 +58,7 @@ class CaptureQueueWorkerTest extends UnitTestCase {
       ->will($this->returnSelf());
     $this->mockScreenshotCaptureUtility
       ->method('getResponse')
-      ->will($this->returnValue(new UriCaptureResponse('https://upload.wikimedia.org/wikipedia/commons/c/c1/Drupal-wordmark.svg')));
+      ->will($this->returnValue(new UriCaptureResponse('https://upload.wikimedia.org/wikipedia/commons/c/c1/Drupal-wordmark.svg', 'http://www.somesite.com')));
   }
 
   /**

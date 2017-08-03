@@ -28,6 +28,11 @@ class HtmlCaptureUtility extends ConfigurableCaptureUtilityBase {
    * {@inheritdoc}
    */
   public function capture(array $data = []) {
+    // Handle missing URLs.
+    if (!isset($data['url'])) {
+      throw new \Exception('Capture URL is required');
+    }
+
     $file_path = \Drupal::service('file_system')->realpath(file_default_scheme() . "://");
     $save_dir = "{$file_path}/web-page-archive/html/{$data['web_page_archive']->id()}/{$data['run_uuid']}";
     $file_name = preg_replace('/[^a-z0-9]+/', '-', strtolower($data['url'])) . '.html';
@@ -39,7 +44,7 @@ class HtmlCaptureUtility extends ConfigurableCaptureUtilityBase {
 
     \Drupal::httpClient()->request('GET', $data['url'], ['sink' => $file_location]);
 
-    $this->response = new UriCaptureResponse($file_location);
+    $this->response = new UriCaptureResponse($file_location, $data['url']);
 
     return $this;
   }

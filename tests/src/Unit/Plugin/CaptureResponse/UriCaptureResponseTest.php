@@ -16,15 +16,15 @@ class UriCaptureResponseTest extends UnitTestCase {
    * Test runs()
    */
   public function testConstructor() {
-    $response = new UriCaptureResponse('/some/path/to/file.html');
+    $response = new UriCaptureResponse('/some/path/to/file.html', 'http://www.somesite.com');
 
     // Test getters.
-    $this->assertSame(UriCaptureResponse::TYPE_URI, $response->getType());
+    $this->assertSame('uri', $response->getType());
     $this->assertSame('/some/path/to/file.html', $response->getContent());
 
     // Test serialized output.
     $expected_serialized = serialize([
-      'type' => UriCaptureResponse::TYPE_URI,
+      'type' => 'uri',
       'content' => '/some/path/to/file.html',
     ]);
     $this->assertSame($expected_serialized, $response->getSerialized());

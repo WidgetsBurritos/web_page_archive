@@ -5,7 +5,7 @@ dependencies:
   module:
     - web_page_archive
 _core:
-  default_config_hash: EnVCMYsgh9n88WMMeb3cEkrW0E4pAWVb6NVPSg6Ufb4
+  default_config_hash: x2NkWfExjoD1oTt3qAThdY_bu9tDt0yCnQXlH638PEk
 id: web_page_archive_canonical
 label: 'Web Page Archive Canonical'
 module: views
@@ -104,10 +104,10 @@ display:
           label: ''
           exclude: true
           alter:
-            alter_text: true
+            alter_text: false
             text: 'View Details'
             make_link: true
-            path: 'admin/structure/views/some-path/{{ vid }}'
+            path: 'admin/config/system/web-page-archive/runs/{{ vid }}'
             absolute: false
             external: false
             replace_spaces: false
@@ -425,6 +425,55 @@ display:
           entity_type: web_page_archive_run
           entity_field: capture_size
           plugin_id: field
+        nothing:
+          id: nothing
+          table: views
+          field: nothing
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: ''
+          exclude: true
+          alter:
+            alter_text: true
+            text: 'View Details'
+            make_link: true
+            path: 'admin/config/system/web-page-archive/runs/{{ vid }}'
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: false
+          plugin_id: custom
         dropbutton:
           id: dropbutton
           table: views
@@ -474,9 +523,12 @@ display:
           empty_zero: false
           hide_alter_empty: true
           fields:
-            vid: vid
+            nothing: nothing
+            vid: '0'
             revision_created: '0'
             queue_ct: '0'
+            capture_utilities: '0'
+            capture_size: '0'
           destination: true
           plugin_id: dropbutton
       filters:
@@ -570,11 +622,11 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          order: ASC
+          order: DESC
           exposed: true
           expose:
             label: 'Revision create time'
-          granularity: day
+          granularity: second
           entity_type: web_page_archive_run
           entity_field: revision_created
           plugin_id: date

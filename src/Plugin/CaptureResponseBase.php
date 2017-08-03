@@ -2,20 +2,14 @@
 
 namespace Drupal\web_page_archive\Plugin;
 
+use Drupal\Core\StringTranslation\StringTranslationTrait;
+
 /**
  * Base class for capture responses.
  */
 abstract class CaptureResponseBase implements CaptureResponseInterface {
 
-  /**
-   * Response content is a URI.
-   */
-  const TYPE_URI = 'uri';
-
-  /**
-   * Response content is HTML.
-   */
-  const TYPE_HTML = 'html';
+  use StringTranslationTrait;
 
   /**
    * The response content.
@@ -31,6 +25,14 @@ abstract class CaptureResponseBase implements CaptureResponseInterface {
    */
   protected $type = '';
 
+
+  /**
+   * The response type.
+   *
+   * @var uri
+   */
+  protected $captureUrl = '';
+
   /**
    * {@inheritdoc}
    */
@@ -43,6 +45,13 @@ abstract class CaptureResponseBase implements CaptureResponseInterface {
    */
   public function getType() {
     return $this->type;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getCaptureUrl() {
+    return $this->captureUrl;
   }
 
   /**
@@ -76,6 +85,21 @@ abstract class CaptureResponseBase implements CaptureResponseInterface {
   }
 
   /**
+   * Set capture URL.
+   *
+   * @param string $url
+   *   Indicates the URL that is getting captured.
+   *
+   * @return \Drupal\web_page_archive\Plugin\CaptureResponseInterface
+   *   Reference to self.
+   */
+  protected function setCaptureUrl($url) {
+    $this->captureUrl = $url;
+
+    return $this;
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function getSerialized() {
@@ -91,5 +115,10 @@ abstract class CaptureResponseBase implements CaptureResponseInterface {
   public function getCaptureSize() {
     return 0;
   }
+
+  /**
+   * Renders this response.
+   */
+  abstract public function renderable(array $options = []);
 
 }

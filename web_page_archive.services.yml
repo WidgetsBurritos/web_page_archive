@@ -6,6 +6,10 @@ services:
     class: Drupal\web_page_archive\ParamConverter\WebPageArchiveParamConverter
     tags:
       - { name: paramconverter }
+  web_page_archive_run_revision:
+    class: Drupal\web_page_archive\ParamConverter\WebPageArchiveRunRevisionParamConverter
+    tags:
+      - { name: paramconverter }
   web_page_archive.parser.xml.sitemap:
     class: Drupal\web_page_archive\Parser\SitemapParser
     tags:

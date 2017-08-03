@@ -81,3 +81,17 @@ entity.web_page_archive.collection.prepare_uninstall:
     _title: 'Prepare uninstall'
   requirements:
     _permission: 'administer web page archive'
+
+entity.web_page_archive.screenshot_capture_utility.modal:
+  path: 'admin/config/system/web-page-archive/screenshot/modal/{web_page_archive_run_revision}/{delta}'
+  defaults:
+    _controller: '\Drupal\web_page_archive\Controller\ScreenshotCaptureController::screenshotModal'
+    _title_callback: '\Drupal\web_page_archive\Controller\ScreenshotCaptureController::screenshotModalTitle'
+  options:
+    parameters:
+      web_page_archive_run_revision:
+        type: web_page_archive_run_revision
+      delta:
+        type: integer
+  requirements:
+    _permission: 'administer web page archive'

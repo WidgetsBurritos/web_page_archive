@@ -20,13 +20,9 @@ use Drupal\user\UserInterface;
  *   handlers = {
  *     "storage" = "Drupal\web_page_archive\Entity\Sql\WebPageArchiveRunStorage",
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
- *     "list_builder" = "Drupal\web_page_archive\Entity\WebPageArchiveRunListBuilder",
  *     "views_data" = "Drupal\web_page_archive\Entity\WebPageArchiveRunViewsData",
  *
  *     "form" = {
- *       "default" = "Drupal\web_page_archive\Form\WebPageArchiveRunForm",
- *       "add" = "Drupal\web_page_archive\Form\WebPageArchiveRunForm",
- *       "edit" = "Drupal\web_page_archive\Form\WebPageArchiveRunForm",
  *       "delete" = "Drupal\web_page_archive\Form\WebPageArchiveRunDeleteForm",
  *     },
  *     "route_provider" = {
@@ -48,16 +44,6 @@ use Drupal\user\UserInterface;
  *     "status" = "status",
  *     "queue_ct" = "queue_ct",
  *     "capture_utilities" = "capture_utilities",
- *   },
- *   links = {
- *     "canonical" = "/admin/config/system/web-page-archive/runs/{web_page_archive_run}",
- *     "add-form" = "/admin/config/system/web-page-archive/runs/add",
- *     "edit-form" = "/admin/config/system/web-page-archive/runs/{web_page_archive_run}/edit",
- *     "delete-form" = "/admin/config/system/web-page-archive/runs/{web_page_archive_run}/delete",
- *     "version-history" = "/admin/config/system/web-page-archive/runs/{web_page_archive_run}/revisions",
- *     "revision" = "/admin/config/system/web-page-archive/runs/{web_page_archive_run}/revisions/{web_page_archive_run_revision}/view",
- *     "revision_delete" = "/admin/config/system/web-page-archive/runs/{web_page_archive_run}/revisions/{web_page_archive_run_revision}/delete",
- *     "collection" = "/admin/config/system/web-page-archive/runs",
  *   },
  *   field_ui_base_route = "web_page_archive_run.settings"
  * )
@@ -250,9 +236,10 @@ class WebPageArchiveRun extends RevisionableContentEntityBase implements WebPage
         'timestamp' => \Drupal::service('datetime.time')->getCurrentTime(),
         'status' => 'complete',
         'capture_url' => $data['url'],
-        'capture_type' => $data['capture_response']->getType(),
-        'content' => $data['capture_response']->getContent(),
+        'capture_response' => $data['capture_response'],
         'capture_size' => $capture_size,
+        'vid' => $entity->getRevisionId(),
+        'delta' => $field_captures->count(),
       ];
       $field_captures->appendItem(serialize($capture));
       $entity->set('capture_size', $total_capture_size + $capture_size);

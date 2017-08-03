@@ -14,9 +14,13 @@ class UriCaptureResponse extends CaptureResponseBase {
    *
    * @param string $content
    *   The response contents.
+   * @param string $capture_url
+   *   URL that is getting captured.
    */
-  public function __construct($content) {
-    $this->setType(self::TYPE_URI)->setContent($content);
+  public function __construct($content, $capture_url) {
+    $this->setType('uri')
+      ->setContent($content)
+      ->setCaptureUrl($capture_url);
   }
 
   /**
@@ -28,6 +32,13 @@ class UriCaptureResponse extends CaptureResponseBase {
       throw new \Exception("Can't read file.");
     }
     return filesize($this->getContent());
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function renderable(array $options = []) {
+    return $this->content;
   }
 
 }
