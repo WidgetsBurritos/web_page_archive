@@ -5,5 +5,6 @@ package: Utility
 core: 8.x
 configure: entity.web_page_archive.collection
 dependencies:
+  - drupal:system (>= 8.3)
   - drupal:image
   - drupal:views
