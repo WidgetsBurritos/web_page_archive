@@ -2,6 +2,7 @@
 
 namespace Drupal\web_page_archive\Form;
 
+use Cron\CronExpression;
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Form\FormStateInterface;
@@ -67,6 +68,22 @@ abstract class WebPageArchiveFormBase extends EntityForm {
       ],
       '#disabled' => !$this->entity->isNew(),
     ];
+
+    // TODO: Implement constraint.
+    $form['cron_schedule'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t("Crontab schedule (relative to PHP's default timezone)"),
+      '#description' => $this->t('Crontab format (see https://crontab.guru/)'),
+      '#default_value' => !$this->entity->isNew() ? $this->entity->getCronSchedule() : '@weekly',
+    ];
+
+    if (CronExpression::isValidExpression($this->entity->getCronSchedule())) {
+      $cron = CronExpression::factory($this->entity->getCronSchedule());
+      $next_run = $this->t('Next run: @next_run', ['@next_run' => $cron->getNextRunDate()->format('Y-m-d @ g:ia T')]);
+      $form['cron_schedule_next_run'] = [
+        '#markup' => $next_run,
+      ];
+    }
 
     $form['timeout'] = [
       '#type' => 'number',

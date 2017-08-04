@@ -6,6 +6,7 @@ use Drupal\Core\Config\Entity\ConfigEntityBase;
 use Drupal\Core\Entity\EntityWithPluginCollectionInterface;
 use Drupal\Core\Plugin\DefaultLazyPluginCollection;
 use Drupal\web_page_archive\Plugin\CaptureUtilityInterface;
+use Drupal\web_page_archive\Controller\WebPageArchiveController;
 use GuzzleHttp\HandlerStack;
 
 /**
@@ -272,6 +273,9 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
 
   /**
    * Queues the archive to run.
+   *
+   * @return bool
+   *   Indicates if run was successful or not.
    */
   public function startNewRun(HandlerStack $handler = NULL) {
     try {
@@ -316,10 +320,15 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
       $run_entity->setRevisionCreationTime(\Drupal::service('datetime.time')->getCurrentTime());
       $run_entity->setRevisionLogMessage(t('Name: @name -- Run ID: @uuid -- Queue Ct: @queue_ct', $strings));
       $run_entity->save();
+
+      WebPageArchiveController::setBatch($this);
+
+      return TRUE;
     }
     catch (\Exception $e) {
       // TODO: What to do here? (future task)
       drupal_set_message($e->getMessage(), 'warning');
+      return FALSE;
     }
   }
 
