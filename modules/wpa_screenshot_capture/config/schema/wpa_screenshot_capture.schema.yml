@@ -1,0 +1,19 @@
+web_page_archive.capture_utility.wpa_screenshot_capture:
+  type: mapping
+  label: 'Screenshot Capture utility'
+  mapping:
+    width:
+      type: integer
+      label: 'Width'
+    clip_width:
+      type: integer
+      label: 'Clip Width'
+    background_color:
+      type: string
+      label: 'Background color'
+    user_agent:
+      type: string
+      label: 'User agent'
+    image_type:
+      type: string
+      label: 'Image type'

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\web_page_archive\Controller;
+namespace Drupal\wpa_screenshot_capture\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;

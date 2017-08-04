@@ -28,11 +28,11 @@ class CaptureQueueWorkerTest extends UnitTestCase {
   protected $mockWebPageArchiveRun;
 
   /**
-   * Mock screenshot capture utility.
+   * Mock HTML capture utility.
    *
-   * @var \Drupal\web_page_archive\Plugin\ScreenshotCaptureUtility
+   * @var \Drupal\web_page_archive\Plugin\HtmlCaptureUtility
    */
-  protected $mockScreenshotCaptureUtility;
+  protected $mockHtmlCaptureUtility;
 
   /**
    * {@inheritdoc}
@@ -50,13 +50,13 @@ class CaptureQueueWorkerTest extends UnitTestCase {
       ->setMethods(['markCaptureComplete'])
       ->getMock();
 
-    $this->mockScreenshotCaptureUtility = $this->getMockBuilder('\Drupal\web_page_archive\Plugin\CaptureUtility\ScreenshotCaptureUtility')
+    $this->mockHtmlCaptureUtility = $this->getMockBuilder('\Drupal\web_page_archive\Plugin\CaptureUtility\HtmlCaptureUtility')
       ->disableOriginalConstructor()
       ->getMock();
-    $this->mockScreenshotCaptureUtility->expects($this->any())
+    $this->mockHtmlCaptureUtility->expects($this->any())
       ->method('capture')
       ->will($this->returnSelf());
-    $this->mockScreenshotCaptureUtility
+    $this->mockHtmlCaptureUtility
       ->method('getResponse')
       ->will($this->returnValue(new UriCaptureResponse('https://upload.wikimedia.org/wikipedia/commons/c/c1/Drupal-wordmark.svg', 'http://www.somesite.com')));
   }
@@ -66,7 +66,7 @@ class CaptureQueueWorkerTest extends UnitTestCase {
    */
   public function testProcessItemReturnsResponse() {
     $data = [
-      'utility' => $this->mockScreenshotCaptureUtility,
+      'utility' => $this->mockHtmlCaptureUtility,
       'url' => 'http://www.whatever.com',
       'run_uuid' => '12345678-1234-1234-1234-123456789000',
       'run_entity' => $this->mockWebPageArchiveRun,
@@ -99,7 +99,7 @@ class CaptureQueueWorkerTest extends UnitTestCase {
    */
   public function testMissingUrlWritesMessage() {
     $data = [
-      'utility' => $this->mockScreenshotCaptureUtility,
+      'utility' => $this->mockHtmlCaptureUtility,
       'run_uuid' => '12345678-1234-1234-1234-123456789000',
       'run_entity' => $this->mockWebPageArchiveRun,
     ];
@@ -114,7 +114,7 @@ class CaptureQueueWorkerTest extends UnitTestCase {
    */
   public function testMissingRunUuidWritesMessage() {
     $data = [
-      'utility' => $this->mockScreenshotCaptureUtility,
+      'utility' => $this->mockHtmlCaptureUtility,
       'url' => 'http://www.whatever.com',
       'run_entity' => $this->mockWebPageArchiveRun,
     ];
@@ -129,7 +129,7 @@ class CaptureQueueWorkerTest extends UnitTestCase {
    */
   public function testMissingRunEntityWritesMessage() {
     $data = [
-      'utility' => $this->mockScreenshotCaptureUtility,
+      'utility' => $this->mockHtmlCaptureUtility,
       'url' => 'http://www.whatever.com',
       'run_uuid' => '12345678-1234-1234-1234-123456789000',
     ];

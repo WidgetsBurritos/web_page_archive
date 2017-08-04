@@ -1,9 +1,10 @@
 <?php
 
-namespace Drupal\web_page_archive\Plugin\CaptureResponse;
+namespace Drupal\wpa_screenshot_capture\Plugin\CaptureResponse;
 
 use Drupal\Core\Url;
 use Drupal\Component\Serialization\Json;
+use Drupal\web_page_archive\Plugin\CaptureResponse\UriCaptureResponse;
 
 /**
  * URI capture response.
@@ -51,7 +52,7 @@ class ScreenshotCaptureResponse extends UriCaptureResponse {
 
     $render = [
       '#type' => 'link',
-      '#url' => Url::fromRoute('entity.web_page_archive.screenshot_capture_utility.modal', $route_params),
+      '#url' => Url::fromRoute('entity.web_page_archive.wpa_screenshot_capture.modal', $route_params),
       '#title' => $link_array,
       '#attributes' => [
         'class' => ['use-ajax'],

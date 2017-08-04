@@ -1,7 +1,7 @@
 name: Web Page Archive Skeleton Capture Utility
 type: module
 description: 'Provides a skeleton capture utility useful when creating new plugins.'
-package: Utility
+package: Web Page Archive
 core: 8.x
 dependencies:
   - web_page_archive

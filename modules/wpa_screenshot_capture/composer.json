@@ -1,6 +1,6 @@
 {
-    "name": "drupal/web_page_archive",
-    "description": "Provides web page data archiving and reporting functionality.",
+    "name": "drupal/wpa_screenshot_capture",
+    "description": "Provides a screenshot capture utility based on PhantomJS.",
     "type": "drupal-module",
     "license": "GPL-2.0+",
     "homepage": "http://drupal.org/project/web_page_archive",
@@ -20,6 +20,15 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "mtdowling/cron-expression": "1.2.0"
+        "microweber/screen": "1.0.*",
+        "jakoch/phantomjs-installer": "2.1.1"
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "PhantomInstaller\\Installer::installPhantomJS"
+        ],
+        "post-update-cmd": [
+            "PhantomInstaller\\Installer::installPhantomJS"
+        ]
     }
 }
