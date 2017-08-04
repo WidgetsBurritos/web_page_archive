@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\web_page_archive_skeleton\Plugin\CaptureUtility;
+namespace Drupal\wpa_skeleton_capture\Plugin\CaptureUtility;
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\web_page_archive\Plugin\ConfigurableCaptureUtilityBase;
