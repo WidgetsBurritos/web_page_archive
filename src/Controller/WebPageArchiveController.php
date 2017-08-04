@@ -88,6 +88,36 @@ class WebPageArchiveController extends ControllerBase {
   }
 
   /**
+   * Adds up to $items_to_process number of items from the queue to a batch.
+   *
+   * If $items_to_process < 0 attempt to add entire queue to batch.
+   */
+  public static function setBatch(WebPageArchive $web_page_archive, $items_to_process = -1) {
+    $queue = $web_page_archive->getQueue();
+    $queue_worker = \Drupal::service('plugin.manager.queue_worker')->createInstance('web_page_archive_capture');
+
+    // Create capture job batch.
+    $batch = [
+      'title' => \t('Process all capture queue jobs with batch'),
+      'operations' => [],
+      'finished' => 'Drupal\web_page_archive\Controller\WebPageArchiveController::batchFinished',
+    ];
+
+    // If negative, or if count is too high, set count to queue size.
+    if ($items_to_process < 0 || $items_to_process > $queue->numberOfItems()) {
+      $items_to_process = $queue->numberOfItems();
+    }
+
+    // Create batch operations.
+    for ($i = 0; $i < $items_to_process; $i++) {
+      $batch['operations'][] = ['Drupal\web_page_archive\Controller\WebPageArchiveController::batchProcess', [$web_page_archive]];
+    }
+
+    // Adds the batch sets.
+    batch_set($batch);
+  }
+
+  /**
    * Common batch processing callback for all operations.
    */
   public static function batchProcess(WebPageArchive $web_page_archive, &$context) {

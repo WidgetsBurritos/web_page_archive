@@ -118,24 +118,6 @@ class WebPageArchiveQueueForm extends EntityForm {
     $web_page_archive = $this->getEntity();
     $web_page_archive->startNewRun();
 
-    $queue = $web_page_archive->getQueue();
-    $queue_worker = $this->queueManager->createInstance('web_page_archive_capture');
-
-    // Create capture job batch.
-    $batch = [
-      'title' => $this->t('Process all capture queue jobs with batch'),
-      'operations' => [],
-      'finished' => 'Drupal\web_page_archive\Controller\WebPageArchiveController::batchFinished',
-    ];
-
-    // Create batch operations.
-    for ($i = 0; $i < $queue->numberOfItems(); $i++) {
-      $batch['operations'][] = ['Drupal\web_page_archive\Controller\WebPageArchiveController::batchProcess', [$web_page_archive]];
-    }
-
-    // Adds the batch sets.
-    batch_set($batch);
-
     // TODO: Should there be some sort of validation the aboved worked?
     $form_state->setRedirect('entity.web_page_archive.canonical', ['web_page_archive' => $web_page_archive->id()]);
   }

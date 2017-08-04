@@ -14,3 +14,8 @@ services:
     class: Drupal\web_page_archive\Parser\SitemapParser
     tags:
       - { name: parser }
+  web_page_archive.cron.runner:
+    class: Drupal\web_page_archive\Cron\CronRunner
+    arguments: ['@lock', '@state', '@datetime.time']
+    tags:
+      - { name: cron }

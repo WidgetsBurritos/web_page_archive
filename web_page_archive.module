@@ -24,3 +24,14 @@ function web_page_archive_entity_operation($entity) {
     ->getInstanceFromDefinition(WebPageArchiveTypeInfo::class)
     ->entityOperation($entity);
 }
+
+/**
+ * Implements hook_cron().
+ */
+function web_page_archive_cron() {
+  $cron_runner = \Drupal::getContainer()->get('web_page_archive.cron.runner');
+  $config_entities = \Drupal::entityTypeManager()->getStorage('web_page_archive')->loadMultiple();
+  foreach ($config_entities as $id => $config_entity) {
+    $cron_runner->run($config_entity);
+  }
+}
