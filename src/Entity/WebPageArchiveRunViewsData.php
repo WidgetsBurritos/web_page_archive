@@ -82,6 +82,30 @@ class WebPageArchiveRunViewsData extends EntityViewsData {
       ],
     ];
 
+    // Setup relationship to web_page_archive_capture_details.
+    $data['web_page_archive_run_revision__field_captures']['revision_id']['relationship']['id'] = 'standard';
+    $data['web_page_archive_run_revision__field_captures']['revision_id']['relationship']['base'] = 'web_page_archive_capture_details';
+    $data['web_page_archive_run_revision__field_captures']['revision_id']['relationship']['base field'] = 'revision_id';
+    $data['web_page_archive_run_revision__field_captures']['revision_id']['relationship']['title'] = $this->t('Web page archive capture details');
+    $data['web_page_archive_run_revision__field_captures']['revision_id']['relationship']['label'] = $this->t('Additional details on an individual capture.');
+    $data['web_page_archive_run_revision__field_captures']['revision_id']['relationship']['extra'] = [
+      ['field' => 'delta', 'left_field' => 'delta'],
+      ['field' => 'langcode', 'left_field' => 'langcode'],
+    ];
+
+    // Expose capture details table.
+    $data['web_page_archive_capture_details'] = [];
+    $data['web_page_archive_capture_details']['table'] = [];
+    $data['web_page_archive_capture_details']['table']['group'] = t('Web page archive run');
+    $data['web_page_archive_capture_details']['capture_url'] = [
+      'title' => $this->t('Capture URL'),
+      'help' => $this->t('The URL captured during a run.'),
+      'argument' => ['id' => 'string'],
+      'field' => ['id' => 'standard'],
+      'filter' => ['id' => 'string'],
+      'sort' => ['id' => 'standard'],
+    ];
+
     return $data;
   }
 
