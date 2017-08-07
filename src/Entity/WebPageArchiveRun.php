@@ -240,15 +240,33 @@ class WebPageArchiveRun extends RevisionableContentEntityBase implements WebPage
         'capture_size' => $capture_size,
         'vid' => $entity->getRevisionId(),
         'delta' => $field_captures->count(),
+        'langcode' => $entity->language()->getId(),
       ];
       $field_captures->appendItem(serialize($capture));
       $entity->set('capture_size', $total_capture_size + $capture_size);
       $entity->save();
+      $this->addNormalizedCapture($capture);
       $timeout = $this->getConfigEntity()->getTimeout();
 
       usleep(1000 * $timeout);
       $lock->release($lock_id);
     }
+  }
+
+  /**
+   * Adds a normalized version of a capture to the database table.
+   */
+  public function addNormalizedCapture($capture) {
+    \Drupal::database()
+      ->insert('web_page_archive_capture_details')
+      ->fields(['revision_id', 'delta', 'langcode', 'capture_url'])
+      ->values([
+        $capture['vid'],
+        $capture['delta'],
+        $capture['langcode'],
+        $capture['capture_url'],
+      ])
+      ->execute();
   }
 
   /**
