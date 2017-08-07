@@ -47,3 +47,45 @@ function web_page_archive_uninstall() {
   $query->condition('name', 'web_page_archive_run');
   $query->execute();
 }
+
+/**
+ * Implements hook_schema().
+ */
+function web_page_archive_schema() {
+  $schema['web_page_archive_capture_details'] = [
+    'description' => 'Stores detailed capture information',
+    'fields' => [
+      'revision_id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => "Maps to {web_page_archive_run_revision__field_captures}.revision_id.",
+      ],
+      'delta' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => "Maps to {web_page_archive_run_revision__field_captures}.delta.",
+      ],
+      'langcode' => [
+        'type' => 'varchar_ascii',
+        'length' => 32,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'Maps to {web_page_archive_run_revision__field_captures}.langcode.',
+      ],
+      'capture_url' => [
+        'type' => 'varchar_ascii',
+        'length' => 1023,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'The capture URL.',
+      ],
+    ],
+    'primary key' => ['revision_id', 'delta', 'langcode'],
+  ];
+
+  return $schema;
+}

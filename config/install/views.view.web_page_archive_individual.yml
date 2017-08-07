@@ -6,7 +6,7 @@ dependencies:
     - user
     - web_page_archive
 _core:
-  default_config_hash: ZmSQwznn4nqT9fAGjuW3UygmWo0RKwKTUKK0hWuvFbE
+  default_config_hash: X1JAV1aDDhDfbHQqEmGAFvW43kyF4EpWik3HenfvfG4
 id: web_page_archive_individual
 label: 'Web Page Archive Individual Run'
 module: views
@@ -198,7 +198,45 @@ display:
           entity_type: web_page_archive_run
           entity_field: name
           plugin_id: field
-      filters: {  }
+      filters:
+        capture_url:
+          id: capture_url
+          table: web_page_archive_capture_details
+          field: capture_url
+          relationship: revision_id
+          group_type: group
+          admin_label: ''
+          operator: contains
+          value: ''
+          group: 1
+          exposed: true
+          expose:
+            operator_id: capture_url_op
+            label: 'Filter by URL'
+            description: ''
+            use_operator: false
+            operator: capture_url_op
+            identifier: capture_url
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              administrator: '0'
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          plugin_id: string
       sorts: {  }
       header: {  }
       footer: {  }
@@ -225,6 +263,15 @@ display:
           required: true
           entity_type: web_page_archive_run
           entity_field: vid
+          plugin_id: standard
+        revision_id:
+          id: revision_id
+          table: web_page_archive_run_revision__field_captures
+          field: revision_id
+          relationship: vid
+          group_type: group
+          admin_label: 'Additional details on an individual capture.'
+          required: false
           plugin_id: standard
       arguments:
         vid_1:
