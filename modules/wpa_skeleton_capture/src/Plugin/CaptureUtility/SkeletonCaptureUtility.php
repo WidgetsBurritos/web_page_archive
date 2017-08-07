@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\web_page_archive_skeleton\Plugin\CaptureUtility;
+namespace Drupal\wpa_skeleton_capture\Plugin\CaptureUtility;
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\web_page_archive\Plugin\ConfigurableCaptureUtilityBase;
@@ -10,7 +10,7 @@ use Drupal\web_page_archive\Plugin\CaptureResponse\UriCaptureResponse;
  * Skeleton capture utility, useful for creating new plugins.
  *
  * @CaptureUtility(
- *   id = "skeleton_capture_utility",
+ *   id = "wpa_skeleton_capture",
  *   label = @Translation("Skeleton capture utility", context = "Web Page Archive"),
  *   description = @Translation("Does nothing, but illustrates how capture utilities work", context = "Web Page Archive")
  * )

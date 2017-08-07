@@ -1,4 +1,4 @@
-web_page_archive.capture_utility.skeleton_capture_utility:
+web_page_archive.capture_utility.wpa_skeleton_capture:
   type: mapping
   label: 'Skeleton capture utility'
   mapping:

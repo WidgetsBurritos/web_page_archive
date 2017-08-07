@@ -39,6 +39,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
    */
   public static $modules = [
     'web_page_archive',
+    'wpa_screenshot_capture',
   ];
 
   /**
@@ -135,7 +136,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
       'capture_utilities' => [
         '12345678-9999-0000-5555-000000000000' => [
           'uuid' => '12345678-9999-0000-5555-000000000000',
-          'id' => 'screenshot_capture_utility',
+          'id' => 'wpa_screenshot_capture',
           'weight' => 1,
           'data' => [
             'width' => 1280,
@@ -147,7 +148,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
         ],
         '87654321-9999-0000-5555-999999999999' => [
           'uuid' => '87654321-9999-0000-5555-999999999999',
-          'id' => 'html_capture_utility',
+          'id' => 'wpa_html_capture',
           'weight' => 1,
           'data' => [
             'capture' => TRUE,
@@ -228,7 +229,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
       'capture_utilities' => [
         '12345678-9999-0000-5555-000000000000' => [
           'uuid' => '12345678-9999-0000-5555-000000000000',
-          'id' => 'screenshot_capture_utility',
+          'id' => 'wpa_screenshot_capture',
           'weight' => 1,
           'data' => [
             'width' => 1280,
@@ -240,7 +241,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
         ],
         '87654321-9999-0000-5555-999999999999' => [
           'uuid' => '87654321-9999-0000-5555-999999999999',
-          'id' => 'html_capture_utility',
+          'id' => 'wpa_html_capture',
           'weight' => 1,
           'data' => [
             'capture' => TRUE,

@@ -10,7 +10,7 @@ use Drupal\web_page_archive\Plugin\ConfigurableCaptureUtilityBase;
  * Captures HTML of a remote uri.
  *
  * @CaptureUtility(
- *   id = "html_capture_utility",
+ *   id = "wpa_html_capture",
  *   label = @Translation("HTML capture utility", context = "Web Page Archive"),
  *   description = @Translation("Captures HTML for given URL", context = "Web Page Archive")
  * )

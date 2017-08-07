@@ -1,10 +1,10 @@
 <?php
 
-namespace Drupal\web_page_archive\Plugin\CaptureUtility;
+namespace Drupal\wpa_screenshot_capture\Plugin\CaptureUtility;
 
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\web_page_archive\Plugin\CaptureResponse\ScreenshotCaptureResponse;
 use Drupal\web_page_archive\Plugin\ConfigurableCaptureUtilityBase;
+use Drupal\wpa_screenshot_capture\Plugin\CaptureResponse\ScreenshotCaptureResponse;
 use Screen\Capture;
 use Screen\Image\Types;
 use PhantomInstaller\PhantomBinary;
@@ -13,7 +13,7 @@ use PhantomInstaller\PhantomBinary;
  * Captures screenshot of a remote uri.
  *
  * @CaptureUtility(
- *   id = "screenshot_capture_utility",
+ *   id = "wpa_screenshot_capture",
  *   label = @Translation("Screenshot capture utility", context = "Web Page Archive"),
  *   description = @Translation("Captures snapshot images for given URL", context = "Web Page Archive")
  * )

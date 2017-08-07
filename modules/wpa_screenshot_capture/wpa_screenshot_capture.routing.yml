@@ -1,0 +1,13 @@
+entity.web_page_archive.wpa_screenshot_capture.modal:
+  path: 'admin/config/system/web-page-archive/screenshot/modal/{web_page_archive_run_revision}/{delta}'
+  defaults:
+    _controller: '\Drupal\wpa_screenshot_capture\Controller\ScreenshotCaptureController::screenshotModal'
+    _title_callback: '\Drupal\wpa_screenshot_capture\Controller\ScreenshotCaptureController::screenshotModalTitle'
+  options:
+    parameters:
+      web_page_archive_run_revision:
+        type: web_page_archive_run_revision
+      delta:
+        type: integer
+  requirements:
+    _permission: 'administer web page archive'
