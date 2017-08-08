@@ -75,6 +75,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
         'label' => 'Test Archive',
         'id' => 'test_archive',
         'timeout' => 500,
+        'cron_schedule' => '* * * * *',
         'url_type' => 'sitemap',
         'urls' => 'http://localhost/sitemap.xml',
       ],
@@ -131,6 +132,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
       'label' => 'Programmatic Archive',
       'id' => 'programmatic_archive',
       'timeout' => 500,
+      'cron_schedule' => '* * * * *',
       'url_type' => 'sitemap',
       'urls' => 'http://localhost/sitemap.xml',
       'capture_utilities' => [
@@ -189,6 +191,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $data = [
       'label' => 'Test Archive',
       'id' => 'test_archive',
+      'cron_schedule' => '* * * * *',
       'timeout' => 500,
       'url_type' => 'sitemap',
       'urls' => 'http://localhost/sitemap.xml',
@@ -224,6 +227,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
       'label' => 'Process and Run Archive',
       'id' => 'process_and_run_archive',
       'timeout' => 500,
+      'cron_schedule' => '* * * * *',
       'url_type' => 'sitemap',
       'urls' => 'http://localhost/sitemap.xml',
       'capture_utilities' => [

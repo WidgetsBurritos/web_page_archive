@@ -247,8 +247,12 @@ class WebPageArchiveRun extends RevisionableContentEntityBase implements WebPage
       $entity->save();
       $this->addNormalizedCapture($capture);
       $timeout = $this->getConfigEntity()->getTimeout();
-
       usleep(1000 * $timeout);
+      $tags = [
+        'config:views.view.web_page_archive_canonical',
+        'config:views.view.web_page_archive_individual',
+      ];
+      \Drupal::service('cache_tags.invalidator')->invalidateTags($tags);
       $lock->release($lock_id);
     }
   }

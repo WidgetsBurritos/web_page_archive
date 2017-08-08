@@ -3,8 +3,6 @@
 namespace Drupal\web_page_archive\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
-use Drupal\Core\Queue\QueueFactory;
-use Drupal\Core\Queue\QueueWorkerManagerInterface;
 use Drupal\Core\Queue\RequeueException;
 use Drupal\views\Views;
 use Drupal\web_page_archive\Entity\WebPageArchive;
@@ -18,36 +16,10 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class WebPageArchiveController extends ControllerBase {
 
   /**
-   * Drupal\Core\Queue\QueueFactory definition.
-   *
-   * @var \Drupal\Core\Queue\QueueFactory
-   */
-  protected $queue;
-
-  /**
-   * Drupal\Core\Queue\QueueWorkerManagerInterface definition.
-   *
-   * @var \Drupal\Core\Queue\QueueWorkerManagerInterface
-   */
-  protected $queueManager;
-
-  /**
-   * Constructs a new WebPageArchiveController object.
-   */
-  public function __construct(QueueFactory $queue, QueueWorkerManagerInterface $queue_manager) {
-    // TODO: Evaluate need for these.
-    $this->queue = $queue;
-    $this->queueManager = $queue_manager;
-  }
-
-  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
-    return new static(
-      $container->get('queue'),
-      $container->get('plugin.manager.queue_worker')
-    );
+    return new static();
   }
 
   /**
@@ -120,7 +92,7 @@ class WebPageArchiveController extends ControllerBase {
   /**
    * Common batch processing callback for all operations.
    */
-  public static function batchProcess(WebPageArchive $web_page_archive, &$context) {
+  public static function batchProcess(WebPageArchive $web_page_archive, &$context = NULL) {
     $queue = $web_page_archive->getQueue();
     $queue_worker = \Drupal::service('plugin.manager.queue_worker')->createInstance('web_page_archive_capture');
 
@@ -128,6 +100,7 @@ class WebPageArchiveController extends ControllerBase {
       try {
         $queue_worker->processItem($item->data);
         $queue->deleteItem($item);
+        return TRUE;
       }
       catch (RequeueException $e) {
         $queue->releaseItem($item);
@@ -141,6 +114,8 @@ class WebPageArchiveController extends ControllerBase {
         // in the queue to be processed again later.
         watchdog_exception('cron', $e);
       }
+
+      return FALSE;
     }
 
   }
