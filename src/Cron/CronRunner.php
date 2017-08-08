@@ -67,24 +67,30 @@ class CronRunner {
       return FALSE;
     }
 
-    // Check cron window.
-    $cron = CronExpression::factory($crontab);
-    $next_run = $this->state->get("web_page_archive.next_run.{$id}", -1);
+    // Determine if we're starting a new run or continuing a previous run.
+    $continue_prior_run = $config_entity->getQueueCt() > 0;
+    if (!$continue_prior_run) {
+      // Check cron window.
+      $cron = CronExpression::factory($crontab);
+      $next_run = $this->state->get("web_page_archive.next_run.{$id}", -1);
 
-    if ($this->time->getRequestTime() < $next_run || $next_run < 0 && !$cron->isDue($timestamp)) {
-      $this->lock->release($lock_id);
-      return FALSE;
+      if ($this->time->getRequestTime() < $next_run || $next_run < 0 && !$cron->isDue($timestamp)) {
+        $this->lock->release($lock_id);
+        return FALSE;
+      }
+
+      // If we're not continue a previous batch or starting a new one then exit.
+      if (!$config_entity->startNewRun()) {
+        $this->lock->release($lock_id);
+        return FALSE;
+      }
     }
 
-    // Attempt to start a new run.
-    if (!$config_entity->startNewRun()) {
-      $this->lock->release($lock_id);
-      return FALSE;
-    }
-
-    // Process the queue.
+    // Process up to 100 queue items at a time.
+    // TODO: Move threshhold into config entity?
     $success_ct = $fail_ct = 0;
-    while ($success_ct + $fail_ct < $config_entity->getQueueCt()) {
+    $queue_ct = min($config_entity->getQueueCt(), 100);
+    while ($success_ct + $fail_ct < $queue_ct) {
       if (WebPageArchiveController::batchProcess($config_entity)) {
         $success_ct++;
       }
