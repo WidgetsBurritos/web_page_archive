@@ -258,8 +258,14 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
    * @var int
    */
   public function getRunCt() {
-    // TODO: Implement this.
-    return 0;
+    // Get single value:
+    $query = \Drupal::database()->select('web_page_archive_run_revision', 'wpa_rr');
+    $query->addExpression('COUNT(*)');
+    $query->condition('id', $this->getRunEntity()->id());
+    // TODO: Remove need for -1.
+    // @see https://www.drupal.org/node/2900547
+    $ct = $query->execute()->fetchField();
+    return ($ct > 0) ? $ct - 1 : 0;
   }
 
   /**
