@@ -3,8 +3,6 @@
 namespace Drupal\web_page_archive\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
-use Drupal\Core\Queue\QueueFactory;
-use Drupal\Core\Queue\QueueWorkerManagerInterface;
 use Drupal\Core\Queue\RequeueException;
 use Drupal\views\Views;
 use Drupal\web_page_archive\Entity\WebPageArchive;
@@ -18,36 +16,10 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class WebPageArchiveController extends ControllerBase {
 
   /**
-   * Drupal\Core\Queue\QueueFactory definition.
-   *
-   * @var \Drupal\Core\Queue\QueueFactory
-   */
-  protected $queue;
-
-  /**
-   * Drupal\Core\Queue\QueueWorkerManagerInterface definition.
-   *
-   * @var \Drupal\Core\Queue\QueueWorkerManagerInterface
-   */
-  protected $queueManager;
-
-  /**
-   * Constructs a new WebPageArchiveController object.
-   */
-  public function __construct(QueueFactory $queue, QueueWorkerManagerInterface $queue_manager) {
-    // TODO: Evaluate need for these.
-    $this->queue = $queue;
-    $this->queueManager = $queue_manager;
-  }
-
-  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
-    return new static(
-      $container->get('queue'),
-      $container->get('plugin.manager.queue_worker')
-    );
+    return new static();
   }
 
   /**
