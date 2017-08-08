@@ -6,7 +6,7 @@ dependencies:
     - user
     - web_page_archive
 _core:
-  default_config_hash: X1JAV1aDDhDfbHQqEmGAFvW43kyF4EpWik3HenfvfG4
+  default_config_hash: uDcNmpcVcvqfjiIIe4KWImOKve32MlKeL9uGJfcF_Y0
 id: web_page_archive_individual
 label: 'Web Page Archive Individual Run'
 module: views
@@ -48,15 +48,17 @@ display:
           sort_asc_label: Asc
           sort_desc_label: Desc
       pager:
-        type: mini
+        type: full
         options:
-          items_per_page: 12
+          items_per_page: 20
           offset: 0
           id: 0
           total_pages: null
           tags:
             previous: ‹‹
             next: ››
+            first: '« First'
+            last: 'Last »'
           expose:
             items_per_page: false
             items_per_page_label: 'Items per page'
@@ -65,6 +67,7 @@ display:
             items_per_page_options_all_label: '- All -'
             offset: false
             offset_label: Offset
+          quantity: 9
       style:
         type: grid
         options:
@@ -237,8 +240,30 @@ display:
             default_group_multiple: {  }
             group_items: {  }
           plugin_id: string
-      sorts: {  }
-      header: {  }
+      sorts:
+        capture_url:
+          id: capture_url
+          table: web_page_archive_capture_details
+          field: capture_url
+          relationship: revision_id
+          group_type: group
+          admin_label: ''
+          order: ASC
+          exposed: true
+          expose:
+            label: 'Capture URL'
+          plugin_id: standard
+      header:
+        result:
+          id: result
+          table: views
+          field: result
+          relationship: none
+          group_type: group
+          admin_label: ''
+          empty: false
+          content: 'Displaying @start - @end of @total'
+          plugin_id: result
       footer: {  }
       empty: {  }
       relationships:
@@ -318,6 +343,8 @@ display:
         - 'languages:language_interface'
         - url
         - url.query_args
+        - 'url.query_args:sort_by'
+        - 'url.query_args:sort_order'
         - user.permissions
       tags: {  }
   individual_run_page:
@@ -335,5 +362,7 @@ display:
         - 'languages:language_interface'
         - url
         - url.query_args
+        - 'url.query_args:sort_by'
+        - 'url.query_args:sort_order'
         - user.permissions
       tags: {  }

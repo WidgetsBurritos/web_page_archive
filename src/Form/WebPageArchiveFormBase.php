@@ -88,7 +88,7 @@ abstract class WebPageArchiveFormBase extends EntityForm {
     $form['timeout'] = [
       '#type' => 'number',
       '#title' => $this->t('Timeout (ms)'),
-      '#description' => $this->t('Amount of time to wait between captures, in milliseonds.'),
+      '#description' => $this->t('Amount of time to wait between captures, in milliseconds.'),
       '#default_value' => !$this->entity->isNew() ? $this->entity->getTimeout() : 250,
     ];
 
