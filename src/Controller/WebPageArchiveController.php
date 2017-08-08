@@ -120,7 +120,7 @@ class WebPageArchiveController extends ControllerBase {
   /**
    * Common batch processing callback for all operations.
    */
-  public static function batchProcess(WebPageArchive $web_page_archive, &$context) {
+  public static function batchProcess(WebPageArchive $web_page_archive, &$context = NULL) {
     $queue = $web_page_archive->getQueue();
     $queue_worker = \Drupal::service('plugin.manager.queue_worker')->createInstance('web_page_archive_capture');
 
@@ -128,6 +128,7 @@ class WebPageArchiveController extends ControllerBase {
       try {
         $queue_worker->processItem($item->data);
         $queue->deleteItem($item);
+        return TRUE;
       }
       catch (RequeueException $e) {
         $queue->releaseItem($item);
@@ -141,6 +142,8 @@ class WebPageArchiveController extends ControllerBase {
         // in the queue to be processed again later.
         watchdog_exception('cron', $e);
       }
+
+      return FALSE;
     }
 
   }

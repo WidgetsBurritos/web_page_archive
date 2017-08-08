@@ -2,6 +2,7 @@
 
 namespace Drupal\web_page_archive\Entity;
 
+use Cron\CronExpression;
 use Drupal\Core\Config\Entity\ConfigEntityBase;
 use Drupal\Core\Entity\EntityWithPluginCollectionInterface;
 use Drupal\Core\Plugin\DefaultLazyPluginCollection;
@@ -369,6 +370,17 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
   }
 
   /**
+   * Calculates the next time the job will be run.
+   */
+  public function calculateNextRun() {
+    if (!CronExpression::isValidExpression($this->getCronSchedule())) {
+      throw new \Exception('Invalid crontab expression');
+    }
+    $cron = CronExpression::factory($this->getCronSchedule());
+    return $cron->getNextRunDate()->format('U');
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function save() {
@@ -376,6 +388,8 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
     if ($this->isNew()) {
       $this->initializeRunEntity();
     }
+
+    $this->state()->set("web_page_archive.next_run.{$this->id()}", $this->calculateNextRun());
 
     return parent::save();
   }
@@ -399,6 +413,16 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
    */
   protected function sitemapParser(HandlerStack $handler = NULL) {
     return \Drupal::service('web_page_archive.parser.xml.sitemap')->initializeConnection($handler);
+  }
+
+  /**
+   * Wraps the state storage service.
+   *
+   * @return \Drupal\Core\State\StateInterface
+   *   A state storage object.
+   */
+  protected function state() {
+    return \Drupal::service('state');
   }
 
   /**
