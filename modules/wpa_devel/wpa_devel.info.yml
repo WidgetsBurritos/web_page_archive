@@ -1,0 +1,7 @@
+name: Web Page Archive Devel
+type: module
+description: 'Provides some extra functionality useful for development.'
+package: Web Page Archive
+core: 8.x
+dependencies:
+  - web_page_archive

@@ -1,0 +1,6 @@
+web_page_archive_run.admin.structure.settings:
+  title: Web page archive run settings
+  description: 'Configure Web page archive run entities'
+  route_name: web_page_archive_run.settings
+  parent: system.admin_config_system
+  weight: 100

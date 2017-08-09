@@ -1,0 +1,7 @@
+web_page_archive_run.settings:
+  path: 'admin/config/system/web-page-archive/web_page_archive_run/settings'
+  defaults:
+    _title: 'Web page archive run settings'
+    _form: '\Drupal\wpa_devel\Form\WebPageArchiveRunSettingsForm'
+  requirements:
+    _permission: 'administer web page archive'
