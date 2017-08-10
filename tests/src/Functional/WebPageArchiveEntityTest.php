@@ -280,4 +280,58 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $this->assertEquals(4, $queue->numberOfItems());
   }
 
+  /**
+   * Tests cron processes captures.
+   */
+  public function testCronProcessesCaptures() {
+    $assert = $this->assertSession();
+
+    // Grab the URL of the front page.
+    $capture_url = $this->getUrl();
+
+    // Login.
+    $this->drupalLogin($this->authorizedUser);
+
+    // Verify list exists with add button.
+    $this->drupalGet('admin/config/system/web-page-archive');
+    $this->assertLinkByHref('admin/config/system/web-page-archive/add');
+
+    // Add an entity using the entity form.
+    $this->drupalGet('admin/config/system/web-page-archive/add');
+    $this->drupalPostForm(
+      NULL,
+      [
+        'label' => 'localhost',
+        'id' => 'localhost',
+        'timeout' => 500,
+        'cron_schedule' => '* * * * *',
+        'url_type' => 'url',
+        'urls' => $capture_url,
+      ],
+      t('Create new archive')
+    );
+    $assert->pageTextContains('Created the localhost Web page archive entity.');
+
+    // Add the HTML capture utility.
+    $this->drupalPostForm(NULL, ['new' => 'wpa_html_capture'], t('Add'));
+    $assert->pageTextContains('Saved the localhost Web page archive entity.');
+    $this->drupalPostForm(NULL, ['data[capture]' => '1'], t('Add capture utility'));
+    $assert->pageTextContains('The capture utility was successfully applied.');
+
+    // Allow immediate cron run.
+    \Drupal::state()->set('web_page_archive.next_run.localhost', 100);
+
+    // Simulate a cron run.
+    web_page_archive_cron();
+
+    // Check canonical view to see if run occurred.
+    $this->drupalGet('admin/config/system/web-page-archive/localhost');
+    $assert->pageTextContains('HTML capture utility');
+
+    // Switched to detailed view.
+    $this->clickLink('View Details');
+    $file_path = str_replace(['://', ':', '/'], '-', $capture_url);
+    $assert->responseMatches("/<span>.*{$file_path}\.html<\/span>/");
+  }
+
 }

@@ -73,7 +73,7 @@ class WebPageArchiveTypeInfo implements ContainerInjectionInterface {
    */
   public function entityOperation(EntityInterface $entity) {
     $operations = [];
-    if ($this->currentUser->hasPermission('access web_page_archive information')) {
+    if ($this->currentUser->hasPermission('administer web page archive')) {
       if ($entity->hasLinkTemplate('canonical')) {
         $operations['web_page_archive_view'] = [
           'title' => $this->t('View Run History'),
