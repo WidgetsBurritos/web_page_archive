@@ -25,9 +25,6 @@ use Drupal\user\UserInterface;
  *     "form" = {
  *       "delete" = "Drupal\web_page_archive\Form\WebPageArchiveRunDeleteForm",
  *     },
- *     "route_provider" = {
- *       "html" = "Drupal\web_page_archive\Entity\Routing\WebPageArchiveRunHtmlRouteProvider",
- *     },
  *   },
  *   base_table = "web_page_archive_run",
  *   revision_table = "web_page_archive_run_revision",

@@ -1,0 +1,5 @@
+# Web page archive run routing definition
+web_page_archive_run.settings_tab:
+  route_name: web_page_archive_run.settings
+  title: 'Settings'
+  base_route: web_page_archive_run.settings

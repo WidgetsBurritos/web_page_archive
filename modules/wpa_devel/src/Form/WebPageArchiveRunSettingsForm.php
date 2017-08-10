@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\web_page_archive\Form;
+namespace Drupal\wpa_devel\Form;
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
