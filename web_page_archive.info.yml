@@ -8,3 +8,4 @@ dependencies:
   - drupal:system (>= 8.3)
   - drupal:image
   - drupal:views
+php: 7.0
