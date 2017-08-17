@@ -98,7 +98,10 @@ class WebPageArchiveController extends ControllerBase {
 
     if ($item = $queue->claimItem()) {
       try {
-        $queue_worker->processItem($item->data);
+        $processed = $queue_worker->processItem($item->data);
+        if (!isset($processed)) {
+          throw new RequeueException(t('Still Running'));
+        }
         $queue->deleteItem($item);
         return TRUE;
       }
