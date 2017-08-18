@@ -18,26 +18,21 @@ class CaptureQueueWorker extends QueueWorkerBase {
    * {@inheritdoc}
    */
   public function processItem($data) {
-    try {
-      // Check all required keys are provided.
-      $required = ['utility', 'url', 'run_uuid', 'run_entity'];
-      foreach ($required as $key) {
-        if (empty($data[$key])) {
-          throw new \Exception("$key is required");
-        }
+    // Check all required keys are provided.
+    $required = ['utility', 'url', 'run_uuid', 'run_entity'];
+    foreach ($required as $key) {
+      if (empty($data[$key])) {
+        throw new \Exception("$key is required");
       }
+    }
 
-      // Capture the response.
-      $data['capture_response'] = $data['utility']->capture($data)->getResponse();
+    // Capture the response.
+    $data['capture_response'] = $data['utility']->capture($data)->getResponse();
+    if (isset($data['capture_response'])) {
       $data['run_entity']->markCaptureComplete($data);
-
-      return $data['capture_response'];
-
     }
-    catch (\Exception $e) {
-      // TODO: What to do here? (future task)
-      drupal_set_message($e->getMessage(), 'warning');
-    }
+
+    return $data['capture_response'];
   }
 
 }
