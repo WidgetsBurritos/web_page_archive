@@ -4,4 +4,5 @@ description: 'Provides a screenshot capture utility based on PhantomJS.'
 package: Web Page Archive
 core: 8.x
 dependencies:
+  - drupal:image
   - web_page_archive
