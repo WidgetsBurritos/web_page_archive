@@ -16,6 +16,9 @@ web_page_archive.web_page_archive.*:
     urls:
       type: string
       label: 'URLs'
+    use_cron:
+      type: boolean
+      label: 'Use Cron?'
     cron_schedule:
       type: string
       label: 'Cron Schedule'

@@ -51,6 +51,7 @@ use GuzzleHttp\HandlerStack;
  *     "timeout",
  *     "url_type",
  *     "urls",
+ *     "use_cron",
  *     "cron_schedule",
  *     "capture_utilities",
  *     "run_entity"
@@ -93,6 +94,13 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
    * @var string
    */
   protected $urls;
+
+  /**
+   * Whether or not to use cron.
+   *
+   * @var bool
+   */
+  protected $use_cron;
 
   /**
    * The cron schedule.
@@ -151,10 +159,17 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
   }
 
   /**
+   * Indicates whether or not a job is schedulable.
+   */
+  public function getUseCron() {
+    return $this->use_cron;
+  }
+
+  /**
    * Retrieves the Cron schedule.
    */
   public function getCronSchedule() {
-    return $this->cron_schedule;
+    return $this->getUseCron() ? $this->cron_schedule : NULL;
   }
 
   /**
@@ -395,7 +410,12 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
       $this->initializeRunEntity();
     }
 
-    $this->state()->set("web_page_archive.next_run.{$this->id()}", $this->calculateNextRun());
+    if ($this->getUseCron()) {
+      $this->state()->set("web_page_archive.next_run.{$this->id()}", $this->calculateNextRun());
+    }
+    else {
+      $this->state()->delete("web_page_archive.next_run.{$this->id()}");
+    }
 
     return parent::save();
   }
