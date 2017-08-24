@@ -258,14 +258,12 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
    * @var int
    */
   public function getRunCt() {
-    // Get single value:
     $query = \Drupal::database()->select('web_page_archive_run_revision', 'wpa_rr');
     $query->addExpression('COUNT(*)');
     $query->condition('id', $this->getRunEntity()->id());
-    // TODO: Remove need for -1.
-    // @see https://www.drupal.org/node/2900547
     $ct = $query->execute()->fetchField();
-    return ($ct > 0) ? $ct - 1 : 0;
+    $run_before = $ct > 1 || !empty($this->getRunEntity()->getRevisionLogMessage());
+    return $run_before ? $ct : 0;
   }
 
   /**
@@ -287,7 +285,6 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
   public function startNewRun(HandlerStack $handler = NULL) {
     try {
       // Retrieve sitemap contents.
-      // TODO: Move functionality into controller?
       $urls = $this->getUrlList();
       if ($this->getUrlType() == 'sitemap') {
         $parsed_urls = [];
@@ -314,8 +311,10 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
         }
       }
 
+      if ($this->getRunCt() > 0) {
+        $run_entity->setNewRevision();
+      }
       $run_entity->setQueueCt($queue->numberOfItems());
-      $run_entity->setNewRevision();
       $run_entity->setCapturedArray([]);
       $run_entity->setCaptureUtilities($this->getCaptureUtilityMap());
       $run_entity->set('capture_size', 0);
