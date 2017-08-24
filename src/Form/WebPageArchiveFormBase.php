@@ -94,9 +94,8 @@ abstract class WebPageArchiveFormBase extends EntityForm {
 
     $form['url_type'] = [
       '#type' => 'select',
-      '#title' => $this->t('URL Type'),
+      '#title' => $this->t('Capture Type'),
       '#options' => [
-        '' => $this->t('None'),
         'url' => $this->t('URL'),
         'sitemap' => $this->t('Sitemap URL'),
       ],
@@ -107,11 +106,15 @@ abstract class WebPageArchiveFormBase extends EntityForm {
       '#type' => 'textarea',
       '#title' => $this->t('URLs to Capture'),
       '#description' => $this->t('A list of urls to capture.'),
-      '#required' => TRUE,
       '#default_value' => $this->entity->getUrlsText(),
       '#states' => [
-        'invisible' => [
-          'select[name="url_type"]' => ['value' => ''],
+        'visible' => [
+          ['select[name="url_type"]' => ['value' => 'url']],
+          ['select[name="url_type"]' => ['value' => 'sitemap']],
+        ],
+        'required' => [
+          ['select[name="url_type"]' => ['value' => 'url']],
+          ['select[name="url_type"]' => ['value' => 'sitemap']],
         ],
       ],
     ];
