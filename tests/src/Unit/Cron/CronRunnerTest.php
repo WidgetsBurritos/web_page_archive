@@ -15,7 +15,7 @@ class CronRunnerTest extends UnitTestCase {
   /**
    * Helper function to get a mock web page archive with pre-defined crontab.
    */
-  private function getMockWebPageArchive($crontab) {
+  private function getMockWebPageArchive($crontab = NULL) {
     $mock_web_page_archive = $this->getMockBuilder('\Drupal\web_page_archive\Entity\WebPageArchive')
       ->disableOriginalConstructor()
       ->getMock();
@@ -25,6 +25,9 @@ class CronRunnerTest extends UnitTestCase {
     $mock_web_page_archive->expects($this->any())
       ->method('getCronSchedule')
       ->will($this->returnValue($crontab));
+    $mock_web_page_archive->expects($this->any())
+      ->method('getUseCron')
+      ->will($this->returnValue(isset($crontab)));
 
     return $mock_web_page_archive;
   }
@@ -167,6 +170,15 @@ class CronRunnerTest extends UnitTestCase {
     $mock_web_page_archive = $this->getMockWebPageArchive('* * * * *');
     $mock_lock = $this->getMockLock(FALSE);
     $cron_runner = $this->getCronRunner(['mock_lock' => $mock_lock]);
+    $this->assertFalse($cron_runner->run($mock_web_page_archive));
+  }
+
+  /**
+   * Tests config entities with cron disabled don't run.
+   */
+  public function testUnscheduledConfigEntityPreventsRun() {
+    $mock_web_page_archive = $this->getMockWebPageArchive();
+    $cron_runner = $this->getCronRunner();
     $this->assertFalse($cron_runner->run($mock_web_page_archive));
   }
 

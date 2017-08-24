@@ -69,19 +69,39 @@ abstract class WebPageArchiveFormBase extends EntityForm {
       '#disabled' => !$this->entity->isNew(),
     ];
 
+    // TODO: Convert to checkbox after checkbox can work with form states.
+    // @see https://www.drupal.org/node/994360
+    $form['use_cron'] = [
+      '#type' => 'select',
+      '#title' => $this->t('Run capture job automatically.'),
+      '#options' => [
+        1 => $this->t('Yes'),
+        0 => $this->t('No'),
+      ],
+      '#default_value' => !$this->entity->isNew() ? (int) $this->entity->getUseCron() : 1,
+    ];
+
+    $use_cron_state = [['select[name="use_cron"]' => ['value' => '1']]];
     // TODO: Implement constraint.
     $form['cron_schedule'] = [
       '#type' => 'textfield',
       '#title' => $this->t("Crontab schedule (relative to PHP's default timezone)"),
       '#description' => $this->t('Crontab format (see https://crontab.guru/)'),
       '#default_value' => !$this->entity->isNew() ? $this->entity->getCronSchedule() : '@weekly',
+      '#states' => [
+        'visible' => $use_cron_state,
+      ],
     ];
 
     if (CronExpression::isValidExpression($this->entity->getCronSchedule())) {
       $cron = CronExpression::factory($this->entity->getCronSchedule());
       $next_run = $this->t('Next run: @next_run', ['@next_run' => $cron->getNextRunDate()->format('Y-m-d @ g:ia T')]);
       $form['cron_schedule_next_run'] = [
+        '#type' => 'container',
         '#markup' => $next_run,
+        '#states' => [
+          'visible' => $use_cron_state,
+        ],
       ];
     }
 

@@ -54,9 +54,15 @@ class CronRunner {
    * Runs the cron runner on the config entity.
    */
   public function run($config_entity) {
+    // Check if entity is configured to run on cron.
+    $use_cron = $config_entity->getUseCron();
+    if (!$use_cron) {
+      return FALSE;
+    }
+
+    // Evaluate crontab.
     $id = $config_entity->id();
     $crontab = $config_entity->getCronSchedule();
-    $timestamp = \date('Y-m-d H:i:s', $this->time->getRequestTime());
     if (!CronExpression::isValidExpression($crontab)) {
       throw new \Exception('Invalid crontab expression');
     }
@@ -72,6 +78,7 @@ class CronRunner {
     if (!$continue_prior_run) {
       // Check cron window.
       $cron = CronExpression::factory($crontab);
+      $timestamp = \date('Y-m-d H:i:s', $this->time->getRequestTime());
       $next_run = $this->state->get("web_page_archive.next_run.{$id}", -1);
 
       if ($this->time->getRequestTime() < $next_run || $next_run < 0 && !$cron->isDue($timestamp)) {
