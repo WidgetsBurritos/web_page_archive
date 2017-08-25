@@ -30,7 +30,7 @@ class CaptureQueueWorkerTest extends UnitTestCase {
   /**
    * Mock HTML capture utility.
    *
-   * @var \Drupal\web_page_archive\Plugin\HtmlCaptureUtility
+   * @var \Drupal\wpa_html_capture\Plugin\HtmlCaptureUtility
    */
   protected $mockHtmlCaptureUtility;
 
@@ -50,7 +50,7 @@ class CaptureQueueWorkerTest extends UnitTestCase {
       ->setMethods(['markCaptureComplete'])
       ->getMock();
 
-    $this->mockHtmlCaptureUtility = $this->getMockBuilder('\Drupal\web_page_archive\Plugin\CaptureUtility\HtmlCaptureUtility')
+    $this->mockHtmlCaptureUtility = $this->getMockBuilder('\Drupal\wpa_html_capture\Plugin\CaptureUtility\HtmlCaptureUtility')
       ->disableOriginalConstructor()
       ->getMock();
     $this->mockHtmlCaptureUtility->expects($this->any())
@@ -143,7 +143,7 @@ class CaptureQueueWorkerTest extends UnitTestCase {
    * @expectedExceptionMessage Oh no! I could not capture the URL.
    */
   public function testProcessItemWritesMessage() {
-    $failing_utility = $this->getMockBuilder('\Drupal\web_page_archive\Plugin\CaptureUtility\HtmlCaptureUtility')
+    $failing_utility = $this->getMockBuilder('\Drupal\wpa_html_capture\Plugin\CaptureUtility\HtmlCaptureUtility')
       ->disableOriginalConstructor()
       ->getMock();
     $failing_utility->expects($this->any())

@@ -2,19 +2,18 @@
 
 The Web Page Archive module allows you to use Drupal to perform periodic snapshots on local and remote websites based on a list of URLs or XML sitemaps.
 
-This project is currently under active development and is still in early alpha stages.
-
-Follow the development process here: [MVP release plan](https://www.drupal.org/node/2894031)
+This project is currently under active development. Follow the development process here:
+- [8.x-1.0-alpha2 Release Plan](https://www.drupal.org/node/2901567)
 
 ## Capture Utilities
 
 Snapshots are performed by *Capture Utility* plugins. Web Page Archive provides the following capture utilities:
 
-| Plugin | Machine Name | Purpose | Module |
-|-----------------|------------------------|-----------------------------------------------------------------------|-----------------------------------|
-| HTML Capture Utility | wpa_html_capture | Captures raw HTML from URLs. | **Module**: web_page_archive |
-| Screenshot Capture Utility | wpa_screenshot_capture | Capture Screenshots of URLs (uses [PhantomJS](http://phantomjs.org/)). | **Submodule:** wpa_screenshot_capture |
-| Skeleton Capture Utility | wpa_skeleton_capture | Example code that provides a template for building additional capture utility plugins. | **Submodule:** wpa_skeleton_capture |
+| Plugin | Machine Name | Purpose |
+|-----------------|------------------------|-----------------------------------------------------------------------|
+| HTML Capture Utility | wpa_html_capture | Captures raw HTML from URLs. |
+| Screenshot Capture Utility | wpa_screenshot_capture | Capture Screenshots of URLs (uses [PhantomJS](http://phantomjs.org/)). |
+| Skeleton Capture Utility | wpa_skeleton_capture | Example code that provides a template for building additional capture utility plugins. |
 
 ## Requirements
 

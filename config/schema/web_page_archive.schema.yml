@@ -46,14 +46,6 @@ web_page_archive.capture_utility.*:
   type: mapping
   label: 'Capture utility settings'
 
-web_page_archive.capture_utility.wpa_html_capture:
-  type: mapping
-  label: 'HTML Capture utility'
-  mapping:
-    capture:
-      type: boolean
-      label: 'Capture?'
-
 field.widget.settings.web_page_archive_capture_widget:
   type: mapping
   label: 'Capture widget settings'

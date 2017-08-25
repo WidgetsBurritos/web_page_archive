@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\web_page_archive\Plugin\CaptureUtility;
+namespace Drupal\wpa_html_capture\Plugin\CaptureUtility;
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\web_page_archive\Plugin\CaptureResponse\UriCaptureResponse;
