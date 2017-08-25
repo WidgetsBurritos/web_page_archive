@@ -1,0 +1,7 @@
+web_page_archive.capture_utility.wpa_html_capture:
+  type: mapping
+  label: 'HTML Capture utility'
+  mapping:
+    capture:
+      type: boolean
+      label: 'Capture?'

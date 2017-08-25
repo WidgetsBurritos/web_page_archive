@@ -39,6 +39,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
    */
   public static $modules = [
     'web_page_archive',
+    'wpa_html_capture',
     'wpa_screenshot_capture',
   ];
 
