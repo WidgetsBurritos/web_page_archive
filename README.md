@@ -15,11 +15,17 @@ Snapshots are performed by *Capture Utility* plugins. Web Page Archive provides 
 | Screenshot Capture Utility | wpa_screenshot_capture | Capture Screenshots of URLs (uses [PhantomJS](http://phantomjs.org/)). |
 | Skeleton Capture Utility | wpa_skeleton_capture | Example code that provides a template for building additional capture utility plugins. |
 
+Other modules extending Web Page Archive:
+
+- [Performance Budget (Experimental)](https://www.drupal.org/project/performance_budget) - Creates and manages performance budgets for websites.
+- [Configuration Archive (Experimental)](https://www.drupal.org/project/configuration_archive) - Creates and maintains snapshots of system configurations over time.
+
 ## Requirements
 
 - Drupal 8.3+
 - PHP 7.0+
 - PHP extensions: `ext-openssl`
+- System packages: fontconfig (if using screenshot capture utility)
 - A lot of storage space (especially when using screenshot capture utility)
 
 ## Installation
