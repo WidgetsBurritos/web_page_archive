@@ -21,11 +21,18 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
   public $profile = 'minimal';
 
   /**
-   * Authorized User.
+   * Authorized Admin User.
    *
    * @var \Drupal\user\UserInterface
    */
-  protected $authorizedUser;
+  protected $authorizedAdminUser;
+
+  /**
+   * Authorized View User.
+   *
+   * @var \Drupal\user\UserInterface
+   */
+  protected $authorizedReadOnlyUser;
 
   /**
    * Unauthorized User.
@@ -48,8 +55,11 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
    */
   protected function setUp() {
     parent::setUp();
-    $this->authorizedUser = $this->drupalCreateUser([
+    $this->authorizedAdminUser = $this->drupalCreateUser([
       'administer web page archive',
+    ]);
+    $this->authorizedReadOnlyUser = $this->drupalCreateUser([
+      'view web page archive results',
     ]);
     $this->unauthorizedUser = $this->drupalCreateUser([
       'administer nodes',
@@ -63,7 +73,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $assert = $this->assertSession();
 
     // Login.
-    $this->drupalLogin($this->authorizedUser);
+    $this->drupalLogin($this->authorizedAdminUser);
 
     // Verify list exists with add button.
     $this->drupalGet('admin/config/system/web-page-archive');
@@ -165,7 +175,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $wpa->save();
 
     // Login.
-    $this->drupalLogin($this->authorizedUser);
+    $this->drupalLogin($this->authorizedAdminUser);
     $this->drupalGet('admin/config/system/web-page-archive/programmatic_archive/edit');
     $this->assertResponse(Response::HTTP_OK);
     $this->assertFieldByName('label', 'Programmatic Archive');
@@ -180,6 +190,50 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $assert->pageTextContains('Programmatic Archive');
     $this->drupalGet('admin/config/system/web-page-archive/programmatic_archive');
     $assert->pageTextContains('Programmatic Archive');
+  }
+
+  /**
+   * Functional test to ensure authorized read-only access.
+   */
+  public function testReadOnlyUser() {
+    $assert = $this->assertSession();
+
+    // Create a dummy entity.
+    $data = [
+      'label' => 'Read Only Archive',
+      'id' => 'read_only_archive',
+      'cron_schedule' => '* * * * *',
+      'timeout' => 500,
+      'url_type' => 'sitemap',
+      'urls' => 'http://localhost/sitemap.xml',
+    ];
+    $wpa = \Drupal::entityManager()
+      ->getStorage('web_page_archive')
+      ->create($data);
+    $wpa->save();
+
+    // Login.
+    $this->drupalLogin($this->authorizedReadOnlyUser);
+
+    $permitted_urls = [
+      'admin/config/system/web-page-archive',
+      'admin/config/system/web-page-archive/read_only_archive',
+    ];
+    foreach ($permitted_urls as $url) {
+      $this->drupalGet($url);
+      $this->assertResponse(Response::HTTP_OK);
+    }
+
+    $forbidden_urls = [
+      'admin/config/system/web-page-archive/add',
+      'admin/config/system/web-page-archive/read_only_archive/edit',
+      'admin/config/system/web-page-archive/read_only_archive/delete',
+      'admin/config/system/web-page-archive/read_only_archive/queue',
+    ];
+    foreach ($forbidden_urls as $url) {
+      $this->drupalGet($url);
+      $this->assertResponse(Response::HTTP_FORBIDDEN);
+    }
   }
 
   /**
@@ -291,7 +345,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $capture_url = $this->getUrl();
 
     // Login.
-    $this->drupalLogin($this->authorizedUser);
+    $this->drupalLogin($this->authorizedAdminUser);
 
     // Verify list exists with add button.
     $this->drupalGet('admin/config/system/web-page-archive');
