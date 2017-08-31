@@ -57,6 +57,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     parent::setUp();
     $this->authorizedAdminUser = $this->drupalCreateUser([
       'administer web page archive',
+      'view web page archive results',
     ]);
     $this->authorizedReadOnlyUser = $this->drupalCreateUser([
       'view web page archive results',

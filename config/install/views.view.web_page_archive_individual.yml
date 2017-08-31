@@ -6,7 +6,7 @@ dependencies:
     - user
     - web_page_archive
 _core:
-  default_config_hash: uDcNmpcVcvqfjiIIe4KWImOKve32MlKeL9uGJfcF_Y0
+  default_config_hash: d8uZ6pku22b1yoFKTtOpLTmHgjOEgPpcLo3Z0x_KVzc
 id: web_page_archive_individual
 label: 'Web Page Archive Individual Run'
 module: views
@@ -25,7 +25,7 @@ display:
       access:
         type: perm
         options:
-          perm: 'administer web page archive'
+          perm: 'view web page archive results'
       cache:
         type: tag
         options: {  }
