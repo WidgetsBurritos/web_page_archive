@@ -78,23 +78,25 @@ class WebPageArchiveTypeInfo implements ContainerInjectionInterface {
       return $operations;
     }
 
-    if ($this->currentUser->hasPermission('administer web page archive')) {
-      if ($entity->hasLinkTemplate('canonical')) {
-        $operations['web_page_archive_view'] = [
-          'title' => $this->t('View Run History'),
-          'weight' => -1,
-          'url' => $entity->toUrl('canonical'),
-        ];
-      }
-      if ($entity->hasLinkTemplate('queue_form')) {
-        $operations['web_page_archive_queue'] = [
-          'title' => $this->t('Start Run'),
-          'weight' => 0,
-          'url' => $entity->toUrl('queue_form'),
-        ];
-      }
+    $has_admin_permission = $this->currentUser->hasPermission('administer web page archive');
+    $has_view_permission = $has_admin_permission || $this->currentUser->hasPermission('view web page archive results');
 
+    if ($has_view_permission && $entity->hasLinkTemplate('canonical')) {
+      $operations['web_page_archive_view'] = [
+        'title' => $this->t('View Run History'),
+        'weight' => -1,
+        'url' => $entity->toUrl('canonical'),
+      ];
     }
+
+    if ($has_admin_permission && $entity->hasLinkTemplate('queue_form')) {
+      $operations['web_page_archive_queue'] = [
+        'title' => $this->t('Start Run'),
+        'weight' => 0,
+        'url' => $entity->toUrl('queue_form'),
+      ];
+    }
+
     return $operations;
   }
 
