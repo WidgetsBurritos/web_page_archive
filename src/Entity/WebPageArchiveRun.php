@@ -40,6 +40,7 @@ use Drupal\user\UserInterface;
  *     "langcode" = "langcode",
  *     "status" = "status",
  *     "queue_ct" = "queue_ct",
+ *     "success_ct" = "success_ct",
  *     "capture_utilities" = "capture_utilities",
  *   },
  *   field_ui_base_route = "web_page_archive_run.settings"
@@ -164,6 +165,21 @@ class WebPageArchiveRun extends RevisionableContentEntityBase implements WebPage
    */
   public function setQueueCt($ct) {
     $this->set('queue_ct', $ct);
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getSuccessCt() {
+    return $this->get('success_ct');
+  }
+
+  /**
+   * Sets number of jobs successfully ran.
+   */
+  public function setSuccessCt($ct) {
+    $this->set('success_ct', $ct);
     return $this;
   }
 
@@ -344,9 +360,14 @@ class WebPageArchiveRun extends RevisionableContentEntityBase implements WebPage
 
     $fields['queue_ct'] = BaseFieldDefinition::create('integer')
       ->setLabel(t('Queue count'))
-      ->setDescription(t('Number of tasks in the queue.'))
+      ->setDescription(t('Total number of tasks in the queue.'))
       ->setRevisionable(TRUE)
       ->setDefaultValue(0);
+
+    $fields['success_ct'] = BaseFieldDefinition::create('wpa_default_integer')
+      ->setLabel(t('Success count'))
+      ->setDescription(t('Number of successfully completed in the queue.'))
+      ->setRevisionable(TRUE);
 
     $fields['capture_size'] = BaseFieldDefinition::create('float')
       ->setLabel(t('Capture size'))

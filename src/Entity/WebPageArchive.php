@@ -310,6 +310,11 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
       }
 
       $queue = $this->getQueue();
+
+      // Reset queue.
+      $queue->deleteQueue();
+      $queue->createQueue();
+
       $run_uuid = $this->uuidGenerator()->generate();
       $run_entity = $this->getRunEntity();
 
@@ -378,6 +383,7 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
         'uuid' => $this->uuidGenerator()->generate(),
         'status' => 0,
         'queue_ct' => 0,
+        'success_ct' => 0,
         'config_entity' => $this->id(),
       ];
       $entity = $this->entityTypeManager()
