@@ -4,7 +4,7 @@ entity.web_page_archive.collection:
     _entity_list: 'web_page_archive'
     _title: 'Web Page Archive'
   requirements:
-    _permission: 'administer web page archive+view web page archive results'
+    _permission: 'view web page archive results'
 
 entity.web_page_archive.add_form:
   path: 'admin/config/system/web-page-archive/add'
@@ -24,7 +24,7 @@ entity.web_page_archive.canonical:
       web_page_archive:
         type: web_page_archive
   requirements:
-    _permission: 'administer web page archive+view web page archive results'
+    _permission: 'view web page archive results'
 
 entity.web_page_archive.edit_form:
   path: 'admin/config/system/web-page-archive/{web_page_archive}/edit'
