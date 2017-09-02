@@ -149,4 +149,9 @@ abstract class CaptureUtilityBase extends PluginBase implements CaptureUtilityIn
     return [];
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function cleanupRevision($revision_id) {}
+
 }

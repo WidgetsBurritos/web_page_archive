@@ -83,4 +83,11 @@ class SkeletonCaptureUtility extends ConfigurableCaptureUtilityBase {
     $this->configuration['width'] = $form_state->getValue('width');
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function cleanupRevision($revision_id) {
+    UriCaptureResponse::cleanupRevision($revision_id);
+  }
+
 }

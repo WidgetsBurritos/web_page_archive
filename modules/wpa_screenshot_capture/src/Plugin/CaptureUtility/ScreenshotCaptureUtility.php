@@ -155,4 +155,11 @@ class ScreenshotCaptureUtility extends ConfigurableCaptureUtilityBase {
     $this->configuration['image_type'] = $form_state->getValue('image_type');
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function cleanupRevision($revision_id) {
+    ScreenshotCaptureResponse::cleanupRevision($revision_id);
+  }
+
 }
