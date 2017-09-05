@@ -10,4 +10,4 @@ entity.web_page_archive.wpa_screenshot_capture.modal:
       delta:
         type: integer
   requirements:
-    _permission: 'administer web page archive'
+    _permission: 'view web page archive results'
