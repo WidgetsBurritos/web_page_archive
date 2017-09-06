@@ -87,7 +87,8 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
         'label' => 'Test Archive',
         'id' => 'test_archive',
         'timeout' => 500,
-        'cron_schedule' => '* * * * *',
+        'use_cron' => 1,
+        'cron_schedule' => '0 9 1 1 *',
         'url_type' => 'sitemap',
         'urls' => 'http://localhost/sitemap.xml',
       ],
@@ -101,12 +102,18 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $this->assertFieldByName('url_type', 'sitemap');
     $this->assertFieldByName('urls', 'http://localhost/sitemap.xml');
 
+    // Confirm entity list shows next scheduled time.
+    $this->drupalGet('admin/config/system/web-page-archive');
+    $assert->pageTextContains(t('-01-01 @ 9:00am'));
+    $assert->pageTextNotContains(t('Never'));
+
     // Update the new entity using the entity form.
     $this->drupalPostForm(
-      NULL,
+      'admin/config/system/web-page-archive/test_archive/edit',
       [
         'label' => 'Test Archiver',
         'timeout' => 250,
+        'use_cron' => 0,
         'url_type' => 'url',
         'urls' => implode(PHP_EOL, [
           'http://localhost:1234/some-page',
@@ -131,6 +138,8 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $this->assertLinkByHref('admin/config/system/web-page-archive/test_archive');
     $this->assertLinkByHref('admin/config/system/web-page-archive/test_archive/edit');
     $this->assertLinkByHref('admin/config/system/web-page-archive/test_archive/delete');
+    $assert->pageTextContains(t('Never'));
+    $assert->pageTextNotContains(t('-01-01 @ 9:00am'));
   }
 
   /**
@@ -144,7 +153,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
       'label' => 'Programmatic Archive',
       'id' => 'programmatic_archive',
       'timeout' => 500,
-      'cron_schedule' => '* * * * *',
+      'use_cron' => 0,
       'url_type' => 'sitemap',
       'urls' => 'http://localhost/sitemap.xml',
       'capture_utilities' => [
@@ -203,7 +212,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $data = [
       'label' => 'Read Only Archive',
       'id' => 'read_only_archive',
-      'cron_schedule' => '* * * * *',
+      'use_cron' => 0,
       'timeout' => 500,
       'url_type' => 'sitemap',
       'urls' => 'http://localhost/sitemap.xml',
@@ -247,7 +256,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $data = [
       'label' => 'Test Archive',
       'id' => 'test_archive',
-      'cron_schedule' => '* * * * *',
+      'use_cron' => 0,
       'timeout' => 500,
       'url_type' => 'sitemap',
       'urls' => 'http://localhost/sitemap.xml',
@@ -283,7 +292,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
       'label' => 'Process and Run Archive',
       'id' => 'process_and_run_archive',
       'timeout' => 500,
-      'cron_schedule' => '* * * * *',
+      'use_cron' => 0,
       'url_type' => 'sitemap',
       'urls' => 'http://localhost/sitemap.xml',
       'capture_utilities' => [
@@ -360,6 +369,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
         'label' => 'localhost',
         'id' => 'localhost',
         'timeout' => 500,
+        'use_cron' => 1,
         'cron_schedule' => '* * * * *',
         'url_type' => 'url',
         'urls' => $capture_url,

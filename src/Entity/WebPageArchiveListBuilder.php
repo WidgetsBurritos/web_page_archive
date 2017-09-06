@@ -2,6 +2,7 @@
 
 namespace Drupal\web_page_archive\Entity;
 
+use Cron\CronExpression;
 use Drupal\Core\Config\Entity\ConfigEntityListBuilder;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Url;
@@ -32,6 +33,7 @@ class WebPageArchiveListBuilder extends ConfigEntityListBuilder {
     $header['id'] = $this->t('Machine name');
     $header['runs'] = $this->t('Runs');
     $header['status'] = $this->t('Status');
+    $header['schedule'] = $this->t('Schedule');
     return $header + parent::buildHeader();
   }
 
@@ -49,7 +51,16 @@ class WebPageArchiveListBuilder extends ConfigEntityListBuilder {
     else {
       $row['status'] = $this->t('No pending jobs');
     }
-    // You probably want a few more properties here...
+
+    // Output job schedule.
+    if ($entity->getUseCron() && CronExpression::isValidExpression($entity->getCronSchedule())) {
+      $cron = CronExpression::factory($entity->getCronSchedule());
+      $row['schedule'] = $this->t('Next run: @next_run', ['@next_run' => $cron->getNextRunDate()->format('Y-m-d @ g:ia T')]);
+    }
+    else {
+      $row['schedule'] = $this->t('Never');
+    }
+
     return $row + parent::buildRow($entity);
   }
 
