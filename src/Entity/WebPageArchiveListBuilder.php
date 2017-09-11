@@ -32,7 +32,6 @@ class WebPageArchiveListBuilder extends ConfigEntityListBuilder {
     $header['label'] = $this->t('Web page archive entity');
     $header['id'] = $this->t('Machine name');
     $header['runs'] = $this->t('Runs');
-    $header['status'] = $this->t('Status');
     $header['schedule'] = $this->t('Schedule');
     return $header + parent::buildHeader();
   }
@@ -44,13 +43,6 @@ class WebPageArchiveListBuilder extends ConfigEntityListBuilder {
     $row['label'] = $entity->label();
     $row['id'] = $entity->id();
     $row['runs'] = $this->formatPlural($entity->getRunCt(), '1 run', '@count runs');
-    $capture_ct = $entity->getQueueCt();
-    if ($capture_ct) {
-      $row['status'] = $this->formatPlural($capture_ct, '1 job in queue', '@count jobs in queue');
-    }
-    else {
-      $row['status'] = $this->t('No pending jobs');
-    }
 
     // Output job schedule.
     if ($entity->getUseCron() && CronExpression::isValidExpression($entity->getCronSchedule())) {

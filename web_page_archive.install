@@ -5,6 +5,8 @@
  * Install commands for web_page_archive.
  */
 
+use Drupal\Core\Field\BaseFieldDefinition;
+
 /**
  * Implements hook_install().
  */
@@ -60,14 +62,14 @@ function web_page_archive_schema() {
         'unsigned' => TRUE,
         'not null' => TRUE,
         'default' => 0,
-        'description' => "Maps to {web_page_archive_run_revision__field_captures}.revision_id.",
+        'description' => 'Maps to {web_page_archive_run_revision__field_captures}.revision_id.',
       ],
       'delta' => [
         'type' => 'int',
         'unsigned' => TRUE,
         'not null' => TRUE,
         'default' => 0,
-        'description' => "Maps to {web_page_archive_run_revision__field_captures}.delta.",
+        'description' => 'Maps to {web_page_archive_run_revision__field_captures}.delta.',
       ],
       'langcode' => [
         'type' => 'varchar_ascii',
@@ -88,4 +90,35 @@ function web_page_archive_schema() {
   ];
 
   return $schema;
+}
+
+/**
+ * Add 'success_ct' to web page archive run entities.
+ */
+function web_page_archive_update_8001() {
+  $storage_definition = BaseFieldDefinition::create('wpa_default_integer')
+    ->setLabel(t('Success count'))
+    ->setDescription(t('Number of successfully completed in the queue.'))
+    ->setRevisionable(TRUE);
+
+  \Drupal::entityDefinitionUpdateManager()
+    ->installFieldStorageDefinition('success_ct', 'web_page_archive_run', 'web_page_archive_run', $storage_definition);
+}
+
+/**
+ * Initialize success_ct values.
+ */
+function web_page_archive_update_8002() {
+  $query = \Drupal::database()->select('web_page_archive_run_revision__field_captures', 'fc');
+  $query->addField('fc', 'revision_id');
+  $query->groupBy('fc.revision_id');
+  $query->addExpression('COUNT(*)', 'count');
+  $results = $query->execute()->fetchAllKeyed();
+
+  foreach ($results as $revision_id => $count) {
+    $query = \Drupal::database()->update('web_page_archive_run_revision');
+    $query->fields(['success_ct' => $count]);
+    $query->condition('vid', $revision_id);
+    $query->execute();
+  }
 }

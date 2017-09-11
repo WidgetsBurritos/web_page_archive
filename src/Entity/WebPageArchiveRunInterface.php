@@ -53,6 +53,22 @@ interface WebPageArchiveRunInterface extends RevisionableInterface, RevisionLogI
   public function setCreatedTime($timestamp);
 
   /**
+   * Returns total size of the run queue.
+   *
+   * @return int
+   *   Total number of items in the run queue.
+   */
+  public function getQueueCt();
+
+  /**
+   * Returns the number of items successfully completed.
+   *
+   * @return int
+   *   Total number of tasks completed.
+   */
+  public function getSuccessCt();
+
+  /**
    * Returns the Web page archive run completion status indicator.
    *
    * @return bool
