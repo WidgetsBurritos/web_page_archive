@@ -8,6 +8,7 @@ use Drupal\Core\Entity\RevisionableContentEntityBase;
 use Drupal\Core\Entity\EntityChangedTrait;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\user\UserInterface;
+use Drupal\web_page_archive\Controller\CleanupController;
 
 /**
  * Defines the Web page archive run entity.
@@ -411,5 +412,14 @@ class WebPageArchiveRun extends RevisionableContentEntityBase implements WebPage
     return $fields;
   }
 
-  // TODO: Implement delete() to delete any stored files.
+  /**
+   * {@inheritdoc}
+   */
+  public function delete() {
+    if (!$this->isNew()) {
+      CleanupController::cleanRunEntity($this);
+    }
+    parent::delete();
+  }
+
 }

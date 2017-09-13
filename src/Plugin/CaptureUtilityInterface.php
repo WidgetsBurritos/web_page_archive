@@ -79,4 +79,12 @@ interface CaptureUtilityInterface extends PluginInspectionInterface, Configurabl
    */
   public function setWeight($weight);
 
+  /**
+   * Performs cleanup on a run entity revision for the capture utility.
+   *
+   * @param int $revision_id
+   *   Specific revision to cleanup.
+   */
+  public function cleanupRevision($revision_id);
+
 }

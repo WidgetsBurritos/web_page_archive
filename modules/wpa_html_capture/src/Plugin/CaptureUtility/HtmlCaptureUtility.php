@@ -87,4 +87,11 @@ class HtmlCaptureUtility extends ConfigurableCaptureUtilityBase {
     $this->configuration['capture'] = $form_state->getValue('capture');
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function cleanupRevision($revision_id) {
+    UriCaptureResponse::cleanupRevision($revision_id);
+  }
+
 }

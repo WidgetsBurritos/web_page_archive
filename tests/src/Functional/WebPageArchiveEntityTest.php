@@ -396,8 +396,30 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
 
     // Switched to detailed view.
     $this->clickLink('View Details');
-    $file_path = str_replace(['://', ':', '/'], '-', $capture_url);
-    $assert->responseMatches("/<span>.*{$file_path}\.html<\/span>/");
+
+    // Parse file path.
+    if (preg_match('/(\/.*\.html)/', $this->getRawContent(), $matches)) {
+      $file_path = $matches[1];
+    }
+    else {
+      $file_path = 'this-test-will-fail.html';
+    }
+
+    // Assert file exists.
+    $this->assertTrue(file_exists($file_path));
+
+    // Delete the config entity.
+    $this->drupalGet('admin/config/system/web-page-archive/localhost/delete');
+    $this->drupalPostForm(NULL, [], t('Delete'));
+    $assert->pageTextContains(t('content web_page_archive: deleted localhost'));
+    $assert->pageTextContains(t('There is no Web Page Archive yet.'));
+
+    // Simulate a cron run.
+    web_page_archive_cron();
+
+    // Assert file no longer exists.
+    $this->assertFalse(file_exists($file_path));
+
   }
 
 }

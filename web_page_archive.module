@@ -5,6 +5,7 @@
  * This module holds functions useful for web page archives.
  */
 
+use Drupal\web_page_archive\Controller\CleanupController;
 use Drupal\web_page_archive\Entity\WebPageArchiveTypeInfo;
 
 /**
@@ -34,4 +35,7 @@ function web_page_archive_cron() {
   foreach ($config_entities as $id => $config_entity) {
     $cron_runner->run($config_entity);
   }
+
+  // Cleanup files.
+  CleanupController::processCleanup(50);
 }
