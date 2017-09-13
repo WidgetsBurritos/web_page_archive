@@ -4,6 +4,7 @@ namespace Drupal\wpa_screenshot_capture\Plugin\CaptureResponse;
 
 use Drupal\Core\Url;
 use Drupal\Component\Serialization\Json;
+use Drupal\Component\Utility\Html;
 use Drupal\web_page_archive\Plugin\CaptureResponse\UriCaptureResponse;
 
 /**
@@ -32,8 +33,8 @@ class ScreenshotCaptureResponse extends UriCaptureResponse {
 
     // If capture has a URL show it.
     if (!empty($this->captureUrl)) {
-      $url = Url::fromUri($this->captureUrl);
-      $link_array['capture_url'] = ['#markup' => "<p>{$this->captureUrl}</p>"];
+      $url = Html::escape($this->captureUrl);
+      $link_array['capture_url'] = ['#markup' => "<p>{$url}</p>"];
     }
 
     // If capture has a screenshot show it, otherwise show error.
