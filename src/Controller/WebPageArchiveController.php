@@ -113,8 +113,9 @@ class WebPageArchiveController extends ControllerBase {
         watchdog_exception($e);
       }
       catch (\Exception $e) {
-        // In case of any other kind of exception, log it and leave the item
-        // in the queue to be processed again later.
+        // In case of any other kind of exception, log it and remove it from
+        // the queue to prevent queues from getting stuck.
+        $queue->deleteItem($item);
         watchdog_exception('cron', $e);
       }
 
