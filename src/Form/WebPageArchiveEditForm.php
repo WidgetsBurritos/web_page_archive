@@ -6,6 +6,7 @@ use Drupal\Component\Utility\Unicode;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
+use Drupal\web_page_archive\Controller\WebPageArchiveController;
 use Drupal\web_page_archive\Plugin\CaptureUtilityManager;
 use Drupal\web_page_archive\Plugin\ConfigurableCaptureUtilityInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -254,6 +255,11 @@ class WebPageArchiveEditForm extends WebPageArchiveFormBase {
    * {@inheritdoc}
    */
   public function actions(array $form, FormStateInterface $form_state) {
+    // If we're missing dependencies, we shouldn't have a save button.
+    if (!WebPageArchiveController::checkDependencies()) {
+      return [];
+    }
+
     $actions = parent::actions($form, $form_state);
     $actions['submit']['#value'] = $this->t('Update archive');
 

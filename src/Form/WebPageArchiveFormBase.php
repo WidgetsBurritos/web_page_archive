@@ -6,6 +6,7 @@ use Cron\CronExpression;
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\web_page_archive\Controller\WebPageArchiveController;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -50,6 +51,10 @@ abstract class WebPageArchiveFormBase extends EntityForm {
    * {@inheritdoc}
    */
   public function form(array $form, FormStateInterface $form_state) {
+    // If we're missing dependencies, we shouldn't have any form fields.
+    if (!WebPageArchiveController::checkDependencies()) {
+      return [];
+    }
 
     $form['label'] = [
       '#type' => 'textfield',
