@@ -5,6 +5,7 @@ namespace Drupal\web_page_archive\Plugin\views\filter;
 use Drupal\Component\Plugin\PluginManagerInterface;
 use Drupal\views\Plugin\views\filter\InOperator;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\Database\Database;
 
 /**
  * My custom numeric filter.
@@ -92,7 +93,7 @@ class CaptureUtilityFilter extends InOperator {
    */
   protected function opContains($field) {
     foreach ($this->value as $value) {
-      $this->query->addWhere($this->options['group'], $field, '%' . db_like(serialize($value)) . '%', 'LIKE');
+      $this->query->addWhere($this->options['group'], $field, '%' . Database::getConnection()->escapeLike(serialize($value)) . '%', 'LIKE');
     }
   }
 
