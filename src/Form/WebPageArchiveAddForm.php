@@ -3,6 +3,7 @@
 namespace Drupal\web_page_archive\Form;
 
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\web_page_archive\Controller\WebPageArchiveController;
 
 /**
  * Class WebPageArchiveAddForm.
@@ -25,6 +26,11 @@ class WebPageArchiveAddForm extends WebPageArchiveFormBase {
    * {@inheritdoc}
    */
   public function actions(array $form, FormStateInterface $form_state) {
+    // If we're missing dependencies, we shouldn't have a save button.
+    if (!WebPageArchiveController::checkDependencies()) {
+      return [];
+    }
+
     $actions = parent::actions($form, $form_state);
     $actions['submit']['#value'] = $this->t('Create new archive');
 

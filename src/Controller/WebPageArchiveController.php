@@ -3,7 +3,9 @@
 namespace Drupal\web_page_archive\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Link;
 use Drupal\Core\Queue\RequeueException;
+use Drupal\Core\Url;
 use Drupal\views\Views;
 use Drupal\web_page_archive\Entity\WebPageArchive;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -139,6 +141,20 @@ class WebPageArchiveController extends ControllerBase {
       ];
       drupal_set_message(t('An error occurred while processing @operation with arguments : @args', $values));
     }
+  }
+
+  /**
+   * Ensures proper dependencies are installed in the system.
+   */
+  public static function checkDependencies() {
+    if (!class_exists('\\Cron\\CronExpression')) {
+      $urlObj = Url::fromUri('https://www.drupal.org/project/web_page_archive#installation');
+      $urlObj->setOptions(['attributes' => ['target' => '_blank']]);
+      $instructions_link = Link::fromTextAndUrl(t('installation instructions'), $urlObj)->toString();
+      \drupal_set_message(t('Missing mtdowling/cron-expression package. Web page archive must be installed via composer. See @instructions for more information.', ['@instructions' => $instructions_link]), 'error');
+      return FALSE;
+    }
+    return TRUE;
   }
 
 }

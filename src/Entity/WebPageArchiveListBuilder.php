@@ -6,6 +6,7 @@ use Cron\CronExpression;
 use Drupal\Core\Config\Entity\ConfigEntityListBuilder;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Url;
+use Drupal\web_page_archive\Controller\WebPageArchiveController;
 
 /**
  * Provides a listing of Web page archive entity entities.
@@ -16,6 +17,11 @@ class WebPageArchiveListBuilder extends ConfigEntityListBuilder {
    * {@inheritdoc}
    */
   public function load() {
+    // If we're missing dependencies, we shouldn't display any results.
+    if (!WebPageArchiveController::checkDependencies()) {
+      return [];
+    }
+
     $capture_utilities = \Drupal::service('plugin.manager.capture_utility')->getDefinitions();
     if (empty($capture_utilities)) {
       $url = Url::fromRoute('system.modules_list', [], ['fragment' => 'edit-modules-web-page-archive']);
