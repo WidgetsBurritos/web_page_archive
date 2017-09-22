@@ -3,7 +3,7 @@
 The Web Page Archive module allows you to use Drupal to perform periodic snapshots on local and remote websites based on a list of URLs or XML sitemaps.
 
 This project is currently under active development. Follow the development process here:
-- [8.x-1.0-alpha2 Release Plan](https://www.drupal.org/node/2901567)
+- [8.x-1.0-beta1 Release Plan](https://www.drupal.org/node/2908685)
 
 ## Capture Utilities
 
