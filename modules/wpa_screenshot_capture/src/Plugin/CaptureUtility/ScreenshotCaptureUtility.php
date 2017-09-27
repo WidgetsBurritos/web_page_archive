@@ -123,7 +123,7 @@ class ScreenshotCaptureUtility extends ConfigurableCaptureUtilityBase {
       '#title' => $this->t('Image type'),
       '#options' => $image_types,
       '#empty_option' => $this->t('Select an image type'),
-      '#default_value' => isset($this->configuration['image_type']) ? $this->configuration['image_type'] : '',
+      '#default_value' => isset($this->configuration['image_type']) ? $this->configuration['image_type'] : 'png',
       '#required' => TRUE,
     ];
     $form['background_color'] = [
@@ -136,7 +136,7 @@ class ScreenshotCaptureUtility extends ConfigurableCaptureUtilityBase {
       '#type' => 'textfield',
       '#title' => $this->t('Browser user agent'),
       '#description' => $this->t('Specify the browser user agent. e.g. "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36"'),
-      '#default_value' => isset($this->configuration['user_agent']) ? $this->configuration['user_agent'] : '',
+      '#default_value' => isset($this->configuration['user_agent']) ? $this->configuration['user_agent'] : $this->t('WPA'),
     ];
 
     return $form;
