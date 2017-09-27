@@ -102,6 +102,62 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $this->assertFieldByName('url_type', 'sitemap');
     $this->assertFieldByName('urls', 'http://localhost/sitemap.xml');
 
+    // Add a screenshot capture utility.
+    $this->drupalPostForm(
+      NULL,
+      [
+        'new' => 'wpa_screenshot_capture',
+      ],
+      t('Add')
+    );
+
+    // Check field default values.
+    $this->assertFieldByName('data[width]', '1280');
+    $this->assertFieldByName('data[clip_width]', '1280');
+    $this->assertFieldByName('data[image_type]', 'png');
+    $this->assertFieldByName('data[background_color]', '#ffffff');
+    $this->assertFieldByName('data[user_agent]', 'WPA');
+
+    // Alter a few values and then submit.
+    $this->drupalPostForm(
+      NULL,
+      [
+        'data[width]' => '1400',
+        'data[image_type]' => 'jpg',
+      ],
+      t('Add capture utility')
+    );
+
+    // Open capture utility settings.
+    $this->clickLink('Edit');
+
+    // Confirm field values.
+    $this->assertFieldByName('data[width]', '1400');
+    $this->assertFieldByName('data[clip_width]', '1280');
+    $this->assertFieldByName('data[image_type]', 'jpg');
+    $this->assertFieldByName('data[background_color]', '#ffffff');
+    $this->assertFieldByName('data[user_agent]', 'WPA');
+
+    // Attempt to change user agent and image type.
+    $this->drupalPostForm(
+      NULL,
+      [
+        'data[image_type]' => 'png',
+        'data[user_agent]' => 'Testbot 5000',
+      ],
+      t('Update capture utility')
+    );
+
+    // Open capture utility settings.
+    $this->clickLink('Edit');
+
+    // Confirm field values.
+    $this->assertFieldByName('data[width]', '1400');
+    $this->assertFieldByName('data[clip_width]', '1280');
+    $this->assertFieldByName('data[image_type]', 'png');
+    $this->assertFieldByName('data[background_color]', '#ffffff');
+    $this->assertFieldByName('data[user_agent]', 'Testbot 5000');
+
     // Confirm entity list shows next scheduled time.
     $this->drupalGet('admin/config/system/web-page-archive');
     $assert->pageTextContains(t('-01-01 @ 9:00am'));
