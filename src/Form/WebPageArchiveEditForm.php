@@ -44,7 +44,7 @@ class WebPageArchiveEditForm extends WebPageArchiveFormBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('entity.manager')->getStorage('web_page_archive'),
+      $container->get('entity_type.manager')->getStorage('web_page_archive'),
       $container->get('plugin.manager.capture_utility')
     );
   }

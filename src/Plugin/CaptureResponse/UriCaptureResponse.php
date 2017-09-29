@@ -46,7 +46,7 @@ class UriCaptureResponse extends CaptureResponseBase {
    * Queues all files in the specified revision for deletion.
    */
   public static function cleanupRevision($revision_id) {
-    $run_revision = \Drupal::entityManager()
+    $run_revision = \Drupal::entityTypeManager()
       ->getStorage('web_page_archive_run')
       ->loadRevision($revision_id);
 

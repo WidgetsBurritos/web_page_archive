@@ -235,7 +235,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
         ],
       ],
     ];
-    $wpa = \Drupal::entityManager()
+    $wpa = \Drupal::entityTypeManager()
       ->getStorage('web_page_archive')
       ->create($data);
     $wpa->save();
@@ -273,7 +273,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
       'url_type' => 'sitemap',
       'urls' => 'http://localhost/sitemap.xml',
     ];
-    $wpa = \Drupal::entityManager()
+    $wpa = \Drupal::entityTypeManager()
       ->getStorage('web_page_archive')
       ->create($data);
     $wpa->save();
@@ -317,7 +317,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
       'url_type' => 'sitemap',
       'urls' => 'http://localhost/sitemap.xml',
     ];
-    $wpa = \Drupal::entityManager()
+    $wpa = \Drupal::entityTypeManager()
       ->getStorage('web_page_archive')
       ->create($data);
     $wpa->save();
@@ -374,7 +374,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
         ],
       ],
     ];
-    $wpa = \Drupal::entityManager()
+    $wpa = \Drupal::entityTypeManager()
       ->getStorage('web_page_archive')
       ->create($data);
     $wpa->save();
