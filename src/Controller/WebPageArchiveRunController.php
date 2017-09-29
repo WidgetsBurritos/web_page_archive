@@ -27,8 +27,8 @@ class WebPageArchiveRunController extends ControllerBase implements ContainerInj
    *   An array suitable for drupal_render().
    */
   public function revisionShow($web_page_archive_run_revision) {
-    $web_page_archive_run = $this->entityManager()->getStorage('web_page_archive_run')->loadRevision($web_page_archive_run_revision);
-    $view_builder = $this->entityManager()->getViewBuilder('web_page_archive_run');
+    $web_page_archive_run = $this->entityTypeManager()->getStorage('web_page_archive_run')->loadRevision($web_page_archive_run_revision);
+    $view_builder = $this->entityTypeManager()->getViewBuilder('web_page_archive_run');
 
     return $view_builder->view($web_page_archive_run);
   }
@@ -43,7 +43,7 @@ class WebPageArchiveRunController extends ControllerBase implements ContainerInj
    *   The page title.
    */
   public function revisionPageTitle($web_page_archive_run_revision) {
-    $web_page_archive_run = $this->entityManager()->getStorage('web_page_archive_run')->loadRevision($web_page_archive_run_revision);
+    $web_page_archive_run = $this->entityTypeManager()->getStorage('web_page_archive_run')->loadRevision($web_page_archive_run_revision);
     return $this->t('Revision of %title from %date', ['%title' => $web_page_archive_run->label(), '%date' => format_date($web_page_archive_run->getRevisionCreationTime())]);
   }
 
@@ -62,7 +62,7 @@ class WebPageArchiveRunController extends ControllerBase implements ContainerInj
     $langname = $web_page_archive_run->language()->getName();
     $languages = $web_page_archive_run->getTranslationLanguages();
     $has_translations = (count($languages) > 1);
-    $web_page_archive_run_storage = $this->entityManager()->getStorage('web_page_archive_run');
+    $web_page_archive_run_storage = $this->entityTypeManager()->getStorage('web_page_archive_run');
 
     $build['#title'] = $has_translations ? $this->t('@langname revisions for %title', ['@langname' => $langname, '%title' => $web_page_archive_run->label()]) : $this->t('Revisions for %title', ['%title' => $web_page_archive_run->label()]);
     $header = [$this->t('Revision'), $this->t('Operations')];

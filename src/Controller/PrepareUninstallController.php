@@ -15,8 +15,8 @@ class PrepareUninstallController extends ControllerBase {
    * Deletes web_page_archive subscribers.
    */
   public static function deleteRunEntities(&$context) {
-    $run_ids = \Drupal::entityQuery('web_page_archive_run')->range(0, 100)->execute();
-    $storage = \Drupal::entityManager()->getStorage('web_page_archive_run');
+    $storage = \Drupal::entityTypeManager()->getStorage('web_page_archive_run');
+    $run_ids = $storage->getQuery()->range(0, 100)->execute();
     if ($run = $storage->loadMultiple($run_ids)) {
       $storage->delete($run);
     }
