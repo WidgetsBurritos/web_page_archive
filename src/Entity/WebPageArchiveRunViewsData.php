@@ -106,6 +106,11 @@ class WebPageArchiveRunViewsData extends EntityViewsData {
       'sort' => ['id' => 'standard'],
     ];
 
+    // $data['web_page_archive_run']['capture_size']['field']['id'] = 'gewgew';
+    // $data['web_page_archive_run_revision']['capture_size']['field']['id'] = 'standard';
+    // $data['web_page_archive_run']['capture_size']['field']['default_formatter'] = 'file_size';
+    $data['web_page_archive_run_revision']['capture_size']['field']['default_formatter'] = 'file_size';
+
     return $data;
   }
 

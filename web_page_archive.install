@@ -6,6 +6,8 @@
  */
 
 use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\field\Entity\FieldStorageConfig;
+use Drupal\field\Entity\FieldConfig;
 
 /**
  * Implements hook_install().
@@ -121,4 +123,29 @@ function web_page_archive_update_8002() {
     $query->condition('vid', $revision_id);
     $query->execute();
   }
+}
+
+/**
+ * Swap capture_size to integer.
+ */
+function web_page_archive_update_8003() {
+  $database = \Drupal::database();
+  $schema = $database->schema();
+  $tables = [
+    'web_page_archive_run',
+    'web_page_archive_run_revision',
+  ];
+  foreach ($tables as $table) {
+    $field = 'capture_size';
+    $spec = [
+      'type' => 'int',
+      'size' => 'big',
+      'unsigned' => TRUE,
+      'not null' => TRUE,
+      'default' => 0,
+    ];
+    $schema->changeField($table, $field, $field, $spec);
+  }
+
+  drupal_exit();
 }
