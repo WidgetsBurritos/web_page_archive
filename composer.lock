@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "4dd41b3a654d1b8a93734873b8bcdea8",
+    "content-hash": "1373b42976e8f7c46758c975e0491a2b",
     "packages": [
         {
             "name": "mtdowling/cron-expression",
@@ -51,7 +51,59 @@
             "time": "2017-01-23T04:29:33+00:00"
         }
     ],
-    "packages-dev": [],
+    "packages-dev": [
+        {
+            "name": "microweber/screen",
+            "version": "v1.0.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/microweber/screen.git",
+                "reference": "a7865099d2fbb8960052cfb408b4cbe463b31774"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/microweber/screen/zipball/a7865099d2fbb8960052cfb408b4cbe463b31774",
+                "reference": "a7865099d2fbb8960052cfb408b4cbe463b31774",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3"
+            },
+            "require-dev": {
+                "symfony/var-dumper": "~3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Screen\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Peter Ivanov",
+                    "email": "peter@microweber.com",
+                    "homepage": "http://microweber.com"
+                },
+                {
+                    "name": "André Filipe",
+                    "email": "andre.r.flip@gmail.com",
+                    "homepage": "http://masnathan.com"
+                }
+            ],
+            "description": "A PHP Class to interact with PhantomJs and capture screenshot of a webpage",
+            "keywords": [
+                "capture",
+                "phantomjs",
+                "print-screen",
+                "screen"
+            ],
+            "time": "2017-01-20T15:21:43+00:00"
+        }
+    ],
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": [],

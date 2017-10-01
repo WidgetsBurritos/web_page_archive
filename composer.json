@@ -21,5 +21,8 @@
     "minimum-stability": "dev",
     "require": {
         "mtdowling/cron-expression": "1.2.0"
+    },
+    "require-dev": {
+        "microweber/screen": "1.0.*"
     }
 }
