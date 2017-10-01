@@ -370,11 +370,12 @@ class WebPageArchiveRun extends RevisionableContentEntityBase implements WebPage
       ->setDescription(t('Number of successfully completed in the queue.'))
       ->setRevisionable(TRUE);
 
-    $fields['capture_size'] = BaseFieldDefinition::create('float')
+    $fields['capture_size'] = BaseFieldDefinition::create('integer')
       ->setLabel(t('Capture size'))
-      ->setDescription(t('A floating point number representing cumulative file size for a run.'))
+      ->setDescription(t('Cumulative file size for a run.'))
       ->setRevisionable(TRUE)
-      ->setDefaultValue(0);
+      ->setSetting('unsigned', TRUE)
+      ->setSetting('size', 'big');
 
     $fields['config_entity'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Config entity'))

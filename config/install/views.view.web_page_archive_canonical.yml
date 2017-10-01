@@ -3,9 +3,10 @@ langcode: en
 status: true
 dependencies:
   module:
+    - file
     - web_page_archive
 _core:
-  default_config_hash: 3v1lHJqrGlulKQPWXlNrYez0Ls-k4j6qsg2VdTnptOw
+  default_config_hash: 5gmfZGFeaEtDJMnjdslVwCcJ5kS0hLEPjMfkLFAYBgI
 id: web_page_archive_canonical
 label: 'Web Page Archive Canonical'
 module: views
@@ -409,12 +410,10 @@ display:
           empty_zero: false
           hide_alter_empty: true
           click_sort_column: value
-          type: number_decimal
+          type: file_size
           settings:
             thousand_separator: ','
-            prefix_suffix: true
-            decimal_separator: .
-            scale: 0
+            prefix_suffix: 1
           group_column: value
           group_columns: {  }
           group_rows: true
