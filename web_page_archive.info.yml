@@ -7,4 +7,8 @@ configure: entity.web_page_archive.collection
 dependencies:
   - drupal:system (>= 8.3)
   - drupal:views
+test_dependencies:
+  - drupal:wpa_html_capture
+  - drupal:wpa_screenshot_capture
+  - drupal:wpa_skeleton_capture
 php: 7.0
