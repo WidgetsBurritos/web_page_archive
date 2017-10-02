@@ -9,6 +9,7 @@ use Drupal\Core\Url;
 use Drupal\web_page_archive\Controller\WebPageArchiveController;
 use Drupal\web_page_archive\Plugin\CaptureUtilityManager;
 use Drupal\web_page_archive\Plugin\ConfigurableCaptureUtilityInterface;
+use Drupal\web_page_archive\Parser\SitemapParser;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -31,11 +32,13 @@ class WebPageArchiveEditForm extends WebPageArchiveFormBase {
    *
    * @param \Drupal\Core\Entity\EntityStorageInterface $web_page_archive_storage
    *   The storage.
+   * @param \Drupal\web_page_archive\Parser\SitemapParser $sitemap_parser
+   *   The sitemap parser service.
    * @param \Drupal\web_page_archive\Plugin\CaptureUtilityManager $capture_utility_manager
    *   The capture utility manager service.
    */
-  public function __construct(EntityStorageInterface $web_page_archive_storage, CaptureUtilityManager $capture_utility_manager) {
-    parent::__construct($web_page_archive_storage);
+  public function __construct(EntityStorageInterface $web_page_archive_storage, SitemapParser $sitemap_parser, CaptureUtilityManager $capture_utility_manager) {
+    parent::__construct($web_page_archive_storage, $sitemap_parser);
     $this->captureUtilityManager = $capture_utility_manager;
   }
 
@@ -45,6 +48,7 @@ class WebPageArchiveEditForm extends WebPageArchiveFormBase {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('entity_type.manager')->getStorage('web_page_archive'),
+      $container->get('web_page_archive.parser.xml.sitemap'),
       $container->get('plugin.manager.capture_utility')
     );
   }

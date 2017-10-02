@@ -89,8 +89,8 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
         'timeout' => 500,
         'use_cron' => 1,
         'cron_schedule' => '0 9 1 1 *',
-        'url_type' => 'sitemap',
-        'urls' => 'http://localhost/sitemap.xml',
+        'url_type' => 'url',
+        'urls' => 'http://localhost',
       ],
       t('Create new archive')
     );
@@ -99,8 +99,8 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     // Verify previous values are retained.
     $this->assertContains('admin/config/system/web-page-archive/test_archive/edit', $this->getSession()->getCurrentUrl());
     $this->assertFieldByName('timeout', '500');
-    $this->assertFieldByName('url_type', 'sitemap');
-    $this->assertFieldByName('urls', 'http://localhost/sitemap.xml');
+    $this->assertFieldByName('url_type', 'url');
+    $this->assertFieldByName('urls', 'http://localhost');
 
     // Add a screenshot capture utility.
     $this->drupalPostForm(
@@ -270,8 +270,8 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
       'id' => 'read_only_archive',
       'use_cron' => 0,
       'timeout' => 500,
-      'url_type' => 'sitemap',
-      'urls' => 'http://localhost/sitemap.xml',
+      'url_type' => 'url',
+      'urls' => 'http://localhost',
     ];
     $wpa = \Drupal::entityTypeManager()
       ->getStorage('web_page_archive')
