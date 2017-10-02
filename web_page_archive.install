@@ -136,3 +136,19 @@ function web_page_archive_update_8003() {
     $view_config->save();
   }
 }
+
+/**
+ * Sets robots restrictions to false for all existing config entities.
+ */
+function web_page_archive_update_8004() {
+  $config_factory = \Drupal::service('config.factory');
+  $config_prefix = 'web_page_archive.web_page_archive';
+  $keys = $config_factory->listAll($config_prefix);
+
+  foreach ($keys as $key) {
+    $wpa_config = $config_factory->getEditable($key);
+    // Defaulting to FALSE preserves existing functionality.
+    $wpa_config->set('use_robots', FALSE);
+    $wpa_config->save();
+  }
+}

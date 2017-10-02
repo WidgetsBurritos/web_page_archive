@@ -14,6 +14,10 @@ services:
     class: Drupal\web_page_archive\Parser\SitemapParser
     tags:
       - { name: parser }
+  web_page_archive.validator.robots:
+    class: Drupal\web_page_archive\Validator\RobotsValidator
+    tags:
+      - { name: validator }
   web_page_archive.cron.runner:
     class: Drupal\web_page_archive\Cron\CronRunner
     arguments: ['@lock', '@state', '@datetime.time']

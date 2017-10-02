@@ -51,6 +51,7 @@ use GuzzleHttp\HandlerStack;
  *     "timeout",
  *     "url_type",
  *     "urls",
+ *     "use_robots",
  *     "use_cron",
  *     "cron_schedule",
  *     "capture_utilities",
@@ -156,6 +157,13 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
    */
   public function getUrlList() {
     return array_map('trim', explode(PHP_EOL, $this->getUrlsText()));
+  }
+
+  /**
+   * Indicates whether or not the config entity honors robots.txt restrictions.
+   */
+  public function getUseRobots() {
+    return $this->use_robots;
   }
 
   /**
@@ -309,6 +317,10 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
         $urls = $parsed_urls;
       }
 
+      if ($this->getUseRobots()) {
+        $urls = $this->robotsValidator()->filterUrls($urls);
+      }
+
       $queue = $this->getQueue();
 
       // Reset queue.
@@ -444,6 +456,16 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
    */
   protected function sitemapParser(HandlerStack $handler = NULL) {
     return \Drupal::service('web_page_archive.parser.xml.sitemap')->initializeConnection($handler);
+  }
+
+  /**
+   * Wraps the robots.txt validator.
+   *
+   * @return \Drupal\web_page_archive\Validator\RobotsValidator
+   *   A robots.txt validator object.
+   */
+  protected function robotsValidator(HandlerStack $handler = NULL) {
+    return \Drupal::service('web_page_archive.validator.robots')->initializeConnection($handler);
   }
 
   /**

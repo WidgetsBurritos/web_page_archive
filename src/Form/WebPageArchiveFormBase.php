@@ -140,6 +140,23 @@ abstract class WebPageArchiveFormBase extends EntityForm {
       '#default_value' => $this->entity->getUrlType(),
     ];
 
+    $form['use_robots'] = [
+      '#type' => 'select',
+      '#title' => $this->t('Honor robots.txt restrictions.'),
+      '#description' => $this->t('If checked, capture utility will respect robots.txt crawling rules.'),
+      '#options' => [
+        1 => $this->t('Yes'),
+        0 => $this->t('No'),
+      ],
+      '#default_value' => !$this->entity->isNew() ? (int) $this->entity->getUseRobots() : 1,
+      '#states' => [
+        'visible' => [
+          ['select[name="url_type"]' => ['value' => 'url']],
+          ['select[name="url_type"]' => ['value' => 'sitemap']],
+        ],
+      ],
+    ];
+
     $form['urls'] = [
       '#type' => 'textarea',
       '#title' => $this->t('URLs to Capture'),
