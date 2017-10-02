@@ -122,3 +122,17 @@ function web_page_archive_update_8002() {
     $query->execute();
   }
 }
+
+/**
+ * Sets the formatter for the capture size field.
+ */
+function web_page_archive_update_8003() {
+  $view = 'views.view.web_page_archive_canonical';
+  $config_key = 'display.default.display_options.fields.capture_size.type';
+  $view_config = \Drupal::service('config.factory')->getEditable($view);
+  $current_value = $view_config->get($config_key);
+  if ($config_key !== 'wpa_capture_size') {
+    $view_config->set($config_key, 'wpa_capture_size');
+    $view_config->save();
+  }
+}
