@@ -3,10 +3,12 @@
 namespace Drupal\web_page_archive\Form;
 
 use Cron\CronExpression;
+use Drupal\Component\Utility\UrlHelper;
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\web_page_archive\Controller\WebPageArchiveController;
+use Drupal\web_page_archive\Parser\SitemapParser;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -29,13 +31,23 @@ abstract class WebPageArchiveFormBase extends EntityForm {
   protected $webPageArchiveStorage;
 
   /**
+   * The sitemap parser service.
+   *
+   * @var \Drupal\web_page_archive\Parser\SitemapParser
+   */
+  protected $sitemapParser;
+
+  /**
    * Constructs a base class for web page archive add and edit forms.
    *
    * @param \Drupal\Core\Entity\EntityStorageInterface $web_page_archive_storage
    *   The web page archive entity storage.
+   * @param \Drupal\web_page_archive\Parser\SitemapParser $sitemap_parser
+   *   The sitemap parser service.
    */
-  public function __construct(EntityStorageInterface $web_page_archive_storage) {
+  public function __construct(EntityStorageInterface $web_page_archive_storage, SitemapParser $sitemap_parser = NULL) {
     $this->webPageArchiveStorage = $web_page_archive_storage;
+    $this->sitemapParser = $sitemap_parser;
   }
 
   /**
@@ -43,7 +55,8 @@ abstract class WebPageArchiveFormBase extends EntityForm {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('entity_type.manager')->getStorage('web_page_archive')
+      $container->get('entity_type.manager')->getStorage('web_page_archive'),
+      $container->get('web_page_archive.parser.xml.sitemap')
     );
   }
 
@@ -145,6 +158,39 @@ abstract class WebPageArchiveFormBase extends EntityForm {
     ];
 
     return parent::form($form, $form_state);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function validateForm(array &$form, FormStateInterface $form_state) {
+    $url_type = $form_state->getValue('url_type');
+
+    // Validate URLs.
+    if (in_array($url_type, ['sitemap', 'url'])) {
+      $urls = explode(PHP_EOL, $form_state->getValue('urls'));
+
+      foreach ($urls as $url) {
+        $url = trim($url);
+        if (!UrlHelper::isValid($url, TRUE)) {
+          $form_state->setErrorByName('urls', $this->t('Invalid URL: @url', ['@url' => $url]));
+        }
+        elseif ($url_type == 'sitemap') {
+          try {
+            if (!isset($this->sitemapParser)) {
+              throw new \Exception($this->t('Sitemap parser service could not be found'));
+            }
+            $parsed_urls = $this->sitemapParser->parse($url);
+            if (empty($parsed_urls)) {
+              throw new \Exception($this->t('No urls parsed'));
+            }
+          }
+          catch (\Exception $e) {
+            $form_state->setErrorByName('urls', $this->t('Invalid or Empty Sitemap: @url', ['@url' => $url]));
+          }
+        }
+      }
+    }
   }
 
   /**
