@@ -45,7 +45,7 @@ abstract class WebPageArchiveFormBase extends EntityForm {
    * @param \Drupal\web_page_archive\Parser\SitemapParser $sitemap_parser
    *   The sitemap parser service.
    */
-  public function __construct(EntityStorageInterface $web_page_archive_storage, SitemapParser $sitemap_parser) {
+  public function __construct(EntityStorageInterface $web_page_archive_storage, SitemapParser $sitemap_parser = NULL) {
     $this->webPageArchiveStorage = $web_page_archive_storage;
     $this->sitemapParser = $sitemap_parser;
   }
@@ -177,6 +177,9 @@ abstract class WebPageArchiveFormBase extends EntityForm {
         }
         elseif ($url_type == 'sitemap') {
           try {
+            if (!isset($this->sitemapParser)) {
+              throw new \Exception($this->t('Sitemap parser service could not be found'));
+            }
             $parsed_urls = $this->sitemapParser->parse($url);
             if (empty($parsed_urls)) {
               throw new \Exception($this->t('No urls parsed'));
