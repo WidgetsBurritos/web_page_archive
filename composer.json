@@ -20,7 +20,8 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "mtdowling/cron-expression": "1.2.0"
+        "mtdowling/cron-expression": "1.2.0",
+        "t1gor/robots-txt-parser": "0.2.3"
     },
     "require-dev": {
         "microweber/screen": "1.0.*"

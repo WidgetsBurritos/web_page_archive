@@ -88,6 +88,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
         'id' => 'test_archive',
         'timeout' => 500,
         'use_cron' => 1,
+        'use_robots' => 0,
         'cron_schedule' => '0 9 1 1 *',
         'url_type' => 'url',
         'urls' => 'http://localhost',
@@ -170,6 +171,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
         'label' => 'Test Archiver',
         'timeout' => 250,
         'use_cron' => 0,
+        'use_robots' => 0,
         'url_type' => 'url',
         'urls' => implode(PHP_EOL, [
           'http://localhost:1234/some-page',
@@ -210,6 +212,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
       'id' => 'programmatic_archive',
       'timeout' => 500,
       'use_cron' => 0,
+      'use_robots' => 0,
       'url_type' => 'sitemap',
       'urls' => 'http://localhost/sitemap.xml',
       'capture_utilities' => [
@@ -269,6 +272,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
       'label' => 'Read Only Archive',
       'id' => 'read_only_archive',
       'use_cron' => 0,
+      'use_robots' => 0,
       'timeout' => 500,
       'url_type' => 'url',
       'urls' => 'http://localhost',
@@ -313,6 +317,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
       'label' => 'Test Archive',
       'id' => 'test_archive',
       'use_cron' => 0,
+      'use_robots' => 0,
       'timeout' => 500,
       'url_type' => 'sitemap',
       'urls' => 'http://localhost/sitemap.xml',
@@ -349,6 +354,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
       'id' => 'process_and_run_archive',
       'timeout' => 500,
       'use_cron' => 0,
+      'use_robots' => 0,
       'url_type' => 'sitemap',
       'urls' => 'http://localhost/sitemap.xml',
       'capture_utilities' => [
@@ -408,7 +414,12 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $assert = $this->assertSession();
 
     // Grab the URL of the front page.
-    $capture_url = $this->getUrl();
+    $urls = [
+      // Front page is crawlable via default Drupal robots.txt.
+      $this->getUrl(),
+      // Login page is not crawlable via default Drupal robots.txt.
+      $this->getUrl() . '/user/login/',
+    ];
 
     // Login.
     $this->drupalLogin($this->authorizedAdminUser);
@@ -426,9 +437,10 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
         'id' => 'localhost',
         'timeout' => 500,
         'use_cron' => 1,
+        'use_robots' => 1,
         'cron_schedule' => '* * * * *',
         'url_type' => 'url',
-        'urls' => $capture_url,
+        'urls' => implode(PHP_EOL, $urls),
       ],
       t('Create new archive')
     );
@@ -454,8 +466,12 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $this->clickLink('View Details');
 
     // Parse file path.
-    if (preg_match('/(\/.*\.html)/', $this->getRawContent(), $matches)) {
-      $file_path = $matches[1];
+    if (preg_match_all('/(\/.*\.html)/', $this->getRawContent(), $matches)) {
+      $file_path = $matches[1][0];
+
+      // Despite attempting to capture two URLs we should only capture 1 due
+      // to robots.txt restrictions.
+      $this->assertEquals(1, count($matches[1]));
     }
     else {
       $file_path = 'this-test-will-fail.html';

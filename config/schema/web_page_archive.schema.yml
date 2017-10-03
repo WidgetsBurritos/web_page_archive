@@ -16,6 +16,9 @@ web_page_archive.web_page_archive.*:
     urls:
       type: string
       label: 'URLs'
+    use_robots:
+      type: boolean
+      label: 'Honor robots.txt restrictions'
     use_cron:
       type: boolean
       label: 'Use Cron?'

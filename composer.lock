@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "1373b42976e8f7c46758c975e0491a2b",
+    "content-hash": "2404c0d876b0a25961796bafdd140443",
     "packages": [
         {
             "name": "mtdowling/cron-expression",
@@ -49,6 +49,62 @@
                 "schedule"
             ],
             "time": "2017-01-23T04:29:33+00:00"
+        },
+        {
+            "name": "t1gor/robots-txt-parser",
+            "version": "v0.2.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/t1gor/Robots.txt-Parser-Class.git",
+                "reference": "20dbf68534d042ffc3d4cf6381164d86087c806f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/t1gor/Robots.txt-Parser-Class/zipball/20dbf68534d042ffc3d4cf6381164d86087c806f",
+                "reference": "20dbf68534d042ffc3d4cf6381164d86087c806f",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "codeclimate/php-test-reporter": ">=0.2",
+                "phpunit/phpunit": ">=3.7"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "source/robotstxtparser.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Igor Timoshenkov",
+                    "email": "igor.timoshenkov@gmail.com",
+                    "role": "creator"
+                },
+                {
+                    "name": "Jan-Petter Gundersen",
+                    "email": "europe.jpg@gmail.com",
+                    "role": "contributor"
+                }
+            ],
+            "description": "PHP class to parse robots.txt rules according to Google, Yandex, W3C and The Web Robots Pages specifications.",
+            "homepage": "https://github.com/t1gor/Robots.txt-Parser-Class",
+            "keywords": [
+                "The Web Robots Pages",
+                "W3C",
+                "google",
+                "parser",
+                "robots.txt",
+                "yandex"
+            ],
+            "time": "2016-08-10T19:04:18+00:00"
         }
     ],
     "packages-dev": [
