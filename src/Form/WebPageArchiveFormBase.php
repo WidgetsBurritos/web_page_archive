@@ -157,6 +157,13 @@ abstract class WebPageArchiveFormBase extends EntityForm {
       ],
     ];
 
+    $form['user_agent'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Browser user agent'),
+      '#description' => $this->t('Specify the browser user agent. e.g. "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36"'),
+      '#default_value' => !$this->entity->isNew() ? $this->entity->getUserAgent() : $this->t('WPA'),
+    ];
+
     $form['urls'] = [
       '#type' => 'textarea',
       '#title' => $this->t('URLs to Capture'),

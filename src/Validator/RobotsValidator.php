@@ -36,7 +36,7 @@ class RobotsValidator {
   /**
    * Determines if a URL is crawlable based on robots.txt file.
    */
-  public function isCrawlable($url) {
+  public function isCrawlable($url, $user_agent = 'WPA') {
     static $robots = [];
 
     // Use default client if not previously set.
@@ -77,10 +77,7 @@ class RobotsValidator {
 
     // Apply robots.txt to URL.
     $parser = new \RobotsTxtParser($robots[$robots_file]);
-    // TODO: Move user agent from screenshot capture utility to config entity.
-    // In the mean time we just hardcode it here:
-    // @see https://www.drupal.org/node/2913374
-    return $parser->isAllowed($url, 'WPA');
+    return $parser->isAllowed($url, $user_agent);
   }
 
   /**

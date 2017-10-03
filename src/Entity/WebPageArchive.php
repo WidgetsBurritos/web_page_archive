@@ -53,6 +53,7 @@ use GuzzleHttp\HandlerStack;
  *     "urls",
  *     "use_robots",
  *     "use_cron",
+ *     "user_agent",
  *     "cron_schedule",
  *     "capture_utilities",
  *     "run_entity"
@@ -164,6 +165,13 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
    */
   public function getUseRobots() {
     return $this->use_robots;
+  }
+
+  /**
+   * Indicates user agent used during crawling.
+   */
+  public function getUserAgent() {
+    return $this->user_agent;
   }
 
   /**
@@ -318,7 +326,7 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
       }
 
       if ($this->getUseRobots()) {
-        $urls = $this->robotsValidator()->filterUrls($urls);
+        $urls = $this->robotsValidator()->filterUrls($urls, $this->getUserAgent());
       }
 
       $queue = $this->getQueue();
@@ -329,6 +337,7 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
 
       $run_uuid = $this->uuidGenerator()->generate();
       $run_entity = $this->getRunEntity();
+      $user_agent = $this->getUserAgent();
 
       foreach ($urls as $url) {
         foreach ($this->getCaptureUtilities() as $utility) {
@@ -338,6 +347,7 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
             'url' => $url,
             'run_uuid' => $run_uuid,
             'run_entity' => $run_entity,
+            'user_agent' => $user_agent,
           ];
           $queue->createItem($item);
         }

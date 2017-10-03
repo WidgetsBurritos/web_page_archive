@@ -47,56 +47,56 @@ class RobotsValidatorTest extends UnitTestCase {
    * Tests good URL is crawlable.
    */
   public function testsGoodUrlIsCrawlable() {
-    $this->assertTrue(static::$robotsValidator->isCrawlable('http://www.goodsite.com/'));
+    $this->assertTrue(static::$robotsValidator->isCrawlable('http://www.goodsite.com/', 'WPA'));
   }
 
   /**
    * Tests bad URL is not crawlable.
    */
   public function testsBadUrlIsNotCrawlable() {
-    $this->assertFalse(static::$robotsValidator->isCrawlable('http://www.goodsite.com/profiles/joe-smith'));
+    $this->assertFalse(static::$robotsValidator->isCrawlable('http://www.goodsite.com/profiles/joe-smith', 'WPA'));
   }
 
   /**
    * Tests URL is crawlable in empty robots.txt file.
    */
   public function testsEmptyRobotsFileAllowsCrawling() {
-    $this->assertTrue(static::$robotsValidator->isCrawlable('http://www.emptysite.com/profiles/joe-smith'));
+    $this->assertTrue(static::$robotsValidator->isCrawlable('http://www.emptysite.com/profiles/joe-smith', 'WPA'));
   }
 
   /**
    * Tests blocked user agent failed.
    */
   public function testsBlockedUserAgentDisallowsCrawling() {
-    $this->assertFalse(static::$robotsValidator->isCrawlable('https://www.blockedsite.com/about-us'));
+    $this->assertFalse(static::$robotsValidator->isCrawlable('https://www.blockedsite.com/about-us', 'WPA'));
   }
 
   /**
    * Tests unparseable file allows crawling.
    */
   public function testsUrlWithInvalidRobotsFileAllowsCrawling() {
-    $this->assertTrue(static::$robotsValidator->isCrawlable('https://www.somesite.com/invalid.file.txt'));
+    $this->assertTrue(static::$robotsValidator->isCrawlable('https://www.somesite.com/invalid.file.txt', 'WPA'));
   }
 
   /**
    * Tests unparseable file allows crawling.
    */
   public function testsUnparseableFileAllowsCrawling() {
-    $this->assertTrue(static::$robotsValidator->isCrawlable('https://www.somesite.com/invalid.file.png'));
+    $this->assertTrue(static::$robotsValidator->isCrawlable('https://www.someothersite.com/invalid.file.png', 'WPA'));
   }
 
   /**
    * Tests 4xx client error allows crawling.
    */
   public function testsClientErrorAllowsCrawling() {
-    $this->assertTrue(static::$robotsValidator->isCrawlable('https://www.somesite.com/access-denied-page'));
+    $this->assertTrue(static::$robotsValidator->isCrawlable('https://www.yetanothersite.com/access-denied-page', 'WPA'));
   }
 
   /**
    * Tests connection failure allows crawling.
    */
   public function testsRequestErrorAllowsCrawling() {
-    $this->assertTrue(static::$robotsValidator->isCrawlable('https://www.youcantconnecttome.com/peanut-butter'));
+    $this->assertTrue(static::$robotsValidator->isCrawlable('https://www.youcantconnecttome.com/peanut-butter', 'WPA'));
   }
 
 }

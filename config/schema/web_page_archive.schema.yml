@@ -16,6 +16,9 @@ web_page_archive.web_page_archive.*:
     urls:
       type: string
       label: 'URLs'
+    user_agent:
+      type: string
+      label: 'User Agent'
     use_robots:
       type: boolean
       label: 'Honor robots.txt restrictions'
