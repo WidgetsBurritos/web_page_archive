@@ -9,3 +9,12 @@
 .image-style-web-page-archive-full {
   max-width: 100%;
 }
+
+.wpa-hidden {
+  display: none;
+}
+
+.wpa-code-window {
+  background: #f0f0f0;
+  padding: 15px;
+}

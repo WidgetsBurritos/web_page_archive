@@ -1,0 +1,89 @@
+<?php
+
+/**
+ * @file
+ * Install commands for wpa_html_capture.
+ */
+
+use Drupal\wpa_html_capture\Plugin\CaptureResponse\HtmlCaptureResponse;
+
+/**
+ * Convert UriCaptureResponses to HtmlCaptureResponses.
+ */
+function wpa_html_capture_update_8001(&$sandbox = NULL) {
+  $entity_limit = 1;
+  $entity_type_manager = \Drupal::entityTypeManager();
+  $run_storage = $entity_type_manager->getStorage('web_page_archive_run');
+
+  if (!array_key_exists('max', $sandbox)) {
+    $sandbox['max'] = $run_storage->getQuery()
+      ->condition('capture_utilities', '%wpa_html_capture%', 'LIKE')
+      ->count()
+      ->execute();
+    $sandbox['progress'] = 0;
+    $sandbox['last_processed'] = 0;
+  }
+
+  // Retrieve next $limit run entities.
+  $run_ids = $run_storage->getQuery()
+    ->condition('capture_utilities', '%wpa_html_capture%', 'LIKE')
+    ->range(0, $entity_limit)
+    ->execute();
+
+  // Load and iterate through all runs.
+  if ($runs = $run_storage->loadMultiple($run_ids)) {
+
+    // Determine file paths for replacement.
+    $old_file_path = \Drupal::service('file_system')->realpath(file_default_scheme() . "://") . '/';
+    $new_file_path = file_default_scheme() . "://";
+
+    foreach ($runs as $run) {
+
+      // Iterate through each run revision.
+      $vids = $run_storage->revisionIds($run);
+
+      foreach ($vids as $vid) {
+        $revision = $run_storage->loadRevision($vid);
+        $captures = $revision->get('field_captures');
+
+        // Iterate through each capture and update response type.
+        foreach ($captures as $capture) {
+          // Skip invalid responses.
+          $value = $capture->getValue();
+          if (empty($value['value'])) {
+            continue;
+          }
+          $unserialized = unserialize($value['value']);
+          if (empty($unserialized['capture_response'])) {
+            continue;
+          }
+
+          // Determine if old response is a UriCaptureResponse.
+          $old_response = $unserialized['capture_response'];
+          if (get_class($old_response) == 'Drupal\web_page_archive\Plugin\CaptureResponse\UriCaptureResponse') {
+            // Swap absolute file path out with scheme-based path.
+            $content = str_replace($old_file_path, $new_file_path, $old_response->getContent());
+            $capture_url = $old_response->getCaptureUrl();
+            $unserialized['capture_response'] = new HtmlCaptureResponse($content, $capture_url);
+            $new_value = serialize($unserialized);
+            $capture->setValue($new_value);
+          }
+        }
+
+        // Save changes to our revision.
+        $revision->save();
+      }
+
+      // Update our progress.
+      $sandbox['progress']++;
+    }
+  }
+
+  // Update status message.
+  $sandbox['#finished'] = empty($sandbox['max']) ? 1 : ($sandbox['progress'] / $sandbox['max']);
+  if ($sandbox['#finished']) {
+    $message = \Drupal::service('string_translation')->formatPlural($sandbox['progress'], 'Updated 1 web page archive run', 'Updated @count web page archive runs');
+    \drupal_set_message($message, 'status');
+  }
+
+}

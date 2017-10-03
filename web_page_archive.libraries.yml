@@ -3,3 +3,4 @@ admin:
   css:
     theme:
       css/web_page_archive.admin.css: {}
+      css/web_page_archive.fshl.css: {}

@@ -467,7 +467,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $this->clickLink('View Details');
 
     // Parse file path.
-    if (preg_match_all('/(\/.*\.html)/', $this->getRawContent(), $matches)) {
+    if (preg_match_all('/<span class="wpa-hidden wpa-file-path">(.*\.html)<\/span>/', $this->getRawContent(), $matches)) {
       $file_path = $matches[1][0];
 
       // Despite attempting to capture two URLs we should only capture 1 due

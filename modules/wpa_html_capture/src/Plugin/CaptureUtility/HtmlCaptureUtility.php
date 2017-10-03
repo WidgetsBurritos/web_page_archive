@@ -3,8 +3,8 @@
 namespace Drupal\wpa_html_capture\Plugin\CaptureUtility;
 
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\web_page_archive\Plugin\CaptureResponse\UriCaptureResponse;
 use Drupal\web_page_archive\Plugin\ConfigurableCaptureUtilityBase;
+use Drupal\wpa_html_capture\Plugin\CaptureResponse\HtmlCaptureResponse;
 
 /**
  * Captures HTML of a remote uri.
@@ -33,8 +33,8 @@ class HtmlCaptureUtility extends ConfigurableCaptureUtilityBase {
       throw new \Exception('Capture URL is required');
     }
 
-    $file_path = \Drupal::service('file_system')->realpath(file_default_scheme() . "://");
-    $save_dir = "{$file_path}/web-page-archive/html/{$data['web_page_archive']->id()}/{$data['run_uuid']}";
+    $file_path = file_default_scheme() . "://";
+    $save_dir = "{$file_path}web-page-archive/html/{$data['web_page_archive']->id()}/{$data['run_uuid']}";
     $file_name = preg_replace('/[^a-z0-9]+/', '-', strtolower($data['url'])) . '.html';
     $file_location = "{$save_dir}/{$file_name}";
 
@@ -44,7 +44,7 @@ class HtmlCaptureUtility extends ConfigurableCaptureUtilityBase {
 
     \Drupal::httpClient()->request('GET', $data['url'], ['sink' => $file_location]);
 
-    $this->response = new UriCaptureResponse($file_location, $data['url']);
+    $this->response = new HtmlCaptureResponse($file_location, $data['url']);
 
     return $this;
   }
@@ -91,7 +91,7 @@ class HtmlCaptureUtility extends ConfigurableCaptureUtilityBase {
    * {@inheritdoc}
    */
   public function cleanupRevision($revision_id) {
-    UriCaptureResponse::cleanupRevision($revision_id);
+    HtmlCaptureResponse::cleanupRevision($revision_id);
   }
 
 }
