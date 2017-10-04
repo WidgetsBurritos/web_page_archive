@@ -79,8 +79,6 @@ class HtmlCaptureResponse extends UriCaptureResponse {
 
       return [
         '#prefix' => '<pre class="wpa-code-window">',
-        // TODO: Evaluate security of highlighter via tests.
-        // @see https://www.drupal.org/node/2907876
         '#markup' => $highlighter->highlight($file),
         '#suffix' => '</pre>',
         '#attached' => ['library' => ['web_page_archive/fshl']],
