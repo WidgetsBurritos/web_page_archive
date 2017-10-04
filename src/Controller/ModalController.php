@@ -1,18 +1,18 @@
 <?php
 
-namespace Drupal\wpa_screenshot_capture\Controller;
+namespace Drupal\web_page_archive\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 
 /**
- * Class ScreenshotCatureController.
+ * Class ModalController.
  *
- *  Returns responses for screenshot capture response routes.
+ *  Returns responses for capture response routes.
  *
  * @package Drupal\web_page_archive\Controller
  */
-class ScreenshotCaptureController extends ControllerBase implements ContainerInjectionInterface {
+class ModalController extends ControllerBase implements ContainerInjectionInterface {
 
   /**
    * Helper function to retrieve a revision delta.
@@ -32,7 +32,7 @@ class ScreenshotCaptureController extends ControllerBase implements ContainerInj
   /**
    * Render array for modal.
    */
-  public function screenshotModal($web_page_archive_run_revision, $delta) {
+  public function modalContent($web_page_archive_run_revision, $delta) {
     $response = $this->getRevisionDelta($web_page_archive_run_revision, $delta);
     if (!isset($response)) {
       return ['#markup' => $this->t('Invalid capture response.')];
@@ -43,7 +43,7 @@ class ScreenshotCaptureController extends ControllerBase implements ContainerInj
   /**
    * Capture delta.
    */
-  public function screenshotModalTitle($web_page_archive_run_revision, $delta) {
+  public function modalTitle($web_page_archive_run_revision, $delta) {
     $response = $this->getRevisionDelta($web_page_archive_run_revision, $delta);
     if (!isset($response)) {
       return $this->t('Error!');

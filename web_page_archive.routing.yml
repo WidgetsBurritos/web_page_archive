@@ -81,3 +81,17 @@ entity.web_page_archive.collection.prepare_uninstall:
     _title: 'Prepare uninstall'
   requirements:
     _permission: 'administer web page archive'
+
+entity.web_page_archive.modal:
+  path: 'admin/config/system/web-page-archive/modal/{web_page_archive_run_revision}/{delta}'
+  defaults:
+    _controller: '\Drupal\web_page_archive\Controller\ModalController::modalContent'
+    _title_callback: '\Drupal\web_page_archive\Controller\ModalController::modalTitle'
+  options:
+    parameters:
+      web_page_archive_run_revision:
+        type: web_page_archive_run_revision
+      delta:
+        type: integer
+  requirements:
+    _permission: 'view web page archive results'
