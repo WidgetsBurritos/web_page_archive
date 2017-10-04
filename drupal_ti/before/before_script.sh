@@ -13,4 +13,7 @@ drupal_ti_ensure_drupal
 # Change to the Drupal directory
 cd "$DRUPAL_TI_DRUPAL_DIR"
 
-composer require "mtdowling/cron-expression:1.2.0" "microweber/screen:1.0.*" "t1gor/robots-txt-parser:0.2.3"
+composer require "mtdowling/cron-expression:1.2.0"\
+  "microweber/screen:1.0.*"\
+  "t1gor/robots-txt-parser:0.2.3"\
+  "kukulich/fshl:2.1.0"
