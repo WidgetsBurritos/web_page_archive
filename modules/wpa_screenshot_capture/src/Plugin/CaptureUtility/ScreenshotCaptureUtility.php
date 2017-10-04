@@ -44,8 +44,8 @@ class ScreenshotCaptureUtility extends ConfigurableCaptureUtilityBase {
       $screenCapture->setBackgroundColor($this->configuration['background_color']);
     }
     $screenCapture->setImageType($this->configuration['image_type']);
-    if (!empty($this->configuration['user_agent'])) {
-      $screenCapture->setUserAgentString($this->configuration['user_agent']);
+    if (!empty($data['user_agent'])) {
+      $screenCapture->setUserAgentString($data['user_agent']);
     }
 
     // Determine file locations.
@@ -132,12 +132,6 @@ class ScreenshotCaptureUtility extends ConfigurableCaptureUtilityBase {
       '#description' => $this->t('Specify the browser background color in hexidecimal format. e.g. "#ffffff"'),
       '#default_value' => isset($this->configuration['background_color']) ? $this->configuration['background_color'] : '#ffffff',
     ];
-    $form['user_agent'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Browser user agent'),
-      '#description' => $this->t('Specify the browser user agent. e.g. "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36"'),
-      '#default_value' => isset($this->configuration['user_agent']) ? $this->configuration['user_agent'] : $this->t('WPA'),
-    ];
 
     return $form;
   }
@@ -151,7 +145,6 @@ class ScreenshotCaptureUtility extends ConfigurableCaptureUtilityBase {
     $this->configuration['width'] = $form_state->getValue('width');
     $this->configuration['clip_width'] = $form_state->getValue('clip_width');
     $this->configuration['background_color'] = $form_state->getValue('background_color');
-    $this->configuration['user_agent'] = $form_state->getValue('user_agent');
     $this->configuration['image_type'] = $form_state->getValue('image_type');
   }
 

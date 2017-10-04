@@ -19,7 +19,7 @@ class CaptureQueueWorker extends QueueWorkerBase {
    */
   public function processItem($data) {
     // Check all required keys are provided.
-    $required = ['utility', 'url', 'run_uuid', 'run_entity'];
+    $required = ['utility', 'url', 'run_uuid', 'run_entity', 'user_agent'];
     foreach ($required as $key) {
       if (empty($data[$key])) {
         throw new \Exception("$key is required");

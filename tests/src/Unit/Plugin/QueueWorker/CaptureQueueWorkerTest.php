@@ -70,6 +70,7 @@ class CaptureQueueWorkerTest extends UnitTestCase {
       'url' => 'http://www.whatever.com',
       'run_uuid' => '12345678-1234-1234-1234-123456789000',
       'run_entity' => $this->mockWebPageArchiveRun,
+      'user_agent' => 'WPA',
     ];
     $response = $this->queue->processItem($data);
     $this->assertSame('uri', $response->getType());
@@ -87,6 +88,7 @@ class CaptureQueueWorkerTest extends UnitTestCase {
       'url' => 'http://www.whatever.com',
       'run_uuid' => '12345678-1234-1234-1234-123456789000',
       'run_entity' => $this->mockWebPageArchiveRun,
+      'user_agent' => 'WPA',
     ];
     $response = $this->queue->processItem($data);
   }
@@ -102,6 +104,7 @@ class CaptureQueueWorkerTest extends UnitTestCase {
       'utility' => $this->mockHtmlCaptureUtility,
       'run_uuid' => '12345678-1234-1234-1234-123456789000',
       'run_entity' => $this->mockWebPageArchiveRun,
+      'user_agent' => 'WPA',
     ];
     $response = $this->queue->processItem($data);
   }
@@ -117,6 +120,7 @@ class CaptureQueueWorkerTest extends UnitTestCase {
       'utility' => $this->mockHtmlCaptureUtility,
       'url' => 'http://www.whatever.com',
       'run_entity' => $this->mockWebPageArchiveRun,
+      'user_agent' => 'WPA',
     ];
     $response = $this->queue->processItem($data);
   }
@@ -132,6 +136,23 @@ class CaptureQueueWorkerTest extends UnitTestCase {
       'utility' => $this->mockHtmlCaptureUtility,
       'url' => 'http://www.whatever.com',
       'run_uuid' => '12345678-1234-1234-1234-123456789000',
+      'user_agent' => 'WPA',
+    ];
+    $response = $this->queue->processItem($data);
+  }
+
+  /**
+   * Tests missing user_agent writes message.
+   *
+   * @expectedException Exception
+   * @expectedExceptionMessage user_agent is required
+   */
+  public function testMissingUserAgentWritesMessage() {
+    $data = [
+      'utility' => $this->mockHtmlCaptureUtility,
+      'url' => 'http://www.whatever.com',
+      'run_uuid' => '12345678-1234-1234-1234-123456789000',
+      'run_entity' => $this->mockWebPageArchiveRun,
     ];
     $response = $this->queue->processItem($data);
   }
@@ -155,6 +176,7 @@ class CaptureQueueWorkerTest extends UnitTestCase {
       'url' => 'http://www.whatever.com',
       'run_uuid' => '12345678-1234-1234-1234-123456789000',
       'run_entity' => $this->mockWebPageArchiveRun,
+      'user_agent' => 'WPA',
     ];
     $response = $this->queue->processItem($data);
   }

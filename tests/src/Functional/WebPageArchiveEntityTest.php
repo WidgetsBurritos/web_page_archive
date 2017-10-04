@@ -89,6 +89,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
         'timeout' => 500,
         'use_cron' => 1,
         'use_robots' => 0,
+        'user_agent' => 'MonkeyBot',
         'cron_schedule' => '0 9 1 1 *',
         'url_type' => 'url',
         'urls' => 'http://localhost',
@@ -102,6 +103,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $this->assertFieldByName('timeout', '500');
     $this->assertFieldByName('url_type', 'url');
     $this->assertFieldByName('urls', 'http://localhost');
+    $this->assertFieldByName('user_agent', 'MonkeyBot');
 
     // Add a screenshot capture utility.
     $this->drupalPostForm(
@@ -117,7 +119,6 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $this->assertFieldByName('data[clip_width]', '1280');
     $this->assertFieldByName('data[image_type]', 'png');
     $this->assertFieldByName('data[background_color]', '#ffffff');
-    $this->assertFieldByName('data[user_agent]', 'WPA');
 
     // Alter a few values and then submit.
     $this->drupalPostForm(
@@ -137,14 +138,12 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $this->assertFieldByName('data[clip_width]', '1280');
     $this->assertFieldByName('data[image_type]', 'jpg');
     $this->assertFieldByName('data[background_color]', '#ffffff');
-    $this->assertFieldByName('data[user_agent]', 'WPA');
 
-    // Attempt to change user agent and image type.
+    // Attempt to image type.
     $this->drupalPostForm(
       NULL,
       [
         'data[image_type]' => 'png',
-        'data[user_agent]' => 'Testbot 5000',
       ],
       t('Update capture utility')
     );
@@ -157,7 +156,6 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $this->assertFieldByName('data[clip_width]', '1280');
     $this->assertFieldByName('data[image_type]', 'png');
     $this->assertFieldByName('data[background_color]', '#ffffff');
-    $this->assertFieldByName('data[user_agent]', 'Testbot 5000');
 
     // Confirm entity list shows next scheduled time.
     $this->drupalGet('admin/config/system/web-page-archive');
@@ -172,6 +170,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
         'timeout' => 250,
         'use_cron' => 0,
         'use_robots' => 0,
+        'user_agent' => 'Secret Agent Man',
         'url_type' => 'url',
         'urls' => implode(PHP_EOL, [
           'http://localhost:1234/some-page',
@@ -185,6 +184,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     // Verify previous values are retained.
     $this->assertFieldByName('timeout', '250');
     $this->assertFieldByName('url_type', 'url');
+    $this->assertFieldByName('user_agent', 'Secret Agent Man');
     $this->assertFieldByName('urls', implode(PHP_EOL, [
       'http://localhost:1234/some-page',
       'http://localhost:1234/some-other-page',
@@ -214,6 +214,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
       'use_cron' => 0,
       'use_robots' => 0,
       'url_type' => 'sitemap',
+      'user_agent' => 'testbot',
       'urls' => 'http://localhost/sitemap.xml',
       'capture_utilities' => [
         '12345678-9999-0000-5555-000000000000' => [
@@ -224,7 +225,6 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
             'width' => 1280,
             'clip_width' => 1280,
             'background_color' => '#cc0000',
-            'user_agent' => 'testbot',
             'image_type' => 'png',
           ],
         ],
@@ -357,6 +357,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
       'use_robots' => 0,
       'url_type' => 'sitemap',
       'urls' => 'http://localhost/sitemap.xml',
+      'user_agent' => 'testbot',
       'capture_utilities' => [
         '12345678-9999-0000-5555-000000000000' => [
           'uuid' => '12345678-9999-0000-5555-000000000000',
@@ -366,7 +367,6 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
             'width' => 1280,
             'clip_width' => 1280,
             'background_color' => '#cc0000',
-            'user_agent' => 'testbot',
             'image_type' => 'png',
           ],
         ],
@@ -438,6 +438,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
         'timeout' => 500,
         'use_cron' => 1,
         'use_robots' => 1,
+        'user_agent' => 'WPA',
         'cron_schedule' => '* * * * *',
         'url_type' => 'url',
         'urls' => implode(PHP_EOL, $urls),

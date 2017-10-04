@@ -152,3 +152,37 @@ function web_page_archive_update_8004() {
     $wpa_config->save();
   }
 }
+
+/**
+ * Relocates user agent in all config entities.
+ */
+function web_page_archive_update_8005() {
+  $config_factory = \Drupal::service('config.factory');
+  $config_prefix = 'web_page_archive.web_page_archive';
+  $keys = $config_factory->listAll($config_prefix);
+
+  foreach ($keys as $key) {
+    $wpa_config = $config_factory->getEditable($key);
+    $utilities = $wpa_config->get('capture_utilities');
+    $user_agent = 'WPA';
+    $changed = FALSE;
+
+    // Search for screenshot capture utilities, grab and remove the user agent.
+    foreach ($utilities as $key => $utility) {
+      if ($utilities[$key]['id'] == 'wpa_screenshot_capture') {
+        if (isset($utilities[$key]['data']['user_agent'])) {
+          $changed = TRUE;
+          $user_agent = $utilities[$key]['data']['user_agent'];
+          unset($utilities[$key]['data']['user_agent']);
+        }
+      }
+    }
+
+    // Update user agent and capture utilities.
+    $wpa_config->set('user_agent', $user_agent);
+    if ($changed) {
+      $wpa_config->set('capture_utilities', $utilities);
+    }
+    $wpa_config->save();
+  }
+}
