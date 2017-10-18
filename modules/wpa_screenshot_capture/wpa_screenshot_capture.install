@@ -1,0 +1,37 @@
+<?php
+
+/**
+ * @file
+ * Install commands for wpa_screenshot_capture.
+ */
+
+/**
+ * Removes clip_width and adds delay to config entities.
+ */
+function wpa_screenshot_capture_update_8001() {
+  $config_factory = \Drupal::service('config.factory');
+  $config_prefix = 'web_page_archive.web_page_archive';
+  $keys = $config_factory->listAll($config_prefix);
+
+  foreach ($keys as $key) {
+    $wpa_config = $config_factory->getEditable($key);
+
+    $utilities = $wpa_config->get('capture_utilities');
+    $changed = FALSE;
+
+    // Search for screenshot capture utilities, remove clip_width and set delay.
+    foreach ($utilities as $key => $utility) {
+      if ($utilities[$key]['id'] == 'wpa_screenshot_capture') {
+        unset($utilities[$key]['data']['clip_width']);
+        $utilities[$key]['data']['delay'] = 0;
+        $changed = TRUE;
+      }
+    }
+
+    // Update config entity if changed.
+    if ($changed) {
+      $wpa_config->set('capture_utilities', $utilities);
+      $wpa_config->save();
+    }
+  }
+}

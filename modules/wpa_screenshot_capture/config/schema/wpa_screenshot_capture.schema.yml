@@ -5,9 +5,6 @@ web_page_archive.capture_utility.wpa_screenshot_capture:
     width:
       type: integer
       label: 'Width'
-    clip_width:
-      type: integer
-      label: 'Clip Width'
     background_color:
       type: string
       label: 'Background color'
@@ -17,3 +14,6 @@ web_page_archive.capture_utility.wpa_screenshot_capture:
     image_type:
       type: string
       label: 'Image type'
+    delay:
+      type: integer
+      label: 'Delay'
