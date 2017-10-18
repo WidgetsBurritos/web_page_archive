@@ -91,7 +91,7 @@ Then you must modify the `scripts` property in the root composer JSON object to 
 - Click `Add capture utility`.
 - You can add additional capture utilities if you choose, but it is recommended to create separate config entities in these cases.
 
-## Running Manually
+## Running Snapshot Capturing Manually
 
 - Navigate to `/admin/config/system/web-page-archive`.
 - In the far right hand column of the archive you wish to start click the dropdown arrow, and click the `Start Run` button.
@@ -105,6 +105,29 @@ If you wish to automatically run captures via cron, see [Configuring cron jobs u
 To provide the most accurate timing it is recommended to set your system cron settings to run on `* * * * *`, but the module will cooperate with less frequent schedules as well.
 
 Then just ensure your individual web page archive entities are configured with a proper crontab.
+
+## Running Snapshot Capturing via Drush
+
+To start a new run for all web page archive entities:
+```bash
+drush web-page-archive-capture --all
+# or
+drush wpa-c --all
+```
+
+To start a run for a single web page archive entity, add the config id to the end of the command. For example:
+```bash
+drush web-page-archive-capture wpa_entity_id
+# or
+drush wpa-c wpa_entity_id
+```
+
+To start a run for a multiple web page archive entities, add the config entity ids to the end of the command. For example:
+```bash
+drush web-page-archive-capture wpa_entity_id wpa_entity_id_2 wpa_entity_id_3
+# or
+drush wpa-c wpa_entity_id wpa_entity_id_2 wpa_entity_id_3
+```
 
 ## Viewing the Snapshots
 
