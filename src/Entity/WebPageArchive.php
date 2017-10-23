@@ -359,6 +359,7 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
       $run_entity->setQueueCt($queue->numberOfItems());
       $run_entity->setCapturedArray([]);
       $run_entity->setCaptureUtilities($this->getCaptureUtilityMap());
+      $run_entity->set('success_ct', 0);
       $run_entity->set('capture_size', 0);
       $strings = [
         '@name' => $this->label(),

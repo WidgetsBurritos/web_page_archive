@@ -186,3 +186,21 @@ function web_page_archive_update_8005() {
     $wpa_config->save();
   }
 }
+
+/**
+ * Recalculates success_ct for all revisions.
+ */
+function web_page_archive_update_8006() {
+  $query = \Drupal::database()->select('web_page_archive_run_revision__field_captures', 'fc');
+  $query->addField('fc', 'revision_id');
+  $query->groupBy('fc.revision_id');
+  $query->addExpression('COUNT(*)', 'count');
+  $results = $query->execute()->fetchAllKeyed();
+
+  foreach ($results as $revision_id => $count) {
+    $query = \Drupal::database()->update('web_page_archive_run_revision');
+    $query->fields(['success_ct' => $count]);
+    $query->condition('vid', $revision_id);
+    $query->execute();
+  }
+}

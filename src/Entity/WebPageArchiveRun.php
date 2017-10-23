@@ -173,7 +173,7 @@ class WebPageArchiveRun extends RevisionableContentEntityBase implements WebPage
    * {@inheritdoc}
    */
   public function getSuccessCt() {
-    return $this->get('success_ct');
+    return (int) $this->get('success_ct')->getString();
   }
 
   /**
@@ -233,13 +233,13 @@ class WebPageArchiveRun extends RevisionableContentEntityBase implements WebPage
     $lock_id = "web_page_archive_run:{$this->uuid()}";
     if ($lock->acquire($lock_id)) {
       $entity = \Drupal::service('entity.repository')->loadEntityByUuid('web_page_archive_run', $this->uuid());
-
+      $success_ct = $entity->getSuccessCt();
       $field_captures = $entity->get('field_captures');
-      // TODO: Seems like there should be a better way to get this value:
-      $total_capture_size = $entity->get('capture_size')->first()->getValue()['value'];
+      $total_capture_size = (int) $entity->get('capture_size')->getString();
       $uuid = $this->uuidGenerator()->generate();
       try {
         $capture_size = $data['capture_response']->getCaptureSize();
+        $success_ct++;
       }
       catch (\Exception $e) {
         // TODO: What to do here? Error log?
@@ -257,6 +257,7 @@ class WebPageArchiveRun extends RevisionableContentEntityBase implements WebPage
         'langcode' => $entity->language()->getId(),
       ];
       $field_captures->appendItem(serialize($capture));
+      $entity->setSuccessCt($success_ct);
       $entity->set('capture_size', $total_capture_size + $capture_size);
       $entity->save();
       $this->addNormalizedCapture($capture);
