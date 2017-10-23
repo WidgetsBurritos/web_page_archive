@@ -33,18 +33,14 @@ class HtmlCaptureUtility extends ConfigurableCaptureUtilityBase {
       throw new \Exception('Capture URL is required');
     }
 
-    $file_path = file_default_scheme() . "://";
-    $save_dir = "{$file_path}web-page-archive/html/{$data['web_page_archive']->id()}/{$data['run_uuid']}";
+    // Determine file locations.
+    $entity_id = $data['run_entity']->getConfigEntity()->id();
     $file_name = preg_replace('/[^a-z0-9]+/', '-', strtolower($data['url'])) . '.html';
-    $file_location = "{$save_dir}/{$file_name}";
+    $file_path = $this->storagePath($entity_id, $data['run_uuid']) . '/' . $file_name;
 
-    if (!file_prepare_directory($save_dir, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS)) {
-      throw new \Exception("Could not write to $save_dir");
-    }
-
-    \Drupal::httpClient()->request('GET', $data['url'], ['sink' => $file_location]);
-
-    $this->response = new HtmlCaptureResponse($file_location, $data['url']);
+    // Save html and set our response.
+    \Drupal::httpClient()->request('GET', $data['url'], ['sink' => $file_path]);
+    $this->response = new HtmlCaptureResponse($file_path, $data['url']);
 
     return $this;
   }

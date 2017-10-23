@@ -490,8 +490,11 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     // Simulate a cron run.
     web_page_archive_cron();
 
-    // Assert file no longer exists.
+    // Assert file and directory no longer exist, but that the containing
+    // directory still does exist (i.e. make sure we're only deleting our run).
     $this->assertFalse(file_exists($file_path));
+    $this->assertFalse(file_exists('public://web-page-archive/wpa_html_capture/localhost'));
+    $this->assertTrue(file_exists('public://web-page-archive/wpa_html_capture'));
 
   }
 

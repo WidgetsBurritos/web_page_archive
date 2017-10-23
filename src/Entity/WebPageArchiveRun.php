@@ -247,6 +247,7 @@ class WebPageArchiveRun extends RevisionableContentEntityBase implements WebPage
       }
       $capture = [
         'uuid' => $uuid,
+        'run_uuid' => $data['run_uuid'],
         'timestamp' => \Drupal::service('datetime.time')->getCurrentTime(),
         'status' => 'complete',
         'capture_url' => $data['url'],

@@ -51,6 +51,7 @@ class UriCaptureResponse extends CaptureResponseBase {
       ->loadRevision($revision_id);
 
     $captures = $run_revision->get('field_captures');
+    $runs_to_remove = [];
     foreach ($captures as $capture) {
       // Skip invalid responses, which indicates there are no files to remove.
       $value = $capture->getValue();
@@ -66,6 +67,18 @@ class UriCaptureResponse extends CaptureResponseBase {
       $file = $unserialized['capture_response']->getContent();
       if (file_exists($file)) {
         CleanupController::queueFileDelete($file);
+        $runs_to_remove[] = $unserialized['run_uuid'];
+      }
+    }
+
+    // Cleanup empty run directories.
+    $web_page_archive = $run_revision->getConfigEntity();
+    $utilities = $web_page_archive->getCaptureUtilities()->getInstanceIds();
+    foreach ($runs_to_remove as $run_to_remove) {
+      foreach ($utilities as $utility) {
+        $utility_instance = $web_page_archive->getCaptureUtility($utility);
+        $file = $utility_instance->storagePath($web_page_archive->id());
+        CleanupController::queueDirectoryDelete($run_to_remove);
       }
     }
   }
