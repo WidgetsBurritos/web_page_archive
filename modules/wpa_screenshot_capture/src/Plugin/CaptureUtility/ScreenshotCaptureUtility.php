@@ -39,7 +39,6 @@ class ScreenshotCaptureUtility extends ConfigurableCaptureUtilityBase {
     $screenCapture = new Capture($data['url']);
     $screenCapture->binPath = PhantomBinary::getDir() . '/';
     $screenCapture->setWidth((int) $this->configuration['width']);
-    $screenCapture->setClipWidth((int) $this->configuration['clip_width']);
     if (!empty($this->configuration['background_color'])) {
       $screenCapture->setBackgroundColor($this->configuration['background_color']);
     }
@@ -47,6 +46,7 @@ class ScreenshotCaptureUtility extends ConfigurableCaptureUtilityBase {
     if (!empty($data['user_agent'])) {
       $screenCapture->setUserAgentString($data['user_agent']);
     }
+    $screenCapture->setDelay($this->configuration['delay']);
 
     // Determine file locations.
     $file_name = preg_replace('/[^a-z0-9]+/', '-', strtolower($data['url']));
@@ -109,13 +109,6 @@ class ScreenshotCaptureUtility extends ConfigurableCaptureUtilityBase {
       '#default_value' => isset($this->configuration['width']) ? $this->configuration['width'] : 1280,
       '#required' => TRUE,
     ];
-    $form['clip_width'] = [
-      '#type' => 'number',
-      '#title' => $this->t('Capture clip width (in pixels)'),
-      '#description' => $this->t('Specify the clip width you would like to capture.'),
-      '#default_value' => isset($this->configuration['clip_width']) ? $this->configuration['clip_width'] : 1280,
-      '#required' => TRUE,
-    ];
     $image_types = Types::available();
     $image_types = array_combine($image_types, $image_types);
     $form['image_type'] = [
@@ -132,6 +125,13 @@ class ScreenshotCaptureUtility extends ConfigurableCaptureUtilityBase {
       '#description' => $this->t('Specify the browser background color in hexidecimal format. e.g. "#ffffff"'),
       '#default_value' => isset($this->configuration['background_color']) ? $this->configuration['background_color'] : '#ffffff',
     ];
+    $form['delay'] = [
+      '#type' => 'number',
+      '#title' => $this->t('Delay (ms)'),
+      '#description' => $this->t('How long to delay before capturing a screenshot. This is helpful if you need to wait for javascript or resources to load.'),
+      '#default_value' => isset($this->configuration['delay']) ? $this->configuration['delay'] : 0,
+      '#required' => TRUE,
+    ];
 
     return $form;
   }
@@ -143,9 +143,9 @@ class ScreenshotCaptureUtility extends ConfigurableCaptureUtilityBase {
     parent::submitConfigurationForm($form, $form_state);
 
     $this->configuration['width'] = $form_state->getValue('width');
-    $this->configuration['clip_width'] = $form_state->getValue('clip_width');
     $this->configuration['background_color'] = $form_state->getValue('background_color');
     $this->configuration['image_type'] = $form_state->getValue('image_type');
+    $this->configuration['delay'] = $form_state->getValue('delay');
   }
 
   /**

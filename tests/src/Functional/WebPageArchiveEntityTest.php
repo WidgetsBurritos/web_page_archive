@@ -116,9 +116,9 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
 
     // Check field default values.
     $this->assertFieldByName('data[width]', '1280');
-    $this->assertFieldByName('data[clip_width]', '1280');
     $this->assertFieldByName('data[image_type]', 'png');
     $this->assertFieldByName('data[background_color]', '#ffffff');
+    $this->assertFieldByName('data[delay]', '0');
 
     // Alter a few values and then submit.
     $this->drupalPostForm(
@@ -126,6 +126,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
       [
         'data[width]' => '1400',
         'data[image_type]' => 'jpg',
+        'data[delay]' => '250',
       ],
       t('Add capture utility')
     );
@@ -135,9 +136,9 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
 
     // Confirm field values.
     $this->assertFieldByName('data[width]', '1400');
-    $this->assertFieldByName('data[clip_width]', '1280');
     $this->assertFieldByName('data[image_type]', 'jpg');
     $this->assertFieldByName('data[background_color]', '#ffffff');
+    $this->assertFieldByName('data[delay]', '250');
 
     // Attempt to image type.
     $this->drupalPostForm(
@@ -153,9 +154,9 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
 
     // Confirm field values.
     $this->assertFieldByName('data[width]', '1400');
-    $this->assertFieldByName('data[clip_width]', '1280');
     $this->assertFieldByName('data[image_type]', 'png');
     $this->assertFieldByName('data[background_color]', '#ffffff');
+    $this->assertFieldByName('data[delay]', '250');
 
     // Confirm entity list shows next scheduled time.
     $this->drupalGet('admin/config/system/web-page-archive');
@@ -223,9 +224,9 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
           'weight' => 1,
           'data' => [
             'width' => 1280,
-            'clip_width' => 1280,
             'background_color' => '#cc0000',
             'image_type' => 'png',
+            'delay' => 0,
           ],
         ],
         '87654321-9999-0000-5555-999999999999' => [
@@ -365,9 +366,9 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
           'weight' => 1,
           'data' => [
             'width' => 1280,
-            'clip_width' => 1280,
             'background_color' => '#cc0000',
             'image_type' => 'png',
+            'delay' => 0,
           ],
         ],
         '87654321-9999-0000-5555-999999999999' => [
