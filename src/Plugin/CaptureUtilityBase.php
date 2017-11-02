@@ -5,6 +5,7 @@ namespace Drupal\web_page_archive\Plugin;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Component\Plugin\PluginBase;
+use Drupal\web_page_archive\Controller\CleanupController;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -152,6 +153,40 @@ abstract class CaptureUtilityBase extends PluginBase implements CaptureUtilityIn
   /**
    * {@inheritdoc}
    */
+  public function cleanupEntity($entity_id) {
+    $path = $this->storagePath($entity_id);
+    CleanupController::queueDirectoryDelete($path);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function cleanupRevision($revision_id) {}
+
+  /**
+   * {@inheritdoc}
+   */
+  public function storagePath($entity_id = NULL, $run_uuid = NULL) {
+    // TODO: Use custom stream wrapper.
+    // @see https://www.drupal.org/node/2901781
+    $scheme = file_default_scheme();
+    $utility = $this->pluginDefinition['id'];
+    $path_tokens = [
+      "{$scheme}:/",
+      'web-page-archive',
+      $utility,
+    ];
+    if (isset($entity_id)) {
+      $path_tokens[] = $entity_id;
+    }
+    if (isset($run_uuid)) {
+      $path_tokens[] = $run_uuid;
+    }
+    $path = implode('/', $path_tokens);
+    if (!file_prepare_directory($path, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS)) {
+      throw new \Exception("Could not write to $path");
+    }
+    return $path;
+  }
 
 }

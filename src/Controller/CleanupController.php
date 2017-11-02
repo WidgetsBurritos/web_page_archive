@@ -29,6 +29,7 @@ class CleanupController extends ControllerBase {
       foreach ($vids as $vid) {
         $utility->cleanupRevision($vid);
       }
+      $utility->cleanupEntity($web_page_archive->id());
     }
   }
 
@@ -38,6 +39,14 @@ class CleanupController extends ControllerBase {
   public static function queueFileDelete($file) {
     $queue = \Drupal::service('queue')->get('web_page_archive_cleanup');
     $queue->createItem(['type' => 'file', 'path' => $file]);
+  }
+
+  /**
+   * Queues a directory for deletion.
+   */
+  public static function queueDirectoryDelete($path) {
+    $queue = \Drupal::service('queue')->get('web_page_archive_cleanup');
+    $queue->createItem(['type' => 'directory', 'path' => $path]);
   }
 
   /**
