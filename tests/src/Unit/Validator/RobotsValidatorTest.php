@@ -99,4 +99,13 @@ class RobotsValidatorTest extends UnitTestCase {
     $this->assertTrue(static::$robotsValidator->isCrawlable('https://www.youcantconnecttome.com/peanut-butter', 'WPA'));
   }
 
+  /**
+   * Tests that npm is installed.
+   */
+  public function testNpmInstalled() {
+    $path = exec('which npm');
+    $this->assertEquals($path, 'abc');
+  }
+
+
 }
