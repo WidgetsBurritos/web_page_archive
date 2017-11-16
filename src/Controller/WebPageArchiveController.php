@@ -38,16 +38,6 @@ class WebPageArchiveController extends ControllerBase {
       throw new \Exception("View not found!");
     }
     $run_entity = $web_page_archive->getRunEntity();
-    if (!isset($run_entity)) {
-      // TODO: What to do here? This is actually something we can correct.
-      // If a run entity does not exist for a config entity, we could generate
-      // one and then try again. That said, that may be indicative of a larger
-      // problem at which point we're just masking the error instead of
-      // correcting it. One case this may happen is if a user "Prepares for
-      // Uninstall" and then doesn't actually initiate an uninstall.
-      // Leaving this feedback here to resolve at a later time.
-      throw new \Exception("Missing run entity");
-    }
 
     $view->setDisplay('canonical_embed');
     $view->setArguments([$run_entity->id()]);

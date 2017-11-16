@@ -1,0 +1,33 @@
+uuid: a3bf67e0-74ba-49bb-8e6c-9df9f824b111
+langcode: en
+status: true
+dependencies:
+  module:
+    - wpa_html_capture
+    - wpa_screenshot_capture
+id: sample_null_uuid_import_test
+label: 'Sample Null UUID Import Test'
+timeout: 1250
+url_type: url
+urls: 'https://www.drupal.org'
+use_robots: false
+use_cron: true
+user_agent: NinjaBot
+cron_schedule: '30 * * * *'
+capture_utilities:
+  1299908f-2cd3-4ff7-a902-69abab04478f:
+    uuid: 1299908f-2cd3-4ff7-a902-69abab04478f
+    id: wpa_html_capture
+    weight: 1
+    data:
+      capture: true
+  1ff62161-18dd-4450-8b08-b906b7392ff6:
+    uuid: 1ff62161-18dd-4450-8b08-b906b7392ff6
+    id: wpa_screenshot_capture
+    weight: 2
+    data:
+      width: 1500
+      background_color: '#abc123'
+      image_type: jpg
+      delay: 1000
+run_entity: null

@@ -388,34 +388,49 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
    *   Corresponding run content entity.
    */
   public function getRunEntity() {
-    $entity = NULL;
+    // Initialize run entity if doesn't already exist.
+    if ($this->needsRunEntity()) {
+      $this->initializeRunEntity();
+    }
+
+    // Retrieve run entity.
     if (isset($this->run_entity)) {
       $entity = $this->entityRepository()->loadEntityByUuid('web_page_archive_run', $this->run_entity);
+      if (isset($entity)) {
+        return $entity;
+      }
     }
-    return $entity;
+
+    throw new \Exception('Invalid run entity');
+  }
+
+  /**
+   * Determines if the current config entity needs a run entity.
+   */
+  protected function needsRunEntity() {
+    return !isset($this->run_entity) || !$this->entityRepository()->loadEntityByUuid('web_page_archive_run', $this->run_entity);
   }
 
   /**
    * Initializes run entity.
    */
   protected function initializeRunEntity() {
-    if (!isset($this->run_entity)) {
-      $data = [
-        'uid' => \Drupal::currentUser()->id(),
-        'name' => $this->label(),
-        'uuid' => $this->uuidGenerator()->generate(),
-        'status' => 0,
-        'queue_ct' => 0,
-        'success_ct' => 0,
-        'config_entity' => $this->id(),
-      ];
-      $entity = $this->entityTypeManager()
-        ->getStorage('web_page_archive_run')
-        ->create($data);
-      $entity->save();
+    $data = [
+      'uid' => \Drupal::currentUser()->id(),
+      'name' => $this->label(),
+      'uuid' => $this->uuidGenerator()->generate(),
+      'status' => 0,
+      'queue_ct' => 0,
+      'success_ct' => 0,
+      'config_entity' => $this->id(),
+    ];
+    $entity = $this->entityTypeManager()
+      ->getStorage('web_page_archive_run')
+      ->create($data);
+    $entity->save();
 
-      $this->run_entity = $data['uuid'];
-    }
+    $this->run_entity = $data['uuid'];
+    $this->save();
   }
 
   /**
@@ -433,11 +448,6 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
    * {@inheritdoc}
    */
   public function save() {
-
-    if ($this->isNew()) {
-      $this->initializeRunEntity();
-    }
-
     if ($this->getUseCron()) {
       $this->state()->set("web_page_archive.next_run.{$this->id()}", $this->calculateNextRun());
     }
