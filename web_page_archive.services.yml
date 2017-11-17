@@ -20,6 +20,6 @@ services:
       - { name: validator }
   web_page_archive.cron.runner:
     class: Drupal\web_page_archive\Cron\CronRunner
-    arguments: ['@lock', '@state', '@datetime.time']
+    arguments: ['@lock', '@state', '@datetime.time', '@config.factory']
     tags:
       - { name: cron }

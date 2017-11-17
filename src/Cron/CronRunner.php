@@ -4,6 +4,7 @@ namespace Drupal\web_page_archive\Cron;
 
 use Cron\CronExpression;
 use Drupal\Component\Datetime\TimeInterface;
+use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Lock\LockBackendInterface;
 use Drupal\Core\State\StateInterface;
 use Drupal\web_page_archive\Controller\WebPageArchiveController;
@@ -35,6 +36,13 @@ class CronRunner {
   protected $time;
 
   /**
+   * The config factory service.
+   *
+   * @var \Drupal\Core\Config\ConfigFactory
+   */
+  protected $configFactory;
+
+  /**
    * Constructs an WebPageArchiveEditForm object.
    *
    * @param \Drupal\Core\Lock\LockBackendInterface $lock
@@ -43,11 +51,21 @@ class CronRunner {
    *   The state api service.
    * @param \Drupal\Component\Datetime\TimeInterface $datetime_time
    *   The datetime time service.
+   * @param \Drupal\Core\Config\ConfigFactory $config_factory
+   *   The config factory service.
    */
-  public function __construct(LockBackendInterface $lock, StateInterface $state, TimeInterface $datetime_time) {
+  public function __construct(LockBackendInterface $lock, StateInterface $state, TimeInterface $datetime_time, ConfigFactory $config_factory) {
     $this->lock = $lock;
     $this->state = $state;
     $this->time = $datetime_time;
+    $this->configFactory = $config_factory;
+  }
+
+  /**
+   * Retrieves the maximum number of captures to process per cron run.
+   */
+  public function getCaptureMax() {
+    return $this->configFactory->get('web_page_archive.settings')->get('cron.capture_max');
   }
 
   /**
@@ -93,10 +111,8 @@ class CronRunner {
       }
     }
 
-    // Process up to 100 queue items at a time.
-    // TODO: Move threshhold into config entity?
     $success_ct = $fail_ct = 0;
-    $queue_ct = min($config_entity->getQueueCt(), 100);
+    $queue_ct = min($config_entity->getQueueCt(), $this->getCaptureMax());
     while ($success_ct + $fail_ct < $queue_ct) {
       if (WebPageArchiveController::batchProcess($config_entity)) {
         $success_ct++;

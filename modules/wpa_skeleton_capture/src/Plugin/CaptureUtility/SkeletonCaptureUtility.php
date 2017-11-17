@@ -54,8 +54,9 @@ class SkeletonCaptureUtility extends ConfigurableCaptureUtilityBase {
    * {@inheritdoc}
    */
   public function defaultConfiguration() {
+    $config = \Drupal::configFactory()->get('web_page_archive.wpa_skeleton_capture.settings');
     return [
-      'width' => 1280,
+      'width' => $config->get('defaults.width'),
     ];
   }
 
@@ -69,7 +70,7 @@ class SkeletonCaptureUtility extends ConfigurableCaptureUtilityBase {
       '#type' => 'number',
       '#title' => $this->t('Width'),
       '#description' => $this->t('Capture width.'),
-      '#default_value' => isset($this->configuration['width']) ? $this->configuration['width'] : 1280,
+      '#default_value' => $this->configuration['width'],
     ];
     return $form;
   }

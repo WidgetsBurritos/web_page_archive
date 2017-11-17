@@ -56,8 +56,9 @@ class HtmlCaptureUtility extends ConfigurableCaptureUtilityBase {
    * {@inheritdoc}
    */
   public function defaultConfiguration() {
+    $config = \Drupal::configFactory()->get('web_page_archive.wpa_html_capture.settings');
     return [
-      'capture' => TRUE,
+      'capture' => $config->get('defaults.capture'),
     ];
   }
 
@@ -71,6 +72,7 @@ class HtmlCaptureUtility extends ConfigurableCaptureUtilityBase {
       '#description' => $this->t('If checked, this archive will download and compare html.'),
       '#default_value' => $this->configuration['capture'],
     ];
+
     return $form;
   }
 

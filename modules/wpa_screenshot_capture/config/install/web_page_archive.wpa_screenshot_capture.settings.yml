@@ -1,0 +1,6 @@
+defaults:
+  background_color: '#ffffff'
+  delay: 0
+  image_type: png
+  user_agent: WPA
+  width: 1280

@@ -1,0 +1,12 @@
+cron:
+  capture_max: 100
+  file_cleanup: 50
+defaults:
+  cron_schedule: '@weekly'
+  label: ''
+  timeout: 500
+  url_type: url
+  urls: ''
+  use_cron: true
+  use_robots: true
+  user_agent: WPA

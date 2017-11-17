@@ -6,6 +6,14 @@ entity.web_page_archive.collection:
   requirements:
     _permission: 'view web page archive results'
 
+web_page_archive_settings:
+  path: 'admin/config/system/web-page-archive/settings'
+  defaults:
+    _form: '\Drupal\web_page_archive\Form\SettingsForm'
+    _title: 'Web Page Archive Settings'
+  requirements:
+    _permission: 'administer web page archive'
+
 entity.web_page_archive.add_form:
   path: 'admin/config/system/web-page-archive/add'
   defaults:

@@ -17,3 +17,26 @@ web_page_archive.capture_utility.wpa_screenshot_capture:
     delay:
       type: integer
       label: 'Delay'
+
+web_page_archive.wpa_screenshot_capture.settings:
+  type: config_object
+  label: 'Screenshot Capture Utility settings'
+  mapping:
+    defaults:
+      type: mapping
+      mapping:
+        width:
+          type: integer
+          label: 'Width'
+        background_color:
+          type: string
+          label: 'Background color'
+        user_agent:
+          type: string
+          label: 'User agent'
+        image_type:
+          type: string
+          label: 'Image type'
+        delay:
+          type: integer
+          label: 'Delay'

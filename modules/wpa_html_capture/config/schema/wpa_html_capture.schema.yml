@@ -5,3 +5,14 @@ web_page_archive.capture_utility.wpa_html_capture:
     capture:
       type: boolean
       label: 'Capture?'
+
+web_page_archive.wpa_html_capture.settings:
+  type: config_object
+  label: 'HTML Capture Utility settings'
+  mapping:
+    defaults:
+      type: mapping
+      mapping:
+        capture:
+          type: boolean
+          label: 'Capture?'

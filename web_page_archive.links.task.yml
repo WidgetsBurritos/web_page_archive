@@ -3,6 +3,12 @@ entity.web_page_archive.collection:
   route_name: entity.web_page_archive.collection
   base_route: entity.web_page_archive.collection
 
+web_page_archive_settings:
+  title: 'Settings'
+  base_route: entity.web_page_archive.collection
+  route_name: web_page_archive_settings
+  weight: -10
+
 entity.web_page_archive.collection.prepare_uninstall:
   title: 'Prepare uninstall'
   description: 'Remove fields and data created by web page archive module.'
