@@ -2,10 +2,9 @@ web_page_archive.capture_utility.wpa_skeleton_capture:
   type: mapping
   label: 'Skeleton capture utility'
   mapping:
-    capture:
-      type: int
+    width:
+      type: integer
       label: 'Width'
-
 
 web_page_archive.wpa_skeleton_capture.settings:
   type: config_object

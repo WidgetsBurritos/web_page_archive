@@ -48,6 +48,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     'web_page_archive',
     'wpa_html_capture',
     'wpa_screenshot_capture',
+    'wpa_skeleton_capture',
   ];
 
   /**
@@ -235,6 +236,14 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
           'weight' => 1,
           'data' => [
             'capture' => TRUE,
+          ],
+        ],
+        '00000000-9999-0000-5555-333333333333' => [
+          'uuid' => '00000000-9999-0000-5555-333333333333',
+          'id' => 'wpa_skeleton_capture',
+          'weight' => 1,
+          'data' => [
+            'width' => 480,
           ],
         ],
       ],
