@@ -31,6 +31,7 @@ class WebPageArchiveSettingsTest extends BrowserTestBase {
     'web_page_archive',
     'wpa_html_capture',
     'wpa_screenshot_capture',
+    'wpa_skeleton_capture',
   ];
 
   /**
@@ -124,6 +125,7 @@ class WebPageArchiveSettingsTest extends BrowserTestBase {
     $this->assertFieldByName('wpa_screenshot_capture[defaults][delay]', 0);
     $this->assertFieldByName('wpa_screenshot_capture[defaults][image_type]', 'png');
     $this->assertFieldByName('wpa_screenshot_capture[defaults][width]', 1280);
+    $this->assertFieldByName('wpa_skeleton_capture[defaults][width]', 1280);
 
     // Attempt to set defaults.
     $this->drupalPostForm(
@@ -134,6 +136,7 @@ class WebPageArchiveSettingsTest extends BrowserTestBase {
         'wpa_screenshot_capture[defaults][delay]' => 150,
         'wpa_screenshot_capture[defaults][image_type]' => 'jpg',
         'wpa_screenshot_capture[defaults][width]' => 1400,
+        'wpa_skeleton_capture[defaults][width]' => 480,
       ],
       t('Save configuration')
     );
@@ -146,6 +149,7 @@ class WebPageArchiveSettingsTest extends BrowserTestBase {
     $this->assertFieldByName('wpa_screenshot_capture[defaults][delay]', 150);
     $this->assertFieldByName('wpa_screenshot_capture[defaults][image_type]', 'jpg');
     $this->assertFieldByName('wpa_screenshot_capture[defaults][width]', 1400);
+    $this->assertFieldByName('wpa_skeleton_capture[defaults][width]', 480);
 
     // Create a dummy entity with no capture utilities.
     $data = [
@@ -176,6 +180,11 @@ class WebPageArchiveSettingsTest extends BrowserTestBase {
     $this->assertFieldByName('data[delay]', 150);
     $this->assertFieldByName('data[image_type]', 'jpg');
     $this->assertFieldByName('data[width]', 1400);
+
+    // Add a screenshot capture utilitiy to the config entity and test defaults.
+    $this->drupalGet('admin/config/system/web-page-archive/programmatic_archive/edit');
+    $this->drupalPostForm(NULL, ['new' => 'wpa_skeleton_capture'], t('Add'));
+    $this->assertFieldByName('data[width]', 480);
 
   }
 
