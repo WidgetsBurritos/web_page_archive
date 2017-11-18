@@ -72,6 +72,29 @@ class CronRunnerTest extends UnitTestCase {
   }
 
   /**
+   * Helper function to get a config factory service.
+   */
+  private function getMockConfigFactory() {
+    $mock_config_factory = $this->getMockBuilder('\Drupal\Core\Config\ConfigFactory')
+      ->disableOriginalConstructor()
+      ->getMock();
+
+    $mock_config = $this->getMockBuilder('\Drupal\Core\Config\ImmutableConfig')
+      ->disableOriginalConstructor()
+      ->getMock();
+
+    $mock_config->expects($this->any())
+      ->method('get')
+      ->will($this->returnValue(25));
+
+    $mock_config_factory->expects($this->any())
+      ->method('get')
+      ->will($this->returnValue($mock_config));
+
+    return $mock_config_factory;
+  }
+
+  /**
    * Helper function to get a cron runner based on default or supplied mocks.
    */
   private function getCronRunner(array $options = []) {
@@ -84,8 +107,11 @@ class CronRunnerTest extends UnitTestCase {
     if (empty($options['mock_state'])) {
       $options['mock_state'] = $this->getMockState();
     }
+    if (empty($options['mock_config_factory'])) {
+      $options['mock_config_factory'] = $this->getMockConfigFactory();
+    }
 
-    return new CronRunner($options['mock_lock'], $options['mock_state'], $options['mock_time']);
+    return new CronRunner($options['mock_lock'], $options['mock_state'], $options['mock_time'], $options['mock_config_factory']);
   }
 
   /**
@@ -180,6 +206,14 @@ class CronRunnerTest extends UnitTestCase {
     $mock_web_page_archive = $this->getMockWebPageArchive();
     $cron_runner = $this->getCronRunner();
     $this->assertFalse($cron_runner->run($mock_web_page_archive));
+  }
+
+  /**
+   * Tests capture max is pulled from configuration.
+   */
+  public function testCaptureMaxReturnsProperValue() {
+    $cron_runner = $this->getCronRunner();
+    $this->assertEquals(25, $cron_runner->getCaptureMax());
   }
 
 }

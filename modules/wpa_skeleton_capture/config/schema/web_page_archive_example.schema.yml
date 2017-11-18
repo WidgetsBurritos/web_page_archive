@@ -5,3 +5,15 @@ web_page_archive.capture_utility.wpa_skeleton_capture:
     capture:
       type: int
       label: 'Width'
+
+
+web_page_archive.wpa_skeleton_capture.settings:
+  type: config_object
+  label: 'Skeleton Capture Utility settings'
+  mapping:
+    defaults:
+      type: mapping
+      mapping:
+        width:
+          type: integer
+          label: 'Width'

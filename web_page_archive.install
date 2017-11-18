@@ -5,6 +5,7 @@
  * Install commands for web_page_archive.
  */
 
+use Drupal\Core\Config\FileStorage;
 use Drupal\Core\Field\BaseFieldDefinition;
 
 /**
@@ -203,4 +204,14 @@ function web_page_archive_update_8006() {
     $query->condition('vid', $revision_id);
     $query->execute();
   }
+}
+
+/**
+ * Installs new settings configuration.
+ */
+function web_page_archive_update_8007() {
+  $path = drupal_get_path('module', 'web_page_archive') . '/config/install';
+  $source = new FileStorage($path);
+  $config_storage = \Drupal::service('config.storage');
+  $config_storage->write('web_page_archive.settings', $source->read('web_page_archive.settings'));
 }

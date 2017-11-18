@@ -1,0 +1,18 @@
+<?php
+
+/**
+ * @file
+ * Install commands for wpa_html_capture.
+ */
+
+use Drupal\Core\Config\FileStorage;
+
+/**
+ * Installs new settings configuration.
+ */
+function wpa_skeleton_capture_update_8001() {
+  $path = drupal_get_path('module', 'wpa_skeleton_capture') . '/config/install';
+  $source = new FileStorage($path);
+  $config_storage = \Drupal::service('config.storage');
+  $config_storage->write('web_page_archive.wpa_skeleton_capture.settings', $source->read('web_page_archive.wpa_skeleton_capture.settings'));
+}

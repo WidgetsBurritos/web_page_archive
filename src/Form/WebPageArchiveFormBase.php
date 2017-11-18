@@ -69,11 +69,13 @@ abstract class WebPageArchiveFormBase extends EntityForm {
       return [];
     }
 
+    $config = $this->config('web_page_archive.settings');
+
     $form['label'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Label'),
       '#maxlength' => 255,
-      '#default_value' => $this->entity->label(),
+      '#default_value' => !$this->entity->isNew() ? $this->entity->label() : $config->get('defaults.label'),
       '#description' => $this->t("Label for the Web page archive entity."),
       '#required' => TRUE,
     ];
@@ -96,7 +98,7 @@ abstract class WebPageArchiveFormBase extends EntityForm {
         1 => $this->t('Yes'),
         0 => $this->t('No'),
       ],
-      '#default_value' => !$this->entity->isNew() ? (int) $this->entity->getUseCron() : 1,
+      '#default_value' => !$this->entity->isNew() ? (int) $this->entity->getUseCron() : (int) $config->get('defaults.use_cron'),
     ];
 
     $use_cron_state = [['select[name="use_cron"]' => ['value' => '1']]];
@@ -105,7 +107,7 @@ abstract class WebPageArchiveFormBase extends EntityForm {
       '#type' => 'textfield',
       '#title' => $this->t("Crontab schedule (relative to PHP's default timezone)"),
       '#description' => $this->t('Crontab format (see https://crontab.guru/)'),
-      '#default_value' => !$this->entity->isNew() ? $this->entity->getCronSchedule() : '@weekly',
+      '#default_value' => !$this->entity->isNew() ? $this->entity->getCronSchedule() : $config->get('defaults.cron_schedule'),
       '#states' => [
         'visible' => $use_cron_state,
       ],
@@ -127,7 +129,7 @@ abstract class WebPageArchiveFormBase extends EntityForm {
       '#type' => 'number',
       '#title' => $this->t('Timeout (ms)'),
       '#description' => $this->t('Amount of time to wait between captures, in milliseconds.'),
-      '#default_value' => !$this->entity->isNew() ? $this->entity->getTimeout() : 250,
+      '#default_value' => !$this->entity->isNew() ? $this->entity->getTimeout() : $config->get('defaults.timeout'),
     ];
 
     $form['url_type'] = [
@@ -137,7 +139,7 @@ abstract class WebPageArchiveFormBase extends EntityForm {
         'url' => $this->t('URL'),
         'sitemap' => $this->t('Sitemap URL'),
       ],
-      '#default_value' => $this->entity->getUrlType(),
+      '#default_value' => !$this->entity->isNew() ? $this->entity->getUrlType() : $config->get('defaults.url_type'),
     ];
 
     $form['use_robots'] = [
@@ -148,7 +150,7 @@ abstract class WebPageArchiveFormBase extends EntityForm {
         1 => $this->t('Yes'),
         0 => $this->t('No'),
       ],
-      '#default_value' => !$this->entity->isNew() ? (int) $this->entity->getUseRobots() : 1,
+      '#default_value' => !$this->entity->isNew() ? (int) $this->entity->getUseRobots() : (int) $config->get('defaults.use_robots'),
       '#states' => [
         'visible' => [
           ['select[name="url_type"]' => ['value' => 'url']],
@@ -161,14 +163,14 @@ abstract class WebPageArchiveFormBase extends EntityForm {
       '#type' => 'textfield',
       '#title' => $this->t('Browser user agent'),
       '#description' => $this->t('Specify the browser user agent. e.g. "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36"'),
-      '#default_value' => !$this->entity->isNew() ? $this->entity->getUserAgent() : $this->t('WPA'),
+      '#default_value' => !$this->entity->isNew() ? $this->entity->getUserAgent() : $config->get('defaults.user_agent'),
     ];
 
     $form['urls'] = [
       '#type' => 'textarea',
       '#title' => $this->t('URLs to Capture'),
       '#description' => $this->t('A list of urls to capture.'),
-      '#default_value' => $this->entity->getUrlsText(),
+      '#default_value' => !$this->entity->isNew() ? $this->entity->getUrlsText() : $config->get('defaults.urls'),
       '#states' => [
         'visible' => [
           ['select[name="url_type"]' => ['value' => 'url']],

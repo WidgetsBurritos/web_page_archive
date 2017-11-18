@@ -37,5 +37,7 @@ function web_page_archive_cron() {
   }
 
   // Cleanup files.
-  CleanupController::processCleanup(50);
+  $config = \Drupal::service('config.factory');
+  $file_cleanup = $config->get('web_page_archive.settings')->get('cron.file_cleanup');
+  CleanupController::processCleanup($file_cleanup);
 }

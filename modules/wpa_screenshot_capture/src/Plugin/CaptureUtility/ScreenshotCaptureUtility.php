@@ -97,15 +97,27 @@ class ScreenshotCaptureUtility extends ConfigurableCaptureUtilityBase {
   /**
    * {@inheritdoc}
    */
-  public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
-    $form['intro'] = [
-      '#markup' => $this->t('Some instructions go here.'),
+  public function defaultConfiguration() {
+    $config = \Drupal::configFactory()->get('web_page_archive.wpa_screenshot_capture.settings');
+    return [
+      'width' => $config->get('defaults.width'),
+      'delay' => $config->get('defaults.delay'),
+      'background_color' => $config->get('defaults.background_color'),
+      'image_type' => $config->get('defaults.image_type'),
     ];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
+    $config = \Drupal::configFactory()->get('web_page_archive.wpa_screenshot_capture.settings');
+
     $form['width'] = [
       '#type' => 'number',
       '#title' => $this->t('Capture width (in pixels)'),
       '#description' => $this->t('Specify the width you would like to capture.'),
-      '#default_value' => isset($this->configuration['width']) ? $this->configuration['width'] : 1280,
+      '#default_value' => $this->configuration['width'],
       '#required' => TRUE,
     ];
     $image_types = Types::available();
@@ -115,20 +127,20 @@ class ScreenshotCaptureUtility extends ConfigurableCaptureUtilityBase {
       '#title' => $this->t('Image type'),
       '#options' => $image_types,
       '#empty_option' => $this->t('Select an image type'),
-      '#default_value' => isset($this->configuration['image_type']) ? $this->configuration['image_type'] : 'png',
+      '#default_value' => $this->configuration['image_type'],
       '#required' => TRUE,
     ];
     $form['background_color'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Browser background color'),
       '#description' => $this->t('Specify the browser background color in hexidecimal format. e.g. "#ffffff"'),
-      '#default_value' => isset($this->configuration['background_color']) ? $this->configuration['background_color'] : '#ffffff',
+      '#default_value' => $this->configuration['background_color'],
     ];
     $form['delay'] = [
       '#type' => 'number',
       '#title' => $this->t('Delay (ms)'),
       '#description' => $this->t('How long to delay before capturing a screenshot. This is helpful if you need to wait for javascript or resources to load.'),
-      '#default_value' => isset($this->configuration['delay']) ? $this->configuration['delay'] : 0,
+      '#default_value' => $this->configuration['delay'],
       '#required' => TRUE,
     ];
 
