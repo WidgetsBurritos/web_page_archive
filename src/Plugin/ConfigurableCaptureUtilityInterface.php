@@ -2,6 +2,7 @@
 
 namespace Drupal\web_page_archive\Plugin;
 
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\PluginFormInterface;
 
 /**
@@ -15,4 +16,10 @@ use Drupal\Core\Plugin\PluginFormInterface;
  * @see plugin_api
  */
 interface ConfigurableCaptureUtilityInterface extends CaptureUtilityInterface, PluginFormInterface {
+
+  /**
+   * Builds global system settings form for capture utility.
+   */
+  public function buildSystemSettingsForm(array &$form, FormStateInterface $form_state);
+
 }

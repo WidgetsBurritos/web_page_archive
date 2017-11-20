@@ -58,6 +58,8 @@ class WebPageArchiveSettingsTest extends BrowserTestBase {
 
     // Confirm default entity settings exist and populate defaults.
     $assert->pageTextContains('Default Entity Settings');
+    $this->assertFieldByName('system[node_path]', '');
+    $this->assertFieldByName('system[npm_path]', '');
     $this->assertFieldByName('cron[capture_max]', 100);
     $this->assertFieldByName('cron[file_cleanup]', 50);
     $this->assertFieldByName('defaults[label]', '');
@@ -72,6 +74,8 @@ class WebPageArchiveSettingsTest extends BrowserTestBase {
     $this->drupalPostForm(
       NULL,
       [
+        'system[node_path]' => '/path/to/node',
+        'system[npm_path]' => '/path/to/npm',
         'cron[capture_max]' => 500,
         'cron[file_cleanup]' => 150,
         'defaults[label]' => 'New default label',
@@ -85,6 +89,8 @@ class WebPageArchiveSettingsTest extends BrowserTestBase {
     );
 
     // Confirm default entity settings updated.
+    $this->assertFieldByName('system[node_path]', '/path/to/node');
+    $this->assertFieldByName('system[npm_path]', '/path/to/npm');
     $this->assertFieldByName('cron[capture_max]', 500);
     $this->assertFieldByName('cron[file_cleanup]', 150);
     $this->assertFieldByName('defaults[label]', 'New default label');
@@ -116,12 +122,12 @@ class WebPageArchiveSettingsTest extends BrowserTestBase {
     $this->clickLink('Settings');
 
     // Confirm HTML capture utility section exists and populates defaults.
-    $assert->pageTextContains('HTML capture utility Default Settings');
+    $assert->pageTextContains('HTML capture utility Settings');
     $this->assertFieldByName('wpa_html_capture[defaults][capture]', 1);
 
     // Confirm screenshot capture utility section exists and populates defaults.
-    $assert->pageTextContains('Screenshot capture utility Default Settings');
-    $this->assertFieldByName('wpa_screenshot_capture[defaults][background_color]', '#ffffff');
+    $assert->pageTextContains('Screenshot capture utility Settings');
+    $this->assertFieldByName('wpa_screenshot_capture[defaults][browser]', 'chrome');
     $this->assertFieldByName('wpa_screenshot_capture[defaults][delay]', 0);
     $this->assertFieldByName('wpa_screenshot_capture[defaults][image_type]', 'png');
     $this->assertFieldByName('wpa_screenshot_capture[defaults][width]', 1280);
@@ -132,6 +138,7 @@ class WebPageArchiveSettingsTest extends BrowserTestBase {
       NULL,
       [
         'wpa_html_capture[defaults][capture]' => 0,
+        'wpa_screenshot_capture[defaults][browser]' => 'phantomjs',
         'wpa_screenshot_capture[defaults][background_color]' => '#abc123',
         'wpa_screenshot_capture[defaults][delay]' => 150,
         'wpa_screenshot_capture[defaults][image_type]' => 'jpg',
@@ -145,10 +152,13 @@ class WebPageArchiveSettingsTest extends BrowserTestBase {
     $this->assertFieldByName('wpa_html_capture[defaults][capture]', 0);
 
     // Confirm screenshot capture utility settings updated.
+    $this->assertFieldByName('wpa_screenshot_capture[defaults][browser]', 'phantomjs');
     $this->assertFieldByName('wpa_screenshot_capture[defaults][background_color]', '#abc123');
     $this->assertFieldByName('wpa_screenshot_capture[defaults][delay]', 150);
     $this->assertFieldByName('wpa_screenshot_capture[defaults][image_type]', 'jpg');
     $this->assertFieldByName('wpa_screenshot_capture[defaults][width]', 1400);
+
+    // Confirm skeleton capture utility settings updated.
     $this->assertFieldByName('wpa_skeleton_capture[defaults][width]', 480);
 
     // Create a dummy entity with no capture utilities.
@@ -176,6 +186,7 @@ class WebPageArchiveSettingsTest extends BrowserTestBase {
     // Add a screenshot capture utilitiy to the config entity and test defaults.
     $this->drupalGet('admin/config/system/web-page-archive/programmatic_archive/edit');
     $this->drupalPostForm(NULL, ['new' => 'wpa_screenshot_capture'], t('Add'));
+    $this->assertFieldByName('data[browser]', 'phantomjs');
     $this->assertFieldByName('data[background_color]', '#abc123');
     $this->assertFieldByName('data[delay]', 150);
     $this->assertFieldByName('data[image_type]', 'jpg');

@@ -116,9 +116,9 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     );
 
     // Check field default values.
+    $this->assertFieldByName('data[browser]', 'chrome');
     $this->assertFieldByName('data[width]', '1280');
     $this->assertFieldByName('data[image_type]', 'png');
-    $this->assertFieldByName('data[background_color]', '#ffffff');
     $this->assertFieldByName('data[delay]', '0');
 
     // Alter a few values and then submit.
@@ -136,15 +136,17 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $this->clickLink('Edit');
 
     // Confirm field values.
+    $this->assertFieldByName('data[browser]', 'chrome');
     $this->assertFieldByName('data[width]', '1400');
     $this->assertFieldByName('data[image_type]', 'jpg');
-    $this->assertFieldByName('data[background_color]', '#ffffff');
     $this->assertFieldByName('data[delay]', '250');
 
     // Attempt to image type.
     $this->drupalPostForm(
       NULL,
       [
+        'data[browser]' => 'phantomjs',
+        'data[background_color]' => '#ffffff',
         'data[image_type]' => 'png',
       ],
       t('Update capture utility')
@@ -154,6 +156,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $this->clickLink('Edit');
 
     // Confirm field values.
+    $this->assertFieldByName('data[browser]', 'phantomjs');
     $this->assertFieldByName('data[width]', '1400');
     $this->assertFieldByName('data[image_type]', 'png');
     $this->assertFieldByName('data[background_color]', '#ffffff');
@@ -224,6 +227,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
           'id' => 'wpa_screenshot_capture',
           'weight' => 1,
           'data' => [
+            'browser' => 'phantomjs',
             'width' => 1280,
             'background_color' => '#cc0000',
             'image_type' => 'png',
@@ -374,6 +378,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
           'id' => 'wpa_screenshot_capture',
           'weight' => 1,
           'data' => [
+            'browser' => 'phantomjs',
             'width' => 1280,
             'background_color' => '#cc0000',
             'image_type' => 'png',

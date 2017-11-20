@@ -6,12 +6,13 @@
  */
 
 use Drupal\Core\Config\FileStorage;
+use PhantomInstaller\PhantomBinary;
 
 /**
  * Removes clip_width and adds delay to config entities.
  */
 function wpa_screenshot_capture_update_8001() {
-  $config_factory = \Drupal::service('config.factory');
+  $config_factory = \Drupal::configFactory();
   $config_prefix = 'web_page_archive.web_page_archive';
   $keys = $config_factory->listAll($config_prefix);
 
@@ -46,4 +47,50 @@ function wpa_screenshot_capture_update_8002() {
   $source = new FileStorage($path);
   $config_storage = \Drupal::service('config.storage');
   $config_storage->write('web_page_archive.wpa_screenshot_capture.settings', $source->read('web_page_archive.wpa_screenshot_capture.settings'));
+}
+
+/**
+ * Sets phantomjs binary if we've previously used the PhantomBinary installer.
+ */
+function wpa_screenshot_capture_update_8003() {
+  if (class_exists('\\PhantomInstaller\\PhantomBinary')) {
+    $phantom_path = PhantomBinary::getDir() . '/phantomjs';
+    \drupal_set_message(t('Setting phantomjs path to "@path". To use a different version goto /admin/config/system/web-page-archive/settings to change the setting.', ['@path' => $phantom_path]));
+    $config = \Drupal::configFactory()->getEditable('web_page_archive.wpa_screenshot_capture.settings');
+    $config->set('system.phantomjs_path', $phantom_path);
+    $config->save();
+  }
+  else {
+    \drupal_set_message('No previously installed version of phantomjs could be found. To set this you will need to go to /admin/config/system/web-page-archive/settings in your browser.');
+  }
+}
+
+/**
+ * Sets phantomjs as default browser on existing screenshot captures.
+ */
+function wpa_screenshot_capture_update_8004() {
+  $config_factory = \Drupal::configFactory();
+  $config_prefix = 'web_page_archive.web_page_archive';
+  $keys = $config_factory->listAll($config_prefix);
+
+  foreach ($keys as $key) {
+    $wpa_config = $config_factory->getEditable($key);
+
+    $utilities = $wpa_config->get('capture_utilities');
+    $changed = FALSE;
+
+    // Search for screenshot capture utilities, remove clip_width and set delay.
+    foreach ($utilities as $key => $utility) {
+      if ($utilities[$key]['id'] == 'wpa_screenshot_capture') {
+        $utilities[$key]['data']['browser'] = 'phantomjs';
+        $changed = TRUE;
+      }
+    }
+
+    // Update config entity if changed.
+    if ($changed) {
+      $wpa_config->set('capture_utilities', $utilities);
+      $wpa_config->save();
+    }
+  }
 }

@@ -2,6 +2,9 @@ web_page_archive.capture_utility.wpa_screenshot_capture:
   type: mapping
   label: 'Screenshot Capture utility'
   mapping:
+    browser:
+      type: string
+      label: 'Browser'
     width:
       type: integer
       label: 'Width'
@@ -22,9 +25,18 @@ web_page_archive.wpa_screenshot_capture.settings:
   type: config_object
   label: 'Screenshot Capture Utility settings'
   mapping:
+    system:
+      type: mapping
+      mapping:
+        phantomjs_path:
+          type: string
+          label: 'PhantomJS path'
     defaults:
       type: mapping
       mapping:
+        browser:
+          type: string
+          label: 'Browser'
         width:
           type: integer
           label: 'Width'

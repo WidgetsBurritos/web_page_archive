@@ -64,9 +64,10 @@ class SettingsForm extends ConfigFormBase {
     }
 
     // Attach form fields.
+    $this->buildFormSystemSettings($form, $form_state);
     $this->buildFormCronSettings($form, $form_state);
     $this->buildFormDefaults($form, $form_state);
-    $this->buildFormCaptureUtilityDefaults($form, $form_state);
+    $this->buildFormCaptureUtilityFields($form, $form_state);
     return parent::buildForm($form, $form_state);
   }
 
@@ -77,6 +78,33 @@ class SettingsForm extends ConfigFormBase {
     $this->submitFormSettings($form, $form_state);
     $this->submitFormCaptureUtilitySettings($form, $form_state);
     parent::submitForm($form, $form_state);
+  }
+
+  /**
+   * Attach module settings to the form array.
+   */
+  public function buildFormSystemSettings(array &$form, FormStateInterface $form_state) {
+    $config = $this->config('web_page_archive.settings');
+
+    $form['system'] = [
+      '#type' => 'details',
+      '#title' => $this->t('System Settings'),
+      '#tree' => TRUE,
+    ];
+
+    $form['system']['node_path'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('NodeJS path'),
+      '#description' => $this->t('Full path to NodeJS binary on your system. Requires node v7.6.0 or greater. (e.g. /usr/local/bin/node)'),
+      '#default_value' => $config->get('system.node_path'),
+    ];
+
+    $form['system']['npm_path'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('NPM path'),
+      '#description' => $this->t('Full path to npm binary on your system. Requires npm v4.1.2 or greater (e.g. /usr/local/bin/npm)'),
+      '#default_value' => $config->get('system.npm_path'),
+    ];
   }
 
   /**
@@ -210,7 +238,7 @@ class SettingsForm extends ConfigFormBase {
    */
   public function submitFormSettings(array &$form, FormStateInterface $form_state) {
     $settings = \Drupal::configFactory()->getEditable('web_page_archive.settings');
-    $groups = ['cron', 'defaults'];
+    $groups = ['system', 'cron', 'defaults'];
     foreach ($groups as $group) {
       $defaults = $form_state->getValue($group);
       foreach ($defaults as $field => $value) {
@@ -223,24 +251,53 @@ class SettingsForm extends ConfigFormBase {
   /**
    * Attach default capture utility config fields to the form array.
    */
-  public function buildFormCaptureUtilityDefaults(array &$form, FormStateInterface $form_state) {
+  public function buildFormCaptureUtilityFields(array &$form, FormStateInterface $form_state) {
+    // Define capture utility field groups.
+    $groups = [
+      [
+        'id' => 'system',
+        'label' => $this->t('System Settings'),
+        'method' => 'buildSystemSettingsForm',
+      ],
+      [
+        'id' => 'defaults',
+        'label' => $this->t('Default Values'),
+        'method' => 'buildConfigurationForm',
+      ],
+    ];
+
+    // Iterate through each capture utility plugin searching for fields.
     $plugin_definitions = $this->captureUtilityManager->getDefinitions();
     foreach ($plugin_definitions as $plugin_definition) {
+      // Initialize section.
       $config = $this->config("web_page_archive.{$plugin_definition['id']}.settings");
       $form[$plugin_definition['id']] = [
         '#type' => 'details',
-        '#title' => $this->t('@label Default Settings', ['@label' => $plugin_definition['label']]),
+        '#title' => $this->t('@label Settings', ['@label' => $plugin_definition['label']]),
         '#tree' => TRUE,
       ];
-      $form[$plugin_definition['id']]['defaults'] = [];
-      $subform_state = SubformState::createForSubform($form[$plugin_definition['id']]['defaults'], $form, $form_state);
-      $capture_utility = $this->captureUtilityManager->createInstance($plugin_definition['id']);
-      $form[$plugin_definition['id']]['defaults'] = $capture_utility->buildConfigurationForm($form[$plugin_definition['id']]['defaults'], $subform_state);
 
-      $defaults = $config->get("defaults");
-      foreach ($defaults as $field => $value) {
-        $form[$plugin_definition['id']]['defaults'][$field]['#default_value'] = $value;
-        unset($form[$plugin_definition['id']]['defaults'][$field]['#required']);
+      // Loop through each group and attach necessary fields.
+      foreach ($groups as $group) {
+        $form[$plugin_definition['id']][$group['id']] = [
+          '#type' => 'fieldset',
+          '#title' => $group['label'],
+        ];
+        $subform_state = SubformState::createForSubform($form[$plugin_definition['id']][$group['id']], $form, $form_state);
+        $capture_utility = $this->captureUtilityManager->createInstance($plugin_definition['id']);
+        $form[$plugin_definition['id']][$group['id']] = $capture_utility->{$group['method']}($form[$plugin_definition['id']][$group['id']], $subform_state);
+
+        // If group is empty, remove it. Otherwise set default values.
+        if (empty($form[$plugin_definition['id']][$group['id']])) {
+          unset($form[$plugin_definition['id']][$group['id']]);
+        }
+        else {
+          $fields = $config->get($group['id']);
+          foreach ($fields as $field => $value) {
+            $form[$plugin_definition['id']][$group['id']][$field]['#default_value'] = $value;
+            unset($form[$plugin_definition['id']][$group['id']][$field]['#required']);
+          }
+        }
       }
     }
   }
@@ -252,9 +309,15 @@ class SettingsForm extends ConfigFormBase {
     $plugin_definitions = $this->captureUtilityManager->getDefinitions();
     foreach ($plugin_definitions as $plugin_definition) {
       $settings = $this->configFactory->getEditable("web_page_archive.{$plugin_definition['id']}.settings");
-      $defaults = $form_state->getValue($plugin_definition['id']);
-      foreach ($defaults['defaults'] as $field => $value) {
-        $settings->set("defaults.{$field}", $value);
+      $groups = ['defaults', 'system'];
+      $fields = $form_state->getValue($plugin_definition['id']);
+      foreach ($groups as $group) {
+        if (empty($fields[$group])) {
+          continue;
+        }
+        foreach ($fields[$group] as $field => $value) {
+          $settings->set("{$group}.{$field}", $value);
+        }
       }
       $settings->save();
     }

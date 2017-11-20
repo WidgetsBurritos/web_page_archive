@@ -34,13 +34,11 @@ class HtmlCaptureUtility extends ConfigurableCaptureUtilityBase {
     }
 
     // Determine file locations.
-    $entity_id = $data['run_entity']->getConfigEntity()->id();
-    $file_name = preg_replace('/[^a-z0-9]+/', '-', strtolower($data['url'])) . '.html';
-    $file_path = $this->storagePath($entity_id, $data['run_uuid']) . '/' . $file_name;
+    $filename = $this->getFileName($data, 'html');
 
     // Save html and set our response.
-    \Drupal::httpClient()->request('GET', $data['url'], ['sink' => $file_path]);
-    $this->response = new HtmlCaptureResponse($file_path, $data['url']);
+    \Drupal::httpClient()->request('GET', $data['url'], ['sink' => $filename]);
+    $this->response = new HtmlCaptureResponse($filename, $data['url']);
 
     return $this;
   }

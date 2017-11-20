@@ -26,6 +26,7 @@ capture_utilities:
     id: wpa_screenshot_capture
     weight: 2
     data:
+      browser: phantomjs
       width: 1500
       background_color: '#abc123'
       image_type: jpg

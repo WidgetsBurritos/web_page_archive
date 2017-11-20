@@ -7,7 +7,7 @@ use Drupal\web_page_archive\Plugin\ConfigurableCaptureUtilityBase;
 use Drupal\wpa_screenshot_capture\Plugin\CaptureResponse\ScreenshotCaptureResponse;
 use Screen\Capture;
 use Screen\Image\Types;
-use PhantomInstaller\PhantomBinary;
+use Spatie\Browsershot\Browsershot;
 
 /**
  * Captures screenshot of a remote uri.
@@ -35,9 +35,28 @@ class ScreenshotCaptureUtility extends ConfigurableCaptureUtilityBase {
       throw new \Exception('Capture URL is required');
     }
 
+    switch ($this->configuration['browser']) {
+      case 'phantomjs':
+        return $this->capturePhantomJs($data);
+
+      case 'chrome':
+        return $this->captureHeadlessChrome($data);
+    }
+
+    throw new \Exception("Invalid browser '{$this->configuration['browser']}' specified");
+  }
+
+  /**
+   * Captures using phantomjs.
+   */
+  public function capturePhantomJs(array $data = []) {
     // Configure PhantomJS capture tool.
     $screenCapture = new Capture($data['url']);
-    $screenCapture->binPath = PhantomBinary::getDir() . '/';
+    $config = \Drupal::configFactory()->get('web_page_archive.wpa_screenshot_capture.settings');
+    $screenCapture->binPath = dirname($config->get('system.phantomjs_path')) . '/';
+    if (!file_exists($screenCapture->binPath . 'phantomjs')) {
+      throw new \Exception($this->t('phantomjs could not be found at "@path"', ['@path' => $screenCapture->binPath . 'phantomjs']));
+    }
     $screenCapture->setWidth((int) $this->configuration['width']);
     if (!empty($this->configuration['background_color'])) {
       $screenCapture->setBackgroundColor($this->configuration['background_color']);
@@ -47,17 +66,56 @@ class ScreenshotCaptureUtility extends ConfigurableCaptureUtilityBase {
       $screenCapture->setUserAgentString($data['user_agent']);
     }
     $screenCapture->setDelay($this->configuration['delay']);
-
-    // Determine file locations.
-    $entity_id = $data['run_entity']->getConfigEntity()->id();
-    $file_name = preg_replace('/[^a-z0-9]+/', '-', strtolower($data['url']));
-    $file_name .= ".{$this->configuration['image_type']}";
-    $file_path = $this->storagePath($entity_id, $data['run_uuid']) . '/' . $file_name;
-    $real_file_path = \Drupal::service('file_system')->realpath($file_path);
+    $filename = $this->getFileName($data, $this->configuration['image_type']);
 
     // Save screenshot and set our response.
-    $screenCapture->save($real_file_path);
-    $this->response = new ScreenshotCaptureResponse($file_path, $data['url']);
+    $screenCapture->save(\Drupal::service('file_system')->realpath($filename));
+    $this->response = new ScreenshotCaptureResponse($filename, $data['url']);
+
+    return $this;
+  }
+
+  /**
+   * Captures using headless chrome.
+   */
+  public function captureHeadlessChrome(array $data = []) {
+    // Retrieve node/npm path.
+    $config = \Drupal::configFactory();
+    $system_settings = $config->get('web_page_archive.settings')->get('system');
+
+    if (!file_exists($system_settings['npm_path'])) {
+      throw new \Exception($this->t('npm could not be found at "@path"', ['@path' => $system_settings['npm_path']]));
+    }
+
+    if (!file_exists($system_settings['node_path'])) {
+      throw new \Exception($this->t('node could not be found at "@path"', ['@path' => $system_settings['node_path']]));
+    }
+
+    // Run "npm install" inside module.
+    $wpa_dir = \drupal_get_path('module', 'web_page_archive');
+    $install = "cd {$wpa_dir} && {$system_settings['npm_path']} install";
+
+    // Capture screenshot.
+    $filename = $this->getFileName($data, $this->configuration['image_type']);
+
+    $screenCapture = Browsershot::url($data['url'])
+      ->setNodeBinary($system_settings['node_path'])
+      ->setNpmBinary($system_settings['npm_path'])
+      ->fullPage()
+      ->setOption('viewport.width', (int) $this->configuration['width']);
+
+    if (!empty($this->configuration['delay'])) {
+      $screenCapture->setDelay((int) $this->configuration['delay']);
+    }
+
+    // Add optional user agent.
+    if (!empty($data['user_agent'])) {
+      $screenCapture->userAgent($data['user_agent']);
+    }
+
+    // Save screenshot and set our response.
+    $screenCapture->save(\Drupal::service('file_system')->realpath($filename));
+    $this->response = new ScreenshotCaptureResponse($filename, $data['url']);
 
     return $this;
   }
@@ -74,14 +132,12 @@ class ScreenshotCaptureUtility extends ConfigurableCaptureUtilityBase {
    */
   public function missingDependencies() {
     $capture_message = $this->t('Screen Capture package missing.');
+    $browsershot_message = $this->t('Browsershot package missing.');
     $install_message = $this->t('The Web Page Archive module must be installed via composer.');
-    $installer_message = $this->t('Phantom Installer package missing.');
-    $binary_message = $this->t('PhantomJS binary missing. composer.json missing "post-install-cmd" command.');
 
     $required_dependencies = [
       '\\Screen\\Capture' => "\\Screen\\Capture: {$capture_message} {$install_message}",
-      '\\PhantomInstaller\\Installer' => "\\PhantomInstaller\\Installer: {$installer_message} {$install_message}",
-      '\\PhantomInstaller\\PhantomBinary' => "\\PhantomInstaller\\PhantomBinary: {$binary_message}",
+      '\\Spatie\\Browsershot\\Browsershot' => "\\Spatie\\Browsershot\\Browsershot: {$browsershot_message} {$install_message}",
     ];
 
     $missing_dependencies = [];
@@ -100,6 +156,7 @@ class ScreenshotCaptureUtility extends ConfigurableCaptureUtilityBase {
   public function defaultConfiguration() {
     $config = \Drupal::configFactory()->get('web_page_archive.wpa_screenshot_capture.settings');
     return [
+      'browser' => $config->get('defaults.browser'),
       'width' => $config->get('defaults.width'),
       'delay' => $config->get('defaults.delay'),
       'background_color' => $config->get('defaults.background_color'),
@@ -112,6 +169,18 @@ class ScreenshotCaptureUtility extends ConfigurableCaptureUtilityBase {
    */
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
     $config = \Drupal::configFactory()->get('web_page_archive.wpa_screenshot_capture.settings');
+
+    $form['browser'] = [
+      '#type' => 'select',
+      '#title' => $this->t('Browser'),
+      '#description' => $this->t('Specify the browser you would like to use to perform captures with.'),
+      '#default_value' => $this->configuration['browser'],
+      '#options' => [
+        'chrome' => 'Headless Chrome',
+        'phantomjs' => 'PhantomJS',
+      ],
+      '#required' => TRUE,
+    ];
 
     $form['width'] = [
       '#type' => 'number',
@@ -135,6 +204,11 @@ class ScreenshotCaptureUtility extends ConfigurableCaptureUtilityBase {
       '#title' => $this->t('Browser background color'),
       '#description' => $this->t('Specify the browser background color in hexidecimal format. e.g. "#ffffff"'),
       '#default_value' => $this->configuration['background_color'],
+      '#states' => [
+        'visible' => [
+          'select[name="data[browser]"]' => ['value' => 'phantomjs'],
+        ],
+      ],
     ];
     $form['delay'] = [
       '#type' => 'number',
@@ -153,10 +227,25 @@ class ScreenshotCaptureUtility extends ConfigurableCaptureUtilityBase {
   public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
     parent::submitConfigurationForm($form, $form_state);
 
-    $this->configuration['width'] = $form_state->getValue('width');
-    $this->configuration['background_color'] = $form_state->getValue('background_color');
-    $this->configuration['image_type'] = $form_state->getValue('image_type');
-    $this->configuration['delay'] = $form_state->getValue('delay');
+    $fields = ['browser', 'width', 'image_type', 'background_color', 'delay'];
+
+    foreach ($fields as $field) {
+      $this->configuration[$field] = $form_state->getValue($field);
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function buildSystemSettingsForm(array &$form, FormStateInterface $form_state) {
+    $config = \Drupal::configFactory()->get('web_page_archive.wpa_screenshot_capture.settings');
+    $form['phantomjs_path'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('PhantomJS path'),
+      '#description' => $this->t('Full path to phantomjs binary on your system. (e.g. /usr/local/bin/phantomjs)'),
+      '#default_value' => $config->get('system.phantomjs_path'),
+    ];
+    return $form;
   }
 
   /**

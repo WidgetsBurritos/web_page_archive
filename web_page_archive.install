@@ -215,3 +215,13 @@ function web_page_archive_update_8007() {
   $config_storage = \Drupal::service('config.storage');
   $config_storage->write('web_page_archive.settings', $source->read('web_page_archive.settings'));
 }
+
+/**
+ * Adds default node/npm paths to system settings.
+ */
+function web_page_archive_update_8008() {
+  $config = \Drupal::service('config.factory')->getEditable('web_page_archive.settings');
+  $config->set('system.node_path', '');
+  $config->set('system.npm_path', '');
+  $config->save();
+}

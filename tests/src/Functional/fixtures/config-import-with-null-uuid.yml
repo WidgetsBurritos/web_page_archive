@@ -26,8 +26,8 @@ capture_utilities:
     id: wpa_screenshot_capture
     weight: 2
     data:
+      browser: chrome
       width: 1500
-      background_color: '#abc123'
       image_type: jpg
       delay: 1000
 run_entity: null
