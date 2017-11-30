@@ -79,6 +79,7 @@ class WebPageArchiveConfigTest extends BrowserTestBase {
 
     // Check Screenshot capture utility.
     $this->drupalGet('admin/config/system/web-page-archive/sample_uuid_import_test/utilities/6ff62161-18dd-4450-8b08-b906b7392ff6');
+    $this->assertFieldByName('data[browser]', 'phantomjs');
     $this->assertFieldByName('data[width]', 1500);
     $this->assertFieldByName('data[background_color]', '#abc123');
     $this->assertFieldByName('data[image_type]', 'jpg');
@@ -118,8 +119,8 @@ class WebPageArchiveConfigTest extends BrowserTestBase {
 
     // Check Screenshot capture utility.
     $this->drupalGet('admin/config/system/web-page-archive/sample_null_uuid_import_test/utilities/1ff62161-18dd-4450-8b08-b906b7392ff6');
+    $this->assertFieldByName('data[browser]', 'chrome');
     $this->assertFieldByName('data[width]', 1500);
-    $this->assertFieldByName('data[background_color]', '#abc123');
     $this->assertFieldByName('data[image_type]', 'jpg');
     $this->assertFieldByName('data[delay]', 1000);
   }

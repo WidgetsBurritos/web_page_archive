@@ -103,4 +103,19 @@ interface CaptureUtilityInterface extends PluginInspectionInterface, Configurabl
    */
   public function storagePath($run_uuid);
 
+  /**
+   * Retrieves a filename based on the specified data.
+   *
+   * @param array $data
+   *   Capture data array.
+   * @param string $extension
+   *   File extension of the capture.
+   * @param int $index
+   *   Index of file (to prevent duplicate files).
+   *
+   * @return string
+   *   Retrieves a filename for a capture.
+   */
+  public function getFileName(array $data, $extension, $index = 1);
+
 }

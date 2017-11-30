@@ -19,6 +19,12 @@ abstract class ConfigurableCaptureUtilityBase extends CaptureUtilityBase impleme
   /**
    * {@inheritdoc}
    */
+  public function buildSystemSettingsForm(array &$form, FormStateInterface $form_state) {
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function validateConfigurationForm(array &$form, FormStateInterface $form_state) {
   }
 

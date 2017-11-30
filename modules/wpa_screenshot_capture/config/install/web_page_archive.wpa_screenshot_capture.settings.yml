@@ -1,5 +1,8 @@
+system:
+  phantomjs_path: ''
 defaults:
   background_color: '#ffffff'
+  browser: 'chrome'
   delay: 0
   image_type: png
   user_agent: WPA

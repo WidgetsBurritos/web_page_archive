@@ -2,6 +2,15 @@ web_page_archive.settings:
   type: config_object
   label: 'Web page archive settings'
   mapping:
+    system:
+      type: mapping
+      mapping:
+        node_path:
+          type: string
+          label: 'NodeJS path'
+        npm_path:
+          type: string
+          label: 'npm path'
     cron:
       type: mapping
       mapping:

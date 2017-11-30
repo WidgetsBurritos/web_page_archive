@@ -189,4 +189,22 @@ abstract class CaptureUtilityBase extends PluginBase implements CaptureUtilityIn
     return $path;
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function getFileName(array $data, $extension, $index = 1) {
+    // Determine file name.
+    $entity_id = $data['run_entity']->getConfigEntity()->id();
+    $file_name = preg_replace('/[^a-z0-9]+/', '-', strtolower($data['url']));
+    $file_name .= "-{$index}.{$extension}";
+    $file_path = $this->storagePath($entity_id, $data['run_uuid']) . '/' . $file_name;
+
+    // If file exists update our index and try again.
+    if (file_exists($file_path)) {
+      return $this->getFileName($data, $extension, $index + 1);
+    }
+
+    return $file_path;
+  }
+
 }
