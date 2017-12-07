@@ -31,6 +31,9 @@ web_page_archive.wpa_screenshot_capture.settings:
         phantomjs_path:
           type: string
           label: 'PhantomJS path'
+        node_modules_path:
+          type: string
+          label: 'node_modules path'
     defaults:
       type: mapping
       mapping:
