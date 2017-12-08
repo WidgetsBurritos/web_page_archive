@@ -19,6 +19,7 @@ use Spatie\Browsershot\Browsershot;
  * )
  */
 class ScreenshotCaptureUtility extends ConfigurableCaptureUtilityBase {
+
   /**
    * Most recent response.
    *
@@ -81,6 +82,7 @@ class ScreenshotCaptureUtility extends ConfigurableCaptureUtilityBase {
   public function captureHeadlessChrome(array $data = []) {
     // Retrieve node/npm path.
     $config = \Drupal::configFactory();
+    $file_system = \Drupal::service('file_system');
     $system_settings = $config->get('web_page_archive.settings')->get('system');
 
     if (!file_exists($system_settings['npm_path'])) {
@@ -91,10 +93,6 @@ class ScreenshotCaptureUtility extends ConfigurableCaptureUtilityBase {
       throw new \Exception($this->t('node could not be found at "@path"', ['@path' => $system_settings['node_path']]));
     }
 
-    // Run "npm install" inside module.
-    $wpa_dir = \drupal_get_path('module', 'web_page_archive');
-    $install = "cd {$wpa_dir} && {$system_settings['npm_path']} install";
-
     // Capture screenshot.
     $filename = $this->getFileName($data, $this->configuration['image_type']);
 
@@ -103,6 +101,10 @@ class ScreenshotCaptureUtility extends ConfigurableCaptureUtilityBase {
       ->setNpmBinary($system_settings['npm_path'])
       ->fullPage()
       ->setOption('viewport.width', (int) $this->configuration['width']);
+
+    if (!empty($system_settings['node_modules_path'])) {
+      $screenCapture->setNodeModulePath($system_settings['node_modules_path']);
+    }
 
     if (!empty($this->configuration['delay'])) {
       $screenCapture->setDelay((int) $this->configuration['delay']);
@@ -114,7 +116,7 @@ class ScreenshotCaptureUtility extends ConfigurableCaptureUtilityBase {
     }
 
     // Save screenshot and set our response.
-    $screenCapture->save(\Drupal::service('file_system')->realpath($filename));
+    $screenCapture->save($file_system->realpath($filename));
     $this->response = new ScreenshotCaptureResponse($filename, $data['url']);
 
     return $this;
@@ -244,6 +246,12 @@ class ScreenshotCaptureUtility extends ConfigurableCaptureUtilityBase {
       '#title' => $this->t('PhantomJS path'),
       '#description' => $this->t('Full path to phantomjs binary on your system. (e.g. /usr/local/bin/phantomjs)'),
       '#default_value' => $config->get('system.phantomjs_path'),
+    ];
+    $form['node_modules_path'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('node_modules path'),
+      '#description' => $this->t('Path to /node_modules/ containing puppeteer. Leave empty if puppeteer is installed globally. (See: https://github.com/spatie/browsershot#custom-node-module-path for details)'),
+      '#default_value' => $config->get('system.node_modules_path'),
     ];
     return $form;
   }
