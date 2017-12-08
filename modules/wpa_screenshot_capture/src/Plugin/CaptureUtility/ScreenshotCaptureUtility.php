@@ -84,6 +84,7 @@ class ScreenshotCaptureUtility extends ConfigurableCaptureUtilityBase {
     $config = \Drupal::configFactory();
     $file_system = \Drupal::service('file_system');
     $system_settings = $config->get('web_page_archive.settings')->get('system');
+    $capture_utility_settings = $config->get('web_page_archive.wpa_screenshot_capture.settings')->get('system');
 
     if (!file_exists($system_settings['npm_path'])) {
       throw new \Exception($this->t('npm could not be found at "@path"', ['@path' => $system_settings['npm_path']]));
@@ -106,7 +107,7 @@ class ScreenshotCaptureUtility extends ConfigurableCaptureUtilityBase {
       $screenCapture->setNodeModulePath($system_settings['node_modules_path']);
     }
 
-    if (!empty($system_settings['puppeteer_disable_sandbox'])) {
+    if (!empty($capture_utility_settings['puppeteer_disable_sandbox'])) {
       $screenCapture->noSandbox();
     }
 
