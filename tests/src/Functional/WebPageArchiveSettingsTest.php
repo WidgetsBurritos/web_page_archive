@@ -131,6 +131,9 @@ class WebPageArchiveSettingsTest extends BrowserTestBase {
     $this->assertFieldByName('wpa_screenshot_capture[defaults][delay]', 0);
     $this->assertFieldByName('wpa_screenshot_capture[defaults][image_type]', 'png');
     $this->assertFieldByName('wpa_screenshot_capture[defaults][width]', 1280);
+    $this->assertFieldByName('wpa_screenshot_capture[system][phantomjs_path]', '');
+    $this->assertFieldByName('wpa_screenshot_capture[system][node_modules_path]', '');
+    $this->assertNoFieldChecked('wpa_screenshot_capture[system][puppeteer_disable_sandbox]');
     $this->assertFieldByName('wpa_skeleton_capture[defaults][width]', 1280);
 
     // Attempt to set defaults.
@@ -143,6 +146,9 @@ class WebPageArchiveSettingsTest extends BrowserTestBase {
         'wpa_screenshot_capture[defaults][delay]' => 150,
         'wpa_screenshot_capture[defaults][image_type]' => 'jpg',
         'wpa_screenshot_capture[defaults][width]' => 1400,
+        'wpa_screenshot_capture[system][phantomjs_path]' => '/path/to/phantomjs',
+        'wpa_screenshot_capture[system][node_modules_path]' => '/path/to/node_modules/',
+        'wpa_screenshot_capture[system][puppeteer_disable_sandbox]' => 1,
         'wpa_skeleton_capture[defaults][width]' => 480,
       ],
       t('Save configuration')
@@ -157,6 +163,9 @@ class WebPageArchiveSettingsTest extends BrowserTestBase {
     $this->assertFieldByName('wpa_screenshot_capture[defaults][delay]', 150);
     $this->assertFieldByName('wpa_screenshot_capture[defaults][image_type]', 'jpg');
     $this->assertFieldByName('wpa_screenshot_capture[defaults][width]', 1400);
+    $this->assertFieldByName('wpa_screenshot_capture[system][phantomjs_path]', '/path/to/phantomjs');
+    $this->assertFieldByName('wpa_screenshot_capture[system][node_modules_path]', '/path/to/node_modules/');
+    $this->assertFieldChecked('wpa_screenshot_capture[system][puppeteer_disable_sandbox]');
 
     // Confirm skeleton capture utility settings updated.
     $this->assertFieldByName('wpa_skeleton_capture[defaults][width]', 480);

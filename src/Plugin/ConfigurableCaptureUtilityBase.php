@@ -3,6 +3,8 @@
 namespace Drupal\web_page_archive\Plugin;
 
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Link;
+use Drupal\Core\Url;
 
 /**
  * Provides a base class for configurable capture utilities.
@@ -32,6 +34,15 @@ abstract class ConfigurableCaptureUtilityBase extends CaptureUtilityBase impleme
    * {@inheritdoc}
    */
   public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getFormDescriptionLinkFromUrl($url, $label) {
+    $urlObj = Url::fromUri($url);
+    $urlObj->setOptions(['attributes' => ['target' => '_blank']]);
+    return Link::fromTextAndUrl($label, $urlObj)->toString();
   }
 
 }

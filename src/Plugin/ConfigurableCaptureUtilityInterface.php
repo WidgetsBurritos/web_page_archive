@@ -22,4 +22,9 @@ interface ConfigurableCaptureUtilityInterface extends CaptureUtilityInterface, P
    */
   public function buildSystemSettingsForm(array &$form, FormStateInterface $form_state);
 
+  /**
+   * Retrieves a link for usage in form field descriptions.
+   */
+  public function getFormDescriptionLinkFromUrl($url, $label);
+
 }
