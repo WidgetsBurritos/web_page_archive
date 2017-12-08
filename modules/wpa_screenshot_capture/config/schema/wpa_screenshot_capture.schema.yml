@@ -34,6 +34,9 @@ web_page_archive.wpa_screenshot_capture.settings:
         node_modules_path:
           type: string
           label: 'node_modules path'
+        puppeteer_disable_sandbox:
+          type: boolean
+          label: 'Indicates whether the puppeteer sandbox is disabled.'
     defaults:
       type: mapping
       mapping:

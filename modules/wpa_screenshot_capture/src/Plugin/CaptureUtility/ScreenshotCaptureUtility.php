@@ -106,6 +106,10 @@ class ScreenshotCaptureUtility extends ConfigurableCaptureUtilityBase {
       $screenCapture->setNodeModulePath($system_settings['node_modules_path']);
     }
 
+    if (!empty($system_settings['puppeteer_disable_sandbox'])) {
+      $screenCapture->noSandbox();
+    }
+
     if (!empty($this->configuration['delay'])) {
       $screenCapture->setDelay((int) $this->configuration['delay']);
     }
@@ -241,18 +245,32 @@ class ScreenshotCaptureUtility extends ConfigurableCaptureUtilityBase {
    */
   public function buildSystemSettingsForm(array &$form, FormStateInterface $form_state) {
     $config = \Drupal::configFactory()->get('web_page_archive.wpa_screenshot_capture.settings');
+
     $form['phantomjs_path'] = [
       '#type' => 'textfield',
       '#title' => $this->t('PhantomJS path'),
       '#description' => $this->t('Full path to phantomjs binary on your system. (e.g. /usr/local/bin/phantomjs)'),
       '#default_value' => $config->get('system.phantomjs_path'),
     ];
+    $url = 'https://github.com/spatie/browsershot#custom-node-module-path';
+    $label = $this->t('more details');
+    $node_modules_details_link = $this->getFormDescriptionLinkFromUrl($url, $label);
     $form['node_modules_path'] = [
       '#type' => 'textfield',
       '#title' => $this->t('node_modules path'),
-      '#description' => $this->t('Path to /node_modules/ containing puppeteer. Leave empty if puppeteer is installed globally. (See: https://github.com/spatie/browsershot#custom-node-module-path for details)'),
+      '#description' => $this->t('Path to /node_modules/ containing puppeteer. Leave empty if puppeteer is installed globally. See @details_link.', ['@details_link' => $node_modules_details_link]),
       '#default_value' => $config->get('system.node_modules_path'),
     ];
+    $url = 'https://github.com/GoogleChrome/puppeteer/blob/e6725e15af6e883e83d4e7632765e276ca165f69/docs/troubleshooting.md#chrome-headless-fails-due-to-sandbox-issues';
+    $label = $this->t('more details');
+    $sandbox_details_link = $this->getFormDescriptionLinkFromUrl($url, $label);
+    $form['puppeteer_disable_sandbox'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t("Disable puppeteer's sandbox mode."),
+      '#description' => $this->t('Warning. This has security implications. See @details_link.', ['@details_link' => $sandbox_details_link]),
+      '#default_value' => $config->get('system.puppeteer_disable_sandbox'),
+    ];
+
     return $form;
   }
 
