@@ -5,6 +5,7 @@
  * This module holds functions useful for web page archives.
  */
 
+use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\web_page_archive\Controller\CleanupController;
 use Drupal\web_page_archive\Entity\WebPageArchiveTypeInfo;
 
@@ -40,4 +41,34 @@ function web_page_archive_cron() {
   $config = \Drupal::service('config.factory');
   $file_cleanup = $config->get('web_page_archive.settings')->get('cron.file_cleanup');
   CleanupController::processCleanup($file_cleanup);
+}
+
+/**
+ * Implements hook_help().
+ */
+function web_page_archive_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the web_page_archive module.
+    case 'help.page.web_page_archive':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('The Web Page Archive module allows you to use Drupal to perform periodic snapshots on local and remote websites based of a list of URLs or XML sitemaps.') . '</p>';
+      $output .= '<p>' . t('For more information, see the <a href=":docs" target="_blank">online documentation for the Web Page Archive module</a>.', [':docs' => 'https://www.drupal.org/docs/8/modules/web-page-archive']) . '</p>';
+      $output .= '<h3>' . t('Screenshot capturing') . '</h3>';
+      $output .= '<ol>';
+      $output .= '<li>' . t('You can use web page archive to capture screenshots of URLs.') . '</li>';
+      $output .= '<li>' . t('You will need to enable the <em>Web Page Archive Screenshot Capture Utility (wpa_screenshot_capture)</em> submodule.') . '</li>';
+      $output .= '<li>' . t('Screenshots can be captured using Headless Chrome or PhantomJS. See the following guides for further instructions on how to get started:') . '</li>';
+      $output .= '</ol>';
+      $output .= '<ul>';
+      $output .= '<li>' . t('<a href=":chrome_doc" target="_blank">Installing Headless Chrome or Chromium</a>', [':chrome_doc' => 'https://www.drupal.org/docs/8/modules/web-page-archive/getting-started-with-the-web-page-archive-module/installing-headless']) . '</li>';
+      $output .= '<li>' . t('<a href=":phantomjs_doc" target="_blank">Installing PhantomJS</a>', [':phantomjs_doc' => 'https://www.drupal.org/docs/8/modules/web-page-archive/getting-started-with-the-web-page-archive-module/installing']) . '</li>';
+      $output .= '</ul>';
+      $output .= '<h3>' . t('HTML capturing') . '</h3>';
+      $output .= '<ol>';
+      $output .= '<li>' . t('You can use web page archive to capture HTML of URLs.') . '</li>';
+      $output .= '<li>You will need to enable the <em>Web Page Archive HTML Capture Utility (wpa_html_capture)</em> submodule.';
+      $output .= '</ol>';
+      return $output;
+  }
 }
