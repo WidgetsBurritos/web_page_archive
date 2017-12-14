@@ -1,6 +1,6 @@
 name: Web Page Archive Screenshot Capture Utility
 type: module
-description: 'Provides a screenshot capture utility based on PhantomJS.'
+description: 'Provides a screenshot capture utility using Headless Chrome or PhantomJS.'
 package: Web Page Archive
 core: 8.x
 dependencies:

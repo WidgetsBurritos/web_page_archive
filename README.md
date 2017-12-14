@@ -1,9 +1,8 @@
 # Web Page Archive
 
-The Web Page Archive module allows you to use Drupal to perform periodic snapshots on local and remote websites based on a list of URLs or XML sitemaps.
+The Web Page Archive module allows you to use Drupal to perform periodic snapshots on local and remote websites based of a list of URLs or XML sitemaps.
 
-This project is currently under active development. Follow the development process here:
-- [8.x-1.0-beta1 Release Plan](https://www.drupal.org/node/2908685)
+See [Project Roadmap](https://www.drupal.org/node/2916976) to see what's on the horizon.
 
 ## Capture Utilities
 
@@ -12,7 +11,7 @@ Snapshots are performed by *Capture Utility* plugins. Web Page Archive provides 
 | Plugin | Machine Name | Purpose |
 |-----------------|------------------------|-----------------------------------------------------------------------|
 | HTML Capture Utility | wpa_html_capture | Captures raw HTML from URLs. |
-| Screenshot Capture Utility | wpa_screenshot_capture | Capture Screenshots of URLs (uses [PhantomJS](http://phantomjs.org/)). |
+| Screenshot Capture Utility | wpa_screenshot_capture | Capture Screenshots of URLs (uses [Headless Chrome](https://developers.google.com/web/updates/2017/04/headless-chrome#screenshots) or [PhantomJS](http://phantomjs.org/)). |
 | Skeleton Capture Utility | wpa_skeleton_capture | Example code that provides a template for building additional capture utility plugins. |
 
 Other modules extending Web Page Archive:
@@ -21,137 +20,26 @@ Other modules extending Web Page Archive:
 - [Configuration Archive (Experimental)](https://www.drupal.org/project/configuration_archive) - Creates and maintains snapshots of system configurations over time.
 
 ## Requirements
-
 - Drupal 8.3+
 - PHP 7.0+
 - PHP extensions: `ext-openssl`
-- System packages: fontconfig (if using screenshot capture utility)
+- Each capture utility may have additional requirements. See the respective installation guide for more information.
 - A lot of storage space (especially when using screenshot capture utility)
 
 ## Installation
 
-To install `web_page_archive` module you must [manage your Drupal Dependencies with composer](https://www.drupal.org/docs/develop/using-composer/using-composer-to-manage-drupal-site-dependencies).
+See the following guides for installing web page archive and capture utility dependencies:
 
-You can install the module using the following the command:
-
-```
-composer require "drupal/web_page_archive"
-```
-
-Then enable `web_page_archive` module via usual methods.
-
-If not running as UID 1, make sure you assign the `Administer Web Page Archive` permission to any necessary roles.
-
-### Installing the Screenshot Capture Utility Submodule
-
-The `wpa_screenshot_capture` submodule must also be installed via composer:
-
-```
-composer require "drupal/wpa_screenshot_capture"
-```
-
-Then you must modify the `scripts` property in the root composer JSON object to install PhantomJS via the `post-install-cmd` and/or `post-update-cmd` events:
-
-```
-"scripts": {
-  "post-install-cmd": [
-    "PhantomInstaller\\Installer::installPhantomJS"
-  ],
-  "post-update-cmd": [
-    "PhantomInstaller\\Installer::installPhantomJS"
-  ]
-}
-```
-
-- Then run `composer update` to install PhantomJS.
-- Finally enable `wpa_screenshot_capture` module via usual methods.
-
-## Setting Up an Archive
-
-- Install and enable module per instructions above.
-- Navigate to `/admin/config/system/web-page-archive`.
-- Click `Add Archive` button.
-- Set options for your archive:
-  - `Label`
-    - The name of your archive
-  - `Crontab schedule (relative to PHP's default timezone)`
-    - Crontab-based schedule for running capture.
-  - `Timeout (ms)`
-    - Number of milliseconds to wait between captures (to avoid bombarding servers with connection requests).
-  - `URL Type`
-    - `None` - Desired capture utility doesn't require URLs for capturing.
-    - `URL` - Capture specified URLs.
-    - `Sitemap URL` - Capture all URLs references in an XML sitemap.
-  - `URLs to Capture`
-    - A list of URL(s) you wish to capture from if `URL` or `Sitemap URL` URL type was selected above.
-- Click `Create new archive` button.
-- Use the dropdown under the `Capture Utility` section to specify which capture utility you want to use.
-- Click `Add` button.
-- Fill out capture utility settings.
-- Click `Add capture utility`.
-- You can add additional capture utilities if you choose, but it is recommended to create separate config entities in these cases.
-
-## Running Snapshot Capturing Manually
-
-- Navigate to `/admin/config/system/web-page-archive`.
-- In the far right hand column of the archive you wish to start click the dropdown arrow, and click the `Start Run` button.
-- Read the instructions and then click the `Start Run` button to start the batch processing.
-- Depending on the size of your site and the capture utilities selected, it may take a little while for this job to run. You will be navigated to the snapshot overview page upon completion.
-
-## Running Snapshot Capturing via Cron
-
-If you wish to automatically run captures via cron, see [Configuring cron jobs using the cron command](https://www.drupal.org/docs/7/setting-up-cron-for-drupal/configuring-cron-jobs-using-the-cron-command) for more information on how to setup cron for your site.
-
-To provide the most accurate timing it is recommended to set your system cron settings to run on `* * * * *`, but the module will cooperate with less frequent schedules as well.
-
-Then just ensure your individual web page archive entities are configured with a proper crontab.
-
-## Running Snapshot Capturing via Drush
-
-To start a new run for all web page archive entities:
-```bash
-drush web-page-archive-capture --all
-# or
-drush wpa-c --all
-```
-
-To start a run for a single web page archive entity, add the config id to the end of the command. For example:
-```bash
-drush web-page-archive-capture wpa_entity_id
-# or
-drush wpa-c wpa_entity_id
-```
-
-To start a run for a multiple web page archive entities, add the config entity ids to the end of the command. For example:
-```bash
-drush web-page-archive-capture wpa_entity_id wpa_entity_id_2 wpa_entity_id_3
-# or
-drush wpa-c wpa_entity_id wpa_entity_id_2 wpa_entity_id_3
-```
-
-## Viewing the Snapshots
-
-- Navigate to `/admin/config/system/web-page-archive`.
-- Click the `View Run History` button next the archive you wish to view in more detail.
-- You can sort and filter runs by various criteria.
-- Click the `View Details` button next to the particular run you wish to look at.
-- You can sort and filter captures by various criteria.
-- Each capture utility will have its own way of rendering results.
-
-## Uninstalling the Module
-
-To uninstall web page archive, you will need to remove the runs and field config first. This can be done in one of two ways:
-
-1. Navigate to `/admin/config/system/web-page-archive/uninstall` and click the `Delete web_page_archive data` button. Then proceed to uninstall the module via usual methods.
-2. Run `drush web-page-archive-prepare-uninstall` (full command) or `drush wpa-pu` (shorthand). Then proceed to uninstall the module and submodules via usual methods.
+- [Getting Started with Web Page Archive](https://www.drupal.org/docs/8/modules/web-page-archive/getting-started-with-the-web-page-archive-module)
+- [Installing Headless Chrome](https://www.drupal.org/docs/8/modules/web-page-archive/installing-headless-chrome-or-chromium)
+- [Installing PhantomJS](https://www.drupal.org/docs/8/modules/web-page-archive/installing-phantomjs)
+- [Uninstalling Web Page Archive](https://www.drupal.org/docs/8/modules/web-page-archive/uninstalling-web-page-archive)
 
 ## Contributing
 
-This is still an alpha release module, and features are continuously being added. If you would like to assist in the development of this module, we welcome your help.
+This is a relatively new module and features are continuously being added. If you would like to assist in the development of this module, we welcome your help.
 
-Please follow the standards as explained in the Examples for Developers module:
-
-http://cgit.drupalcode.org/examples/tree/STANDARDS.md
+Please follow the [Drupal Coding Standards](https://www.drupal.org/docs/develop/standards).
 
 ### Ways You Can Help
 
@@ -164,7 +52,15 @@ http://cgit.drupalcode.org/examples/tree/STANDARDS.md
 
 ### Helpful Links
 
-- [Drupal.org Repo](https://www.drupal.org/project/web_page_archive)
+- [Official Drupal.org Project Page](https://www.drupal.org/project/web_page_archive)
+- [Official Web Page Archive Documentation](https://www.drupal.org/docs/8/modules/web-page-archive)
 - [Drupal.org Issue Queue](https://www.drupal.org/project/issues/2888559)
 - [GitHub.com Repo](https://github.com/WidgetsBurritos/web_page_archive)
-- [UML Diagrams](diagrams)
+
+### Maintainers
+
+- David Stinemetze (aka @WidgetsBurritos) - [Drupal](https://www.drupal.org/u/widgetsburritos) / [GitHub](https://github.com/WidgetsBurritos)
+- David Porter (aka @bighappyface) - [Drupal](https://www.drupal.org/u/bighappyface) / [GitHub](https://github.com/bighappyface)
+- Paul Maddern (aka @pobster) - [Drupal](https://www.drupal.org/u/pobster) / [GitHub](https://github.com/pobtastic)
+
+This project has been sponsored by [Rackspace](https://www.rackspace.com).
