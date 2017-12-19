@@ -30,6 +30,15 @@ class WebPageArchiveRunStorage extends SqlContentEntityStorage implements WebPag
   /**
    * {@inheritdoc}
    */
+  public function fullRevisionList() {
+    return $this->database->query(
+      'SELECT vid, name, revision_created FROM {web_page_archive_run_revision} ORDER BY vid'
+    )->fetchAllAssoc('vid');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function userRevisionIds(AccountInterface $account) {
     return $this->database->query(
       'SELECT vid FROM {web_page_archive_run_field_revision} WHERE uid = :uid ORDER BY vid',

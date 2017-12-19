@@ -23,3 +23,7 @@ services:
     arguments: ['@lock', '@state', '@datetime.time', '@config.factory']
     tags:
       - { name: cron }
+  web_page_archive.compare.response:
+    class: Drupal\web_page_archive\Plugin\CompareResponseFactory
+    tags:
+      - { name: factory }

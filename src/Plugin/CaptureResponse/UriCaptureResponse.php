@@ -27,6 +27,13 @@ class UriCaptureResponse extends CaptureResponseBase {
   /**
    * {@inheritdoc}
    */
+  public static function getId() {
+    return 'wpa_uri_capture_response';
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getCaptureSize() {
     // TODO: What to do if remote URL instead of local file path?
     if (!is_readable($this->getContent())) {
