@@ -7,6 +7,7 @@
 
 use Drupal\Core\Config\FileStorage;
 use Drupal\Core\Database\Database;
+use Drupal\Core\Entity\ContentEntityType;
 use Drupal\Core\Field\BaseFieldDefinition;
 
 /**
@@ -325,9 +326,34 @@ function web_page_archive_update_8008() {
  * Adds wpa_run_comparison and wpa_run_comparison_revision tables.
  */
 function web_page_archive_update_8009() {
-  $entity_type_manager = \Drupal::entityTypeManager();
   $update_manager = \Drupal::entityDefinitionUpdateManager();
-  $definition = $entity_type_manager->getDefinition('wpa_run_comparison');
+  $definition = new ContentEntityType([
+    'id' => 'wpa_run_comparison',
+    'label' => 'Web Page Archive Run Comparison',
+    'handlers' => [
+      'storage' => 'Drupal\web_page_archive\Entity\Sql\RunComparisonStorage',
+      'list_builder' => 'Drupal\Core\Entity\EntityListBuilder',
+      'view_builder' => 'Drupal\Core\Entity\EntityViewBuilder',
+      'form' => [
+        'delete' => 'Drupal\web_page_archive\Form\RunComparisonDeleteForm',
+      ],
+    ],
+    'base_table' => 'wpa_run_comparison',
+    'revision_table' => 'wpa_run_comparison_revision',
+    'revision_data_table' => 'wpa_run_comparison_field_revision',
+    'admin_permission' => 'administer web page archive',
+    'fieldable' => TRUE,
+    'entity_keys' => [
+      'id' => 'id',
+      'revision' => 'vid',
+      'label' => 'name',
+      'uuid' => 'uuid',
+      'uid' => 'user_id',
+      'langcode' => 'langcode',
+      'status' => 'status',
+    ],
+    'field_ui_base_route' => 'wpa_run_comparison.settings',
+  ]);
   $update_manager->installEntityType($definition);
 }
 
