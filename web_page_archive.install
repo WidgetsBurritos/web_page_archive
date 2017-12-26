@@ -6,6 +6,8 @@
  */
 
 use Drupal\Core\Config\FileStorage;
+use Drupal\Core\Database\Database;
+use Drupal\Core\Entity\ContentEntityType;
 use Drupal\Core\Field\BaseFieldDefinition;
 
 /**
@@ -88,6 +90,100 @@ function web_page_archive_schema() {
       ],
     ],
     'primary key' => ['revision_id', 'delta', 'langcode'],
+  ];
+
+  $schema['web_page_archive_run_comparison_details'] = [
+    'description' => 'Stores detailed comparison information',
+    'fields' => [
+      'revision_id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Maps to {wpa_run_comparison}.vid.',
+      ],
+      'run1' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Maps to {web_page_archive_run_revision}.vid.',
+      ],
+      'run2' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Maps to {web_page_archive_run_revision}.vid.',
+      ],
+      'delta1' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Maps to {web_page_archive_run_revision__field_captures}.delta.',
+      ],
+      'delta2' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Maps to {web_page_archive_run_revision__field_captures}.delta.',
+      ],
+      'has_left' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'A boolean indicating whether this comparison has a left value.',
+      ],
+      'has_right' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'A boolean indicating whether this comparison has a right value.',
+      ],
+      'langcode' => [
+        'type' => 'varchar_ascii',
+        'length' => 32,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'Maps to {wpa_run_comparison}.langcode.',
+      ],
+      'url' => [
+        'type' => 'varchar_ascii',
+        'length' => 1023,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'The shared key with used for comparisons.',
+      ],
+      'variance' => [
+        'type' => 'float',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'How much variance exists between the two compare items.',
+      ],
+      'results' => [
+        'type' => 'blob',
+        'description' => 'Serialized comparison results.',
+      ],
+      'timestamp' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Timestamp when the comparison was performed.',
+      ],
+    ],
+    'primary key' => [
+      'revision_id',
+      'run1',
+      'run2',
+      'delta1',
+      'delta2',
+      'langcode',
+    ],
   ];
 
   return $schema;
@@ -224,4 +320,141 @@ function web_page_archive_update_8008() {
   $config->set('system.node_path', '');
   $config->set('system.npm_path', '');
   $config->save();
+}
+
+/**
+ * Adds wpa_run_comparison and wpa_run_comparison_revision tables.
+ */
+function web_page_archive_update_8009() {
+  $update_manager = \Drupal::entityDefinitionUpdateManager();
+  $definition = new ContentEntityType([
+    'id' => 'wpa_run_comparison',
+    'label' => 'Web Page Archive Run Comparison',
+    'handlers' => [
+      'storage' => 'Drupal\web_page_archive\Entity\Sql\RunComparisonStorage',
+      'list_builder' => 'Drupal\Core\Entity\EntityListBuilder',
+      'view_builder' => 'Drupal\Core\Entity\EntityViewBuilder',
+      'form' => [
+        'delete' => 'Drupal\web_page_archive\Form\RunComparisonDeleteForm',
+      ],
+    ],
+    'base_table' => 'wpa_run_comparison',
+    'revision_table' => 'wpa_run_comparison_revision',
+    'revision_data_table' => 'wpa_run_comparison_field_revision',
+    'admin_permission' => 'administer web page archive',
+    'fieldable' => TRUE,
+    'entity_keys' => [
+      'id' => 'id',
+      'revision' => 'vid',
+      'label' => 'name',
+      'uuid' => 'uuid',
+      'uid' => 'user_id',
+      'langcode' => 'langcode',
+      'status' => 'status',
+    ],
+    'field_ui_base_route' => 'wpa_run_comparison.settings',
+  ]);
+  $update_manager->installEntityType($definition);
+}
+
+/**
+ * Adds web_page_archive_run_comparison_details table.
+ */
+function web_page_archive_update_8010() {
+  $spec = [
+    'description' => 'Stores detailed comparison information',
+    'fields' => [
+      'revision_id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Maps to {wpa_run_comparison}.vid.',
+      ],
+      'run1' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Maps to {web_page_archive_run_revision}.vid.',
+      ],
+      'run2' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Maps to {web_page_archive_run_revision}.vid.',
+      ],
+      'delta1' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Maps to {web_page_archive_run_revision__field_captures}.delta.',
+      ],
+      'delta2' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Maps to {web_page_archive_run_revision__field_captures}.delta.',
+      ],
+      'has_left' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'A boolean indicating whether this comparison has a left value.',
+      ],
+      'has_right' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'A boolean indicating whether this comparison has a right value.',
+      ],
+      'langcode' => [
+        'type' => 'varchar_ascii',
+        'length' => 32,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'Maps to {wpa_run_comparison}.langcode.',
+      ],
+      'url' => [
+        'type' => 'varchar_ascii',
+        'length' => 1023,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'The shared key with used for comparisons.',
+      ],
+      'variance' => [
+        'type' => 'float',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'How much variance exists between the two compare items.',
+      ],
+      'results' => [
+        'type' => 'blob',
+        'description' => 'Serialized comparison results.',
+      ],
+      'timestamp' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Timestamp when the comparison was performed.',
+      ],
+    ],
+    'primary key' => [
+      'revision_id',
+      'run1',
+      'run2',
+      'delta1',
+      'delta2',
+      'langcode',
+    ],
+  ];
+
+  $schema = Database::getConnection()->schema();
+  $schema->createTable('web_page_archive_run_comparison_details', $spec);
 }

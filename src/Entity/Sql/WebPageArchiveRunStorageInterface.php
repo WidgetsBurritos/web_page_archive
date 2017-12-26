@@ -29,6 +29,14 @@ interface WebPageArchiveRunStorageInterface extends ContentEntityStorageInterfac
   public function revisionIds(WebPageArchiveRunInterface $entity);
 
   /**
+   * Gets a list of all web page archive run revision IDs and labels.
+   *
+   * @return array
+   *   Web page archive run revision ids and labels.
+   */
+  public function fullRevisionList();
+
+  /**
    * Gets a list of revision IDs having a given user as run author.
    *
    * @param \Drupal\Core\Session\AccountInterface $account

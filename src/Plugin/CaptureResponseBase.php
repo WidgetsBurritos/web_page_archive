@@ -57,6 +57,21 @@ abstract class CaptureResponseBase implements CaptureResponseInterface {
   /**
    * Set response content.
    *
+   * @param string $id
+   *   The response content.
+   *
+   * @return \Drupal\web_page_archive\Plugin\CaptureResponseInterface
+   *   Reference to self.
+   */
+  protected function setId($id) {
+    $this->id = $id;
+
+    return $this;
+  }
+
+  /**
+   * Set response content.
+   *
    * @param string $content
    *   The response content.
    *
@@ -114,6 +129,33 @@ abstract class CaptureResponseBase implements CaptureResponseInterface {
    */
   public function getCaptureSize() {
     return 0;
+  }
+
+  /**
+   * Retrieves an id for the capture response type.
+   */
+  public static function getId() {
+    // We should warn if this method is not overridden. This will allow for
+    // graceful handling of any existing capture responses. In next major
+    // release, this should get converted to an abstract method.
+    $class = get_called_class();
+    \Drupal::logger('web_page_archive')
+      ->notice('@class should override the getId() method.', ['@class' => $class]);
+    return 'wpa_capture_response';
+  }
+
+  /**
+   * Performs a comparison two responses.
+   */
+  public static function compare(CaptureResponseInterface $a, CaptureResponseInterface $b) {
+    // We should warn if this method is not overridden. This will allow for
+    // graceful handling of any existing capture responses. In next major
+    // release, this should get converted to an abstract method.
+    $class = get_called_class();
+    \Drupal::logger('web_page_archive')
+      ->notice('@class should override the compare() method.', ['@class' => $class]);
+
+    return \Drupal::service('web_page_archive.compare.response')->getEmptyCompareResponse();
   }
 
   /**

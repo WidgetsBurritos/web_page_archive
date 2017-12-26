@@ -18,6 +18,13 @@ class HtmlCaptureResponse extends UriCaptureResponse {
   /**
    * {@inheritdoc}
    */
+  public static function getId() {
+    return 'wpa_html_capture_response';
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function renderable(array $options = []) {
     return (isset($options['mode']) && $options['mode'] == 'full') ?
       $this->renderFull($options) : $this->renderPreview($options);

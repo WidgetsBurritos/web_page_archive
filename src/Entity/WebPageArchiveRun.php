@@ -20,6 +20,7 @@ use Drupal\web_page_archive\Controller\CleanupController;
  *   label = @Translation("Web page archive run"),
  *   handlers = {
  *     "storage" = "Drupal\web_page_archive\Entity\Sql\WebPageArchiveRunStorage",
+ *     "list_builder" = "Drupal\Core\Entity\EntityListBuilder",
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
  *     "views_data" = "Drupal\web_page_archive\Entity\WebPageArchiveRunViewsData",
  *
@@ -212,6 +213,13 @@ class WebPageArchiveRun extends RevisionableContentEntityBase implements WebPage
   public function setCaptureUtilities(array $array) {
     $this->set('capture_utilities', $array);
     return $this;
+  }
+
+  /**
+   * Retrieves list of captured data.
+   */
+  public function getCapturedArray() {
+    return $this->get('field_captures');
   }
 
   /**

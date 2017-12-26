@@ -6,6 +6,35 @@ entity.web_page_archive.collection:
   requirements:
     _permission: 'view web page archive results'
 
+web_page_archive.compare:
+  path: 'admin/config/system/web-page-archive/compare'
+  defaults:
+    _form: '\Drupal\web_page_archive\Form\RunComparisonForm'
+    _title: 'Compare Runs'
+  requirements:
+    _permission: 'view web page archive results'
+
+web_page_archive.compare.summary:
+  path: 'admin/config/system/web-page-archive/compare/{wpa_run_comparison}'
+  options:
+    parameters:
+      wpa_run_comparison:
+        type: entity:wpa_run_comparison
+  defaults:
+    _controller: '\Drupal\web_page_archive\Controller\RunComparisonController::summary'
+    _title_callback: '\Drupal\web_page_archive\Controller\RunComparisonController::summaryTitle'
+  requirements:
+    _permission: 'view web page archive results'
+    run_comparison: '^[a-zA-Z0-9_]+'
+
+web_page_archive.autocomplete.runs:
+  path: 'admin/config/system/web-page-archive/compare/runs'
+  defaults:
+    _controller: '\Drupal\web_page_archive\Controller\RunComparisonController::handleRunAutocomplete'
+    _format: json
+  requirements:
+    _access: 'TRUE'
+
 web_page_archive_settings:
   path: 'admin/config/system/web-page-archive/settings'
   defaults:
