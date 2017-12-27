@@ -144,3 +144,25 @@ views.filter.web_page_archive_capture_utility_filter:
           sequence:
             type: views.filter.group_item.in_operator
             label: 'Group item'
+
+views.field.web_page_archive_serialized_capture:
+  type: views_field
+  label: 'Serialized Capture Results'
+  mapping:
+    format:
+      type: string
+      label: 'Display format'
+    key:
+      type: string
+      label: 'Which key should be displayed'
+
+views.field.web_page_archive_serialized_comparison_results:
+  type: views_field
+  label: 'Serialized Comparison Results'
+  mapping:
+    format:
+      type: string
+      label: 'Display format'
+    key:
+      type: string
+      label: 'Which key should be displayed'

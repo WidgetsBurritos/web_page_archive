@@ -16,11 +16,12 @@ use Drupal\user\UserInterface;
  *
  * @ContentEntityType(
  *   id = "wpa_run_comparison",
- *   label = @Translation("Web Page Archive Run Comparison"),
+ *   label = @Translation("Web page archive run comparison"),
  *   handlers = {
  *     "storage" = "Drupal\web_page_archive\Entity\Sql\RunComparisonStorage",
  *     "list_builder" = "Drupal\Core\Entity\EntityListBuilder",
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
+ *     "views_data" = "Drupal\web_page_archive\Entity\RunComparisonViewsData",
  *     "form" = {
  *       "delete" = "Drupal\web_page_archive\Form\RunComparisonDeleteForm",
  *     },
@@ -30,6 +31,12 @@ use Drupal\user\UserInterface;
  *   revision_data_table = "wpa_run_comparison_field_revision",
  *   admin_permission = "administer web page archive",
  *   fieldable = TRUE,
+ *   links = {
+ *     "canonical" = "/admin/config/system/web-page-archive/compare/{wpa_run_comparison}",
+ *     "add-form" = "/admin/config/system/web-page-archive/compare",
+ *     "delete-form" = "/admin/config/system/web-page-archive/compare/{wpa_run_comparison}/delete",
+ *     "collection" = "/admin/config/system/web-page-archive/compare/history"
+ *   },
  *   entity_keys = {
  *     "id" = "id",
  *     "revision" = "vid",

@@ -125,7 +125,7 @@ class RunComparisonForm extends FormBase {
     RunComparisonController::enqueueRunComparisons($run_comparison);
     RunComparisonController::setBatch($run_comparison);
 
-    $form_state->setRedirect('web_page_archive.compare.summary', ['wpa_run_comparison' => $run_comparison->id()]);
+    $form_state->setRedirect('entity.wpa_run_comparison.canonical', ['wpa_run_comparison' => $run_comparison->id()]);
   }
 
 }
