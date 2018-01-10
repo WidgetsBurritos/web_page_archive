@@ -1,0 +1,89 @@
+CHANGELOG for Web Page Archive for Drupal 8
+
+Web Page Archive 8.x-1.x-dev
+----------------------------------------------
+#2931285 by WidgetsBurritos, bighappyface: Diff Form and Batch Processing
+#2935291 by dpi: Add GPL License
+#2935513 by WidgetsBurritos: Add a Change Log
+
+
+Web Page Archive 8.x-1.0 (2017-12-14)
+----------------------------------------------
+#2894236 by WidgetsBurritos, bighappyface: Trigger capture via drush
+#2901556 by WidgetsBurritos, bighappyface: Headless Chrome Screenshot Capture Utility
+#2906393 by WidgetsBurritos, bighappyface: Delete folders on deletion of configuration entity
+#2906938 by WidgetsBurritos, bighappyface: Add setDelay and remove clip_width
+#2908430 by WidgetsBurritos, bighappyface: Global Configuration Settings
+#2913859 by WidgetsBurritos: Resolve Coding Standard Issues
+#2916960 by WidgetsBurritos, bighappyface: Items captured reporting 0 despite having actual values
+#2918011 by WidgetsBurritos: Importing config entity doesn't initialize run entity
+#2923736 by WidgetsBurritos, bighappyface: Skeleton capture utility schema mismatch
+#2927357 by WidgetsBurritos, bighappyface: Screenshot capture utility not installing puppeteer
+#2929514 by WidgetsBurritos, bighappyface: Update documentation prior to 1.0 release
+#2929523 by WidgetsBurritos, bighappyface: Pull sandbox setting from proper config settings
+#2929523 by WidgetsBurritos: Add "no sandbox" support
+
+
+Web Page Archive 8.x-1.0-beta1 (2017-10-04)
+----------------------------------------------
+#2894236 by WidgetsBurritos, bighappyface: Trigger capture via drush
+#2894259 by WidgetsBurritos, bighappyface: Validate Sitemap URL on Submit
+#2896777 by WidgetsBurritos, writes: Honor robots.txt restrictions
+#2901784 by WidgetsBurritos, bighappyface: Setup HTML capture rendering
+#2905911 by WidgetsBurritos, bighappyface: Human-friendly capture sizes
+#2906393 by WidgetsBurritos, bighappyface: Delete folders on deletion of configuration entity
+#2906938 by WidgetsBurritos, bighappyface: Add setDelay and remove clip_width
+#2907875 by aks22, WidgetsBurritos, bapi_22: Convert db_like() to $injected_database->escapeLike()
+#2907876 by WidgetsBurritos, bighappyface: Write HTML render security test
+#2908430 by WidgetsBurritos, bighappyface: Global Configuration Settings
+#2908497 by WidgetsBurritos, aks22, bighappyface: Gracefully handle composer-less installs
+#2911488 by WidgetsBurritos, writes: Set sensible screenshot capture utility defaults
+#2911746 by bapi_22, WidgetsBurritos, bighappyface: entityManager and entityQuery is deprecated now
+#2912766 by WidgetsBurritos: Add submodule dependency as main composer.json dev dependencies.
+#2912766 by WidgetsBurritos: Resolve test issue on drupal.org
+#2913374 by WidgetsBurritos, writes: Move user agent to base config entity
+#2913419 by WidgetsBurritos: Move modal functionality into base module
+
+
+Web Page Archive 8.x-1.0-alpha2 (2017-09-13)
+----------------------------------------------
+#2894275 by WidgetsBurritos, vessel_adrift, bighappyface: Clear queue when starting new run
+#2900547 by WidgetsBurritos, bighappyface: Clean up empty revision
+#2901385 by WidgetsBurritos, bighappyface: Disable cron for config entity
+#2903303 by WidgetsBurritos, bighappyface: Relocate image styles
+#2903481 by WidgetsBurritos, bighappyface: Can't select "None" url type.
+#2904295 by WidgetsBurritos, bighappyface: Move HTML capture utility into own submodule
+#2905399 by WidgetsBurritos, bighappyface: "View Run History" button is changing all content types
+#2905687 by WidgetsBurritos, bighappyface: Setup separate view/admin permissions
+#2905724 by WidgetsBurritos, vessel_adrift, bighappyface: Delete files on deletion of configuration entity
+#2906060 by WidgetsBurritos, vessel_adrift, bighappyface: Bad items stuck in queue
+#2906940 by WidgetsBurritos, vessel_adrift, bighappyface: Show cron settings on config entity list page
+#2907873 by WidgetsBurritos, vessel_adrift, bighappyface: Ensure URL is properly parsed and sanitized prior to outputting
+#2908010 by WidgetsBurritos, vessel_adrift, bighappyface: Expose pager and more filter criteria.
+
+
+Web Page Archive 8.x-1.0-alpha1 (2017-08-11)
+----------------------------------------------
+#2894013 by WidgetsBurritos, bighappyface, pobster: Create config entities and basic run process.
+#2894020 by WidgetsBurritos, bighappyface, writes: Run Storage Entities
+#2894022 by WidgetsBurritos, bighappyface, writes: Screenshot Capture Utility
+#2894024 by WidgetsBurritos, pobster, bighappyface: Add UI to Archive Entity Canonical View
+#2894025 by WidgetsBurritos, pobster, bighappyface: Add UI to View Individual Runs
+#2894026 by WidgetsBurritos, pobster, vessel_adrift: Create filtering by URL
+#2894028 by WidgetsBurritos, bighappyface: Cron configuration
+#2894230 by WidgetsBurritos, bighappyface: HTML Capture Utility
+#2894240 by WidgetsBurritos, bighappyface: Manual Entry of URLs instead of Sitemap
+#2894262 by WidgetsBurritos, bighappyface: Cleanup on uninstall
+#2894264 by WidgetsBurritos, bighappyface, writes: Convert sitemap parser to a service
+#2894268 by WidgetsBurritos, bighappyface: Move routes out of "development"
+#2894731 by WidgetsBurritos, bighappyface: Move form alters for capture utilities into plugins
+#2894966 by WidgetsBurritos, bighappyface: Canonical permissions incorrect
+#2896781 by WidgetsBurritos, bighappyface: Sleep between captures
+#2897106 by WidgetsBurritos, bighappyface: Skeleton capture utility
+#2897426 by WidgetsBurritos, writes, pobster: Move screenshot plugin into its own submodule.
+#2897427 by WidgetsBurritos, writes, pobster: Move non-essential development functionality into separate submodule
+#2898233 by WidgetsBurritos, bighappyface: SensioLabs Security Checker to Travis
+#2899476 by WidgetsBurritos, vessel_adrift, writes: End to End Test
+#2900006 by WidgetsBurritos, vessel_adrift, pobster, writes: Update documentation
+#2900544 by WidgetsBurritos, pobster, writes: Cron run issue
+#2903008 by writes, WidgetsBurritos, pobster: Allow queue to process continuous jobs
