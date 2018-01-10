@@ -474,3 +474,33 @@ function web_page_archive_update_8011() {
     $config_storage->write($view, $source->read($view));
   }
 }
+
+/**
+ * Add 'strip_type' and 'strip_patterns' to run comparison content type.
+ */
+function web_page_archive_update_8012() {
+  $fields['strip_type'] = BaseFieldDefinition::create('string')
+    ->setLabel(t('Strip type'))
+    ->setDescription(t('Type of stripping to apply to urls/comparison keys.'))
+    ->setRevisionable(FALSE);
+
+  $fields['strip_patterns'] = BaseFieldDefinition::create('map')
+    ->setLabel(t('Strip patterns'))
+    ->setDescription(t('Patterns to strip from urls/comparison keys.'))
+    ->setRevisionable(FALSE)
+    ->setDefaultValue([]);
+
+  foreach ($fields as $field => $storage_definition) {
+    \Drupal::entityDefinitionUpdateManager()
+      ->installFieldStorageDefinition($field, 'wpa_run_comparison', 'wpa_run_comparison', $storage_definition);
+  }
+}
+
+/**
+ * Set default 'strip_type' and 'strip_patterns' values.
+ */
+function web_page_archive_update_8013() {
+  $query = \Drupal::database()->update('wpa_run_comparison');
+  $query->fields(['strip_type' => '', 'strip_patterns' => serialize([])]);
+  $query->execute();
+}

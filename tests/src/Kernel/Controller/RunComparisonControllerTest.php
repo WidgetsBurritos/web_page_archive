@@ -174,6 +174,106 @@ class RunComparisonControllerTest extends EntityKernelTestBase {
   }
 
   /**
+   * Tests RunComparisionController::stripCaptureKey().
+   */
+  public function testStripCaptureKey() {
+    $tests = [
+      /* String-based tests */
+      // String does not match.
+      [
+        'expected' => 'http://knowyourmeme.com/memes/how-is-babby-formed',
+        'url' => 'http://knowyourmeme.com/memes/how-is-babby-formed',
+        'strip_type' => 'string',
+        'strip_patterns' => [
+          'http://www.fark.com/',
+          'http://www.reddit.com/',
+        ],
+      ],
+      // String matches once.
+      [
+        'expected' => 'memes/how-is-babby-formed',
+        'url' => 'http://knowyourmeme.com/memes/how-is-babby-formed',
+        'strip_type' => 'string',
+        'strip_patterns' => [
+          'http://www.fark.com/',
+          'http://knowyourmeme.com/',
+          'http://www.reddit.com/',
+        ],
+      ],
+      // String matches twice.
+      [
+        'expected' => 'how-is-babby-formed',
+        'url' => 'http://knowyourmeme.com/memes/how-is-babby-formed',
+        'strip_type' => 'string',
+        'strip_patterns' => [
+          'http://www.fark.com/',
+          'http://knowyourmeme.com/',
+          'memes/',
+        ],
+      ],
+      /* RegEx-based tests */
+      // regex does not match.
+      [
+        'expected' => 'http://knowyourmeme.com/memes/how-is-babby-formed',
+        'url' => 'http://knowyourmeme.com/memes/how-is-babby-formed',
+        'strip_type' => 'regex',
+        'strip_patterns' => [
+          '.*:\/\/www\.fark\.com\/',
+          '.*\:\/\/www\.reddit\.com\/',
+        ],
+      ],
+      // String matches once.
+      [
+        'expected' => 'memes/how-is-babby-formed',
+        'url' => 'http://knowyourmeme.com/memes/how-is-babby-formed',
+        'strip_type' => 'regex',
+        'strip_patterns' => [
+          '.*\:\/\/www\.fark\.com\/',
+          '.*\:\/\/knowyourmeme\.com\/',
+          '.*\:\/\/www\.reddit\.com\/',
+        ],
+      ],
+      // String matches twice.
+      [
+        'expected' => 'how-is-babby-formed',
+        'url' => 'http://knowyourmeme.com/memes/how-is-babby-formed',
+        'strip_type' => 'regex',
+        'strip_patterns' => [
+          '.*\:\/\/www\.fark.com\/',
+          '.*\:\/\/knowyourmeme\.com\/',
+          '.*mes\/',
+        ],
+      ],
+      /* Empty tests */
+      // Empty type should not strip either string or regex patterns.
+      [
+        'expected' => 'http://knowyourmeme.com/memes/how-is-babby-formed',
+        'url' => 'http://knowyourmeme.com/memes/how-is-babby-formed',
+        'strip_type' => '',
+        'strip_patterns' => [
+          'http://knowyourmeme.com/',
+          '.*\:\/\/knowyourmeme\.com\/',
+        ],
+      ],
+      // Invalid type should not strip either string or regex patterns.
+      [
+        'expected' => 'http://knowyourmeme.com/memes/how-is-babby-formed',
+        'url' => 'http://knowyourmeme.com/memes/how-is-babby-formed',
+        'strip_type' => 'blarg',
+        'strip_patterns' => [
+          'http://knowyourmeme.com/',
+          '.*\:\/\/knowyourmeme\.com\/',
+        ],
+      ],
+
+    ];
+
+    foreach ($tests as $test) {
+      $this->assertEquals($test['expected'], $this->controller->stripCaptureKey($test['url'], $test['strip_type'], $test['strip_patterns']));
+    }
+  }
+
+  /**
    * Tests RunComparisionController::generateRunMatrix().
    */
   public function testGenerateRunMatrix() {
@@ -197,12 +297,18 @@ class RunComparisonControllerTest extends EntityKernelTestBase {
         'capture_url' => 'https://www.google.com',
         'delta' => 13,
       ],
+      [
+        'capture_response' => new UriCaptureResponse('Pretend to find all the things', 'https://staging.google.com'),
+        'capture_url' => 'https://staging.google.com',
+        'delta' => 22,
+      ],
     ];
 
     // Set run capture data.
     $entity_runs[0]->setCapturedArray([
       $this->getCaptureField($capture_results[0]),
       $this->getCaptureField($capture_results[1]),
+      $this->getCaptureField($capture_results[2]),
     ])->save();
     $entity_runs[1]->setCapturedArray([
       $this->getCaptureField($capture_results[0]),
@@ -211,16 +317,16 @@ class RunComparisonControllerTest extends EntityKernelTestBase {
     // Evaluate the expected matrix is generated.
     $expected = [
       'wpa_uri_capture_response' => [
-        'http://www.zombo.com' => [
+        'http://zombo.com' => [
           $run1_id => [4 => $capture_results[0]],
           $run2_id => [4 => $capture_results[0]],
         ],
-        'https://www.google.com' => [
-          $run1_id => [13 => $capture_results[1]],
+        'https://google.com' => [
+          $run1_id => [13 => $capture_results[1], 22 => $capture_results[2]],
         ],
       ],
     ];
-    $this->assertEquals($expected, $this->controller->generateRunMatrix($entity_runs));
+    $this->assertEquals($expected, $this->controller->generateRunMatrix($entity_runs, 'string', ['www.', 'staging.']));
   }
 
   /**
@@ -236,6 +342,8 @@ class RunComparisonControllerTest extends EntityKernelTestBase {
       'run1' => $run1_id,
       'run2' => $run2_id,
       'name' => 'Compare job',
+      'strip_type' => 'string',
+      'strip_patterns' => serialize(['www.', 'staging.']),
     ];
     $run_comparison = $this->runComparisonStorage->create($data);
     $run_comparison->save();
@@ -249,7 +357,7 @@ class RunComparisonControllerTest extends EntityKernelTestBase {
       ],
       [
         'capture_response' => new UriCaptureResponse('Find all the things', 'https://www.google.com'),
-        'capture_url' => 'https://www.google.com',
+        'capture_url' => 'https://staging.google.com',
         'delta' => 13,
       ],
     ];
@@ -285,7 +393,7 @@ class RunComparisonControllerTest extends EntityKernelTestBase {
         'has_left' => '1',
         'has_right' => '1',
         'revision_id' => $run_comparison->getRevisionId(),
-        'url' => 'http://www.zombo.com',
+        'url' => 'http://zombo.com',
         'variance' => '-1',
       ],
       [
@@ -296,7 +404,7 @@ class RunComparisonControllerTest extends EntityKernelTestBase {
         'has_left' => '1',
         'has_right' => '0',
         'revision_id' => $run_comparison->getRevisionId(),
-        'url' => 'https://www.google.com',
+        'url' => 'https://google.com',
         'variance' => '100',
       ],
     ];
@@ -312,6 +420,8 @@ class RunComparisonControllerTest extends EntityKernelTestBase {
       'run1' => 47,
       'run2' => 93,
       'name' => 'Compare job',
+      'strip_type' => 'string',
+      'strip_patterns' => serialize(['www.', 'staging.']),
     ];
     $run_comparison = $this->runComparisonStorage->create($data);
     $run_comparison->save();
