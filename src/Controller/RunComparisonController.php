@@ -234,20 +234,4 @@ class RunComparisonController extends ControllerBase {
     }
   }
 
-  /**
-   * Displays the run summary for the specified run comparison object.
-   */
-  public static function summary($wpa_run_comparison) {
-    return [
-      '#markup' => 'TODO: Add something here',
-    ];
-  }
-
-  /**
-   * Displays the summary title for the specified run comparison object.
-   */
-  public static function summaryTitle($wpa_run_comparison) {
-    return $wpa_run_comparison->label();
-  }
-
 }

@@ -15,3 +15,13 @@ entity.web_page_archive.collection.prepare_uninstall:
   base_route: entity.web_page_archive.collection
   route_name: entity.web_page_archive.collection.prepare_uninstall
   weight: -4
+
+web_page_archive.compare:
+  title: 'Compare Runs'
+  route_name: web_page_archive.compare
+  base_route: web_page_archive.compare
+
+web_page_archive.compare.history:
+  title: 'Previous Run Comparisons'
+  route_name: entity.wpa_run_comparison.collection
+  base_route: web_page_archive.compare

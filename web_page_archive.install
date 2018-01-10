@@ -458,3 +458,19 @@ function web_page_archive_update_8010() {
   $schema = Database::getConnection()->schema();
   $schema->createTable('web_page_archive_run_comparison_details', $spec);
 }
+
+/**
+ * Adds run comparison summary and history views.
+ */
+function web_page_archive_update_8011() {
+  $path = drupal_get_path('module', 'web_page_archive') . '/config/install';
+  $source = new FileStorage($path);
+  $config_storage = \Drupal::service('config.storage');
+  $views = [
+    'views.view.web_page_archive_previous_comparisons',
+    'views.view.web_page_archive_run_comparison_summary',
+  ];
+  foreach ($views as $view) {
+    $config_storage->write($view, $source->read($view));
+  }
+}
