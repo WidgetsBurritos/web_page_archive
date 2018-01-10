@@ -176,6 +176,20 @@ class RunComparison extends RevisionableContentEntityBase implements RunComparis
   /**
    * {@inheritdoc}
    */
+  public function getStripType() : string {
+    return $this->get('strip_type')->getString();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getStripPatterns() : array {
+    return $this->get('strip_patterns')->first()->getValue();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getRunEntities() {
     return [$this->getRun1(), $this->getRun2()];
   }
@@ -261,6 +275,16 @@ class RunComparison extends RevisionableContentEntityBase implements RunComparis
     $fields['run2'] = BaseFieldDefinition::create('integer')
       ->setLabel(t('Run 2 ID'))
       ->setDescription(t('The second run ID.'))
+      ->setRevisionable(FALSE);
+
+    $fields['strip_type'] = BaseFieldDefinition::create('string')
+      ->setLabel(t('Strip type'))
+      ->setDescription(t('Type of stripping to apply to urls/comparison keys.'))
+      ->setRevisionable(FALSE);
+
+    $fields['strip_patterns'] = BaseFieldDefinition::create('map')
+      ->setLabel(t('Strip patterns'))
+      ->setDescription(t('Patterns to strip from urls/comparison keys.'))
       ->setRevisionable(FALSE);
 
     $fields['created'] = BaseFieldDefinition::create('created')

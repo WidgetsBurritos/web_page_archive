@@ -75,9 +75,30 @@ class RunComparisonController extends ControllerBase {
   }
 
   /**
+   * Strips specified patterns from capture keys.
+   */
+  public static function stripCaptureKey($string, $strip_type, array $strip_patterns) {
+    switch ($strip_type) {
+      case 'string':
+        foreach ($strip_patterns as $pattern) {
+          $string = str_replace($pattern, '', $string);
+        }
+        break;
+
+      case 'regex':
+        foreach ($strip_patterns as $pattern) {
+          $string = preg_replace("/{$pattern}/", '', $string);
+        }
+        break;
+    }
+
+    return $string;
+  }
+
+  /**
    * Generates a matrix of captured URLs for each run.
    */
-  public static function generateRunMatrix($runs) {
+  public static function generateRunMatrix($runs, $strip_type, array $strip_patterns) {
     $urls = [];
     foreach ($runs as $run) {
       foreach ($run->getCapturedArray() as $captured_row) {
@@ -87,7 +108,7 @@ class RunComparisonController extends ControllerBase {
 
         $row_results = unserialize($captured_row->getValue()['value']);
         $response_type = $row_results['capture_response']->getId();
-        $capture_key = $row_results['capture_url'];
+        $capture_key = static::stripCaptureKey($row_results['capture_url'], $strip_type, $strip_patterns);
         $run_id = $run->getRevisionId();
         $delta = $row_results['delta'];
         $urls[$response_type][$capture_key][$run_id][$delta] = $row_results;
@@ -112,7 +133,7 @@ class RunComparisonController extends ControllerBase {
     }
 
     // Determine if URLs are in both runs or just one and mark accordingly.
-    $matrix = static::generateRunMatrix($run_entities);
+    $matrix = static::generateRunMatrix($run_entities, $run_comparison->getStripType(), $run_comparison->getStripPatterns());
     $left_id = $run_entities[0]->getRevisionId();
     $right_id = $run_entities[1]->getRevisionId();
     foreach ($matrix as $response_type => $capture_list) {

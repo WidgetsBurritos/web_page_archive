@@ -123,6 +123,22 @@ interface RunComparisonInterface extends RevisionableInterface, RevisionLogInter
   public function getRun2Id();
 
   /**
+   * Retrieves the url/comparison key stripping type.
+   *
+   * @return string
+   *   The url/comparison key stripping type.
+   */
+  public function getStripType();
+
+  /**
+   * Retrieves the url/comparison key stripping patterns.
+   *
+   * @return string[]
+   *   The url/comparison key stripping patterns.
+   */
+  public function getStripPatterns();
+
+  /**
    * Retrieves both run entities as an array.
    *
    * @return RunComparisonInterface[]

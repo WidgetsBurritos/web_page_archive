@@ -81,6 +81,31 @@ class RunComparisonForm extends FormBase {
       '#autocomplete_route_name' => 'web_page_archive.autocomplete.runs',
       '#required' => TRUE,
     ];
+    $form['strip_type'] = [
+      '#type' => 'select',
+      '#title' => $this->t('URL/key stripping type'),
+      '#options' => [
+        '' => $this->t('None'),
+        'string' => $this->t('String-based'),
+        'regex' => $this->t('RegEx-based'),
+      ],
+      '#description' => $this->t('If comparing across hosts (e.g. www.mysite.com vs staging.mysite.com), you can strip portions of the URL or comparison key off.'),
+    ];
+    $form['strip_patterns'] = [
+      '#type' => 'textarea',
+      '#title' => $this->t('URL/key stripping patterns'),
+      '#description' => $this->t('Enter pattern(s) you would like stripped from comparison key. One pattern per line.'),
+      '#states' => [
+        'visible' => [
+          ['select[name="strip_type"]' => ['value' => 'string']],
+          ['select[name="strip_type"]' => ['value' => 'regex']],
+        ],
+        'required' => [
+          ['select[name="strip_type"]' => ['value' => 'string']],
+          ['select[name="strip_type"]' => ['value' => 'regex']],
+        ],
+      ],
+    ];
 
     return $form;
   }
@@ -110,6 +135,8 @@ class RunComparisonForm extends FormBase {
       '@label1' => RunComparisonController::generateRevisionLabel($run1->getRevisionId(), $run1->label(), $run1->getRevisionCreationTime()),
       '@label2' => RunComparisonController::generateRevisionLabel($run2->getRevisionId(), $run2->label(), $run2->getRevisionCreationTime()),
     ];
+    $strip_type = $form_state->getValue('strip_type');
+    $strip_patterns = !empty($strip_type) ? array_map('trim', explode(PHP_EOL, trim($form_state->getValue('strip_patterns')))) : [];
 
     $data = [
       'user_id' => \Drupal::currentUser()->id(),
@@ -118,6 +145,8 @@ class RunComparisonForm extends FormBase {
       'run1' => $run1->getRevisionId(),
       'run2' => $run2->getRevisionId(),
       'status' => 1,
+      'strip_type' => $strip_type,
+      'strip_patterns' => serialize($strip_patterns),
     ];
     $run_comparison = $this->runComparisonStorage->create($data);
     $run_comparison->save();

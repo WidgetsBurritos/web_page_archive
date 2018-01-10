@@ -80,6 +80,8 @@ class RunComparisonTest extends BrowserTestBase {
     $data = [
       'run1' => $run1->id(),
       'run2' => $run2->id(),
+      'strip_type' => '',
+      'strip_patterns' => '',
     ];
     $comparison = $this->comparisonStorage->create($data);
     $comparison->save();
