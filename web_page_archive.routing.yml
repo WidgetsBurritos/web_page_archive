@@ -142,3 +142,17 @@ entity.web_page_archive.modal:
         type: integer
   requirements:
     _permission: 'view web page archive results'
+
+entity.wpa_run_comparison.modal:
+  path: 'admin/config/system/web-page-archive/modal/compare/{wpa_run_comparison}/{index}'
+  defaults:
+    _controller: '\Drupal\web_page_archive\Controller\ModalController::compareModalContent'
+    _title_callback: '\Drupal\web_page_archive\Controller\ModalController::compareModalTitle'
+  options:
+    parameters:
+      wpa_run_comparison:
+        type: entity:wpa_run_comparison
+      index:
+        type: integer
+  requirements:
+    _permission: 'view web page archive results'

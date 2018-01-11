@@ -20,6 +20,7 @@ class SerializedComparisonResults extends Serialized {
 
     if ($this->options['format'] == 'unserialized') {
       $options = unserialize($value);
+      $options['index'] = $values->index;
       if (isset($options['compare_response'])) {
         return $options['compare_response']->renderable($options);
       }
