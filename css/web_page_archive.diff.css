@@ -1,0 +1,42 @@
+/**
+ * Web page archive split diff theming
+ */
+.wpa-diff {
+  border-spacing: 4px;
+  margin-top: 10px;
+  table-layout: auto;
+  width: 100%;
+}
+.wpa-diff .diff-context {
+  background-color: #fafafa;
+}
+.wpa-diff .diff-deletedline {
+  background-color: #ffa;
+  width: 50%;
+}
+.wpa-diff .diff-addedline {
+  background-color: #afa;
+  width: 50%;
+}
+.wpa-diff .diffchange {
+  color: #f00;
+  font-weight: bold;
+}
+.wpa-diff .diff-marker {
+  width: 1.4em;
+}
+.wpa-diff th {
+  padding-right: inherit; /* LTR */
+}
+[dir="rtl"] .wpa-diff th {
+  padding-right: 0;
+  padding-left: inherit;
+}
+.wpa-diff td div {
+  overflow: auto;
+  padding: 0.1ex 0.5em;
+  word-wrap: break-word;
+}
+.wpa-diff td {
+  padding: 0.1ex 0.4em;
+}

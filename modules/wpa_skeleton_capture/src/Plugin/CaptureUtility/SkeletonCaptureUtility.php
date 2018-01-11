@@ -37,7 +37,7 @@ class SkeletonCaptureUtility extends ConfigurableCaptureUtilityBase {
     // mechanism, such as storing the data directly inside the database table
     // instead of external files, you simply need to create a response class
     // that extends \Drupal\web_page_archive\Plugin\CaptureResponseBase.
-    $response_content = '/some/path/to/file.txt';
+    $response_content = $this->t('Contents from @url', ['@url' => $data['url']]);
     $this->response = new UriCaptureResponse($response_content, $data['url']);
 
     return $this;

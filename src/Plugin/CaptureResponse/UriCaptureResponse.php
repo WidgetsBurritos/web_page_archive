@@ -2,8 +2,10 @@
 
 namespace Drupal\web_page_archive\Plugin\CaptureResponse;
 
+use Drupal\Component\Diff\Diff;
 use Drupal\web_page_archive\Controller\CleanupController;
 use Drupal\web_page_archive\Plugin\CaptureResponseBase;
+use Drupal\web_page_archive\Plugin\CaptureResponseInterface;
 
 /**
  * URI capture response.
@@ -47,6 +49,54 @@ class UriCaptureResponse extends CaptureResponseBase {
    */
   public function renderable(array $options = []) {
     return $this->content;
+  }
+
+  /**
+   * Calulates variance based on a edit array from DiffEngine.
+   */
+  public static function calculateDiffVariance(array $diff_edits) {
+    // If both strings are empty, there is 0% variance.
+    $counts = [
+      'empty' => 0,
+      'add' => 1,
+      'copy' => 0,
+      'change' => 1,
+      'delete' => 1,
+      'copy-and-change' => 1,
+      'copy-change-copy' => 1,
+      'copy-change-copy-add' => 1,
+      'copy-delete' => 1,
+    ];
+    $changes = 0;
+    $total_ct = count($diff_edits);
+    foreach ($diff_edits as $diff_edit) {
+      if (isset($counts[$diff_edit->type])) {
+        $changes += $counts[$diff_edit->type];
+      }
+      else {
+        // Remove any invalid operations from the calculation.
+        $total_ct--;
+      }
+    }
+
+    return $total_ct > 0 ? 100 * $changes / $total_ct : 0;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function compare(CaptureResponseInterface $a, CaptureResponseInterface $b) {
+    $response_factory = \Drupal::service('web_page_archive.compare.response');
+    $a_content = explode(PHP_EOL, $a->getContent());
+    $b_content = explode(PHP_EOL, $b->getContent());
+    $diff = new Diff($a_content, $b_content);
+    if ($diff->isEmpty()) {
+      return $response_factory->getSameCompareResponse();
+    }
+    $variance = static::calculateDiffVariance($diff->getEdits());
+    $response = $response_factory->getVarianceCompareResponse($variance);
+    $response->setDiff($diff);
+    return $response;
   }
 
   /**

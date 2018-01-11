@@ -51,4 +51,37 @@ class ModalController extends ControllerBase implements ContainerInjectionInterf
     return $response['capture_url'];
   }
 
+  /**
+   * Helper function to retrieve a comparison index.
+   */
+  private function getComparisonIndex($wpa_run_comparison, $index) {
+    $results = $wpa_run_comparison->getResults();
+    if (empty($results[$index]['results'])) {
+      return NULL;
+    }
+    $unserialized = unserialize($results[$index]['results']);
+    if (!isset($unserialized['compare_response'])) {
+      return NULL;
+    }
+    return $unserialized['compare_response'];
+  }
+
+  /**
+   * Render array for modal.
+   */
+  public function compareModalContent($wpa_run_comparison, $index) {
+    $response = $this->getComparisonIndex($wpa_run_comparison, $index);
+    if (!isset($response)) {
+      return ['#markup' => $this->t('Invalid compare response.')];
+    }
+    return $response->renderable(['mode' => 'full', 'index' => $index]);
+  }
+
+  /**
+   * Title for comparison modal.
+   */
+  public function compareModalTitle($wpa_run_comparison, $index) {
+    return "{$wpa_run_comparison->label()}: {$index}";
+  }
+
 }

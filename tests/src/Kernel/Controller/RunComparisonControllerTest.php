@@ -394,7 +394,7 @@ class RunComparisonControllerTest extends EntityKernelTestBase {
         'has_right' => '1',
         'revision_id' => $run_comparison->getRevisionId(),
         'url' => 'http://zombo.com',
-        'variance' => '-1',
+        'variance' => '0',
       ],
       [
         'run1' => $run1_id,

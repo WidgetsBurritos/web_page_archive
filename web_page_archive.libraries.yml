@@ -4,3 +4,8 @@ admin:
     theme:
       css/web_page_archive.admin.css: {}
       css/web_page_archive.fshl.css: {}
+diff:
+  version: VERSION
+  css:
+    theme:
+      css/web_page_archive.diff.css: {}

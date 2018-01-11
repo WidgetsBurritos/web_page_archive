@@ -184,7 +184,7 @@ class RunComparison extends RevisionableContentEntityBase implements RunComparis
    * {@inheritdoc}
    */
   public function getStripPatterns() : array {
-    return $this->get('strip_patterns')->first()->getValue();
+    return !empty($this->getStripType()) ? $this->get('strip_patterns')->first()->getValue() : [];
   }
 
   /**
