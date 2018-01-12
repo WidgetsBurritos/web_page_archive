@@ -38,5 +38,7 @@
   word-wrap: break-word;
 }
 .wpa-diff td {
+  max-width: 450px;
   padding: 0.1ex 0.4em;
+  word-wrap: break-word;
 }

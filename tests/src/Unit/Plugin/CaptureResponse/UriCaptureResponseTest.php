@@ -16,9 +16,11 @@ class UriCaptureResponseTest extends UnitTestCase {
   /**
    * Helper method to retrieve a DiffOp operation.
    */
-  private function getDiffOp($type) {
+  private function getDiffOp($type, $orig_ct, $closing_ct) {
     $diff_op = new DiffOp();
     $diff_op->type = $type;
+    $diff_op->orig = array_fill(0, $orig_ct, 'x');
+    $diff_op->closing = array_fill(0, $closing_ct, 'y');
     return $diff_op;
   }
 
@@ -45,18 +47,18 @@ class UriCaptureResponseTest extends UnitTestCase {
    */
   public function testCalculateDiffVariance() {
     $diff_edits = [
-      $this->getDiffOp('add'),
-      $this->getDiffOp('copy'),
-      $this->getDiffOp('change'),
-      $this->getDiffOp('delete'),
-      $this->getDiffOp('empty'),
-      $this->getDiffOp('copy-and-change'),
-      $this->getDiffOp('copy-change-copy'),
-      $this->getDiffOp('copy-change-copy-add'),
-      $this->getDiffOp('copy-delete'),
-      $this->getDiffOp('invalid-does-not-exist'),
+      $this->getDiffOp('add', 3, 7),
+      $this->getDiffOp('copy', 3, 3),
+      $this->getDiffOp('change', 7, 3),
+      $this->getDiffOp('delete', 3, 1),
+      $this->getDiffOp('empty', 0, 0),
+      $this->getDiffOp('copy-and-change', 6, 12),
+      $this->getDiffOp('copy-change-copy', 1, 3),
+      $this->getDiffOp('copy-change-copy-add', 3, 4),
+      $this->getDiffOp('copy-delete', 3, 7),
+      $this->getDiffOp('invalid-does-not-exist', 3, 13),
     ];
-    $this->assertEquals(78, ceil(UriCaptureResponse::calculateDiffVariance($diff_edits)));
+    $this->assertEquals(94, ceil(UriCaptureResponse::calculateDiffVariance($diff_edits)));
   }
 
 }

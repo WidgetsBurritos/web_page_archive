@@ -3,8 +3,10 @@
 namespace Drupal\wpa_html_capture\Plugin\CaptureResponse;
 
 use Drupal\Core\Url;
+use Drupal\Component\Diff\Diff;
 use Drupal\Component\Serialization\Json;
 use Drupal\Component\Utility\Html;
+use Drupal\web_page_archive\Plugin\CaptureResponseInterface;
 use Drupal\web_page_archive\Plugin\CaptureResponse\UriCaptureResponse;
 use FSHL\Highlighter;
 use FSHL\Output\Html as OutputHtml;
@@ -75,24 +77,51 @@ class HtmlCaptureResponse extends UriCaptureResponse {
   }
 
   /**
+   * Retrieves file contents.
+   */
+  public function retrieveFileContents() {
+    if (!empty($this->content) && file_exists($this->content)) {
+      return trim(file_get_contents($this->content));
+    }
+    return '';
+  }
+
+  /**
    * Renders full mode.
    */
   private function renderFull(array $options) {
     // If capture has a screenshot show it, otherwise show error.
-    if (!empty($this->content)) {
-      $file = file_get_contents($this->content);
+    $contents = $this->retrieveFileContents();
+    if (!empty($contents)) {
       $highlighter = new Highlighter(new OutputHtml());
       $highlighter->setLexer(new LexerHtml());
 
       return [
         '#prefix' => '<pre class="wpa-code-window">',
-        '#markup' => $highlighter->highlight($file),
+        '#markup' => $highlighter->highlight($contents),
         '#suffix' => '</pre>',
         '#attached' => ['library' => ['web_page_archive/fshl']],
       ];
     }
 
     return ['#markup' => $this->t('There was a problem generating this capture.')];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function compare(CaptureResponseInterface $a, CaptureResponseInterface $b) {
+    $response_factory = \Drupal::service('web_page_archive.compare.response');
+    $a_content = explode(PHP_EOL, $a->retrieveFileContents());
+    $b_content = explode(PHP_EOL, $b->retrieveFileContents());
+    $diff = new Diff($a_content, $b_content);
+    if ($diff->isEmpty()) {
+      return $response_factory->getSameCompareResponse();
+    }
+    $variance = static::calculateDiffVariance($diff->getEdits());
+    $response = $response_factory->getVarianceCompareResponse($variance);
+    $response->setDiff($diff);
+    return $response;
   }
 
 }

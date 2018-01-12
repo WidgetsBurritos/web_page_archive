@@ -68,17 +68,14 @@ class UriCaptureResponse extends CaptureResponseBase {
       'copy-delete' => 1,
     ];
     $changes = 0;
-    $total_ct = count($diff_edits);
+    $total_ct = 0;
     foreach ($diff_edits as $diff_edit) {
       if (isset($counts[$diff_edit->type])) {
-        $changes += $counts[$diff_edit->type];
-      }
-      else {
-        // Remove any invalid operations from the calculation.
-        $total_ct--;
+        $lines = max(count($diff_edit->orig), count($diff_edit->closing));
+        $changes += $counts[$diff_edit->type] * $lines;
+        $total_ct += $lines;
       }
     }
-
     return $total_ct > 0 ? 100 * $changes / $total_ct : 0;
   }
 

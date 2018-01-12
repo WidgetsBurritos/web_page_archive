@@ -166,6 +166,7 @@ function web_page_archive_schema() {
       ],
       'results' => [
         'type' => 'blob',
+        'size' => 'big',
         'description' => 'Serialized comparison results.',
       ],
       'timestamp' => [
@@ -503,4 +504,16 @@ function web_page_archive_update_8013() {
   $query = \Drupal::database()->update('wpa_run_comparison');
   $query->fields(['strip_type' => '', 'strip_patterns' => serialize([])]);
   $query->execute();
+}
+
+/**
+ * Change 'results' field to a long blob.
+ */
+function web_page_archive_update_8014() {
+  $db_schema = Database::getConnection()->schema();
+  $db_schema->changeField('web_page_archive_run_comparison_details', 'results', 'results', [
+    'type' => 'blob',
+    'size' => 'big',
+    'description' => 'Serialized comparison results.',
+  ]);
 }
