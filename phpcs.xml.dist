@@ -7,5 +7,6 @@
   <!--Exclude README.md.-->
   <exclude-pattern>./README.md</exclude-pattern>
   <exclude-pattern>./diagrams/README.md</exclude-pattern>
+  <exclude-pattern>./modules/wpa_screenshot_capture/libraries/</exclude-pattern>
 
 </ruleset>

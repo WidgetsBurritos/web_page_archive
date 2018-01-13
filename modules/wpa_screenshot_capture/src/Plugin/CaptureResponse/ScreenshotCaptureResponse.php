@@ -5,7 +5,9 @@ namespace Drupal\wpa_screenshot_capture\Plugin\CaptureResponse;
 use Drupal\Core\Url;
 use Drupal\Component\Serialization\Json;
 use Drupal\Component\Utility\Html;
+use Drupal\web_page_archive\Plugin\CaptureResponseInterface;
 use Drupal\web_page_archive\Plugin\CaptureResponse\UriCaptureResponse;
+use Drupal\wpa_screenshot_capture\Plugin\CompareResponse\ScreenshotVarianceCompareResponse;
 
 /**
  * URI capture response.
@@ -89,6 +91,19 @@ class ScreenshotCaptureResponse extends UriCaptureResponse {
     }
 
     return ['#markup' => $this->t('There was a problem generating this screenshot.')];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function compare(CaptureResponseInterface $a, CaptureResponseInterface $b) {
+    $size1 = $a->getCaptureSize();
+    $size2 = $b->getCaptureSize();
+    $variance = 100 * abs($size2 - $size1) / $size1;
+    $response = new ScreenshotVarianceCompareResponse($variance);
+    $response->setFile1Size($size1);
+    $response->setFile2Size($size2);
+    return $response;
   }
 
 }

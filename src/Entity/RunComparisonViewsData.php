@@ -39,6 +39,16 @@ class RunComparisonViewsData extends EntityViewsData {
     $data['web_page_archive_run_comparison_details'] = [];
     $data['web_page_archive_run_comparison_details']['table'] = [];
     $data['web_page_archive_run_comparison_details']['table']['group'] = t('Web page archive run comparison');
+
+    $data['web_page_archive_run_comparison_details']['cid'] = [
+      'title' => $this->t('Comparison ID'),
+      'help' => $this->t('The unique comparison ID.'),
+      'argument' => ['id' => 'numeric'],
+      'field' => ['id' => 'standard'],
+      'filter' => ['id' => 'numeric'],
+      'sort' => ['id' => 'standard'],
+    ];
+
     $data['web_page_archive_run_comparison_details']['url'] = [
       'title' => $this->t('Comparison URL'),
       'help' => $this->t('The URL being compared.'),

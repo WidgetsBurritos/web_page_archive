@@ -1,0 +1,24 @@
+{#
+/**
+ * @file
+ * Template file the web page archive before/after screenshot comparison.
+ *
+ * Available variables:
+ * - left: The left side of the comparison.
+ * - right: The right side of the comparison.
+ */
+#}
+
+{{ attach_library('wpa_screenshot_capture/wpa-slider') }}
+
+<div class="wpa-slider ba-slider">
+  {{ right }}
+  <div class="resize">
+    {{ left }}
+  </div>
+  <span class="wpa-handle handle"></span>
+</div>
+
+<script type="text/javascript">
+wpaInitializeSlider();
+</script>
