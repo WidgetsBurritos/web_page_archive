@@ -117,7 +117,7 @@ class RunComparisonStorage extends SqlContentEntityStorage implements RunCompari
       [':revision_id' => $entity->getRevisionId()]);
     $rows = [];
     while ($row = $query->fetchAssoc()) {
-      $rows[] = $row;
+      $rows[$row['cid']] = $row;
     }
 
     return $rows;

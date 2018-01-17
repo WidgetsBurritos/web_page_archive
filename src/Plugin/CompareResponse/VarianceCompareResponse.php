@@ -11,22 +11,16 @@ use Drupal\web_page_archive\Plugin\CompareResponseBase;
  */
 class VarianceCompareResponse extends CompareResponseBase {
 
+  use FileSizeTrait;
+  use TextDiffTrait;
+
   protected $variance;
-  protected $diff;
 
   /**
    * Creates a new VarianceCompareResponse object.
    */
   public function __construct($variance) {
     $this->variance = (float) $variance;
-    $this->diff = NULL;
-  }
-
-  /**
-   * Sets the Diff object containing the comparison result (if applicable).
-   */
-  public function setDiff($diff) {
-    $this->diff = $diff;
   }
 
   /**
@@ -41,7 +35,7 @@ class VarianceCompareResponse extends CompareResponseBase {
    */
   public function renderable(array $options = []) {
     // If diff has not be sent, just show percentage summary.
-    if (!isset($this->diff)) {
+    if (empty($this->getDiff())) {
       return ['#markup' => $this->t('There is a @variance% difference between the two captures.', ['@variance' => $this->variance])];
     }
     // Otherwise render the proper mode.
@@ -52,7 +46,7 @@ class VarianceCompareResponse extends CompareResponseBase {
   /**
    * Renders "preview" mode.
    */
-  private function renderPreview(array $options) {
+  protected function renderPreview(array $options) {
     $link_array = [];
     $route_params = [
       'wpa_run_comparison' => $options['run_comparison']->id(),
@@ -79,7 +73,7 @@ class VarianceCompareResponse extends CompareResponseBase {
   /**
    * Renders "full" mode.
    */
-  private function renderFull(array $options = []) {
+  protected function renderFull(array $options = []) {
     $diff_formatter = \Drupal::service('diff.formatter');
     $diff_formatter->show_header = FALSE;
     $build = [
@@ -91,7 +85,7 @@ class VarianceCompareResponse extends CompareResponseBase {
           ['data' => $this->t('Run #1'), 'colspan' => '2'],
           ['data' => $this->t('Run #2'), 'colspan' => '2'],
         ],
-        '#rows' => $diff_formatter->format($this->diff),
+        '#rows' => $diff_formatter->format($this->getDiff()),
       ],
     ];
     return $build;

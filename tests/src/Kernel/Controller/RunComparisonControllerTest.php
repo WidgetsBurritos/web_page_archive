@@ -2,9 +2,8 @@
 
 namespace Drupal\Tests\web_page_archive\Kernel\Controller;
 
-use Drupal\KernelTests\Core\Entity\EntityKernelTestBase;
-use Drupal\web_page_archive\Controller\RunComparisonController;
 use Drupal\web_page_archive\Plugin\CaptureResponse\UriCaptureResponse;
+use Drupal\Tests\web_page_archive\Kernel\EntityStorageTestBase;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -12,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @group web_page_archive
  */
-class RunComparisonControllerTest extends EntityKernelTestBase {
+class RunComparisonControllerTest extends EntityStorageTestBase {
 
   protected $controller;
   protected $runComparisonStorage;
@@ -22,87 +21,14 @@ class RunComparisonControllerTest extends EntityKernelTestBase {
   protected $entityFieldManager;
 
   /**
-   * Modules to enable.
-   *
-   * @var array
-   */
-  public static $modules = [
-    'field',
-    'node',
-    'system',
-    'views',
-    'web_page_archive',
-  ];
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function setUp() {
-    parent::setUp();
-
-    date_default_timezone_set('Antarctica/Troll');
-    $this->installSchema('web_page_archive', 'web_page_archive_capture_details');
-    $this->installSchema('web_page_archive', 'web_page_archive_run_comparison_details');
-    $this->installEntitySchema('web_page_archive_run');
-    $this->installEntitySchema('wpa_run_comparison');
-    $this->installConfig(['web_page_archive']);
-    $this->controller = RunComparisonController::create($this->container);
-    $entity_type_manager = $this->container->get('entity_type.manager');
-    $this->runStorage = $entity_type_manager->getStorage('web_page_archive_run');
-    $this->runComparisonStorage = $entity_type_manager->getStorage('wpa_run_comparison');
-    $this->fieldTypeManager = $this->container->get('plugin.manager.field.field_type');
-    $this->fieldFormatterManager = $this->container->get('plugin.manager.field.formatter');
-    $this->entityFieldManager = $this->container->get('entity_field.manager');
-  }
-
-  /**
-   * Creates a run entity with the specified number of revisions.
-   */
-  private function getRunEntity($name, $revision_ct, $start_time = 1513860000) {
-    // Create initial entity.
-    $data = [
-      'name' => $name,
-      'success_ct' => 5,
-    ];
-    $run_entity = $this->runStorage->create($data);
-    $run_entity->setRevisionCreationTime($start_time);
-    $run_entity->save();
-
-    // Create additional revisions.
-    for ($i = 1; $i <= $revision_ct; $i++) {
-      $run_entity->setNewRevision(TRUE);
-      $run_entity->setRevisionCreationTime($start_time + $i);
-      $run_entity->save();
-    }
-
-    return $run_entity;
-  }
-
-  /**
-   * Creates a capture field with the specified results.
-   */
-  private function getCaptureField($value) {
-    $field_definitions = $this->entityFieldManager->getFieldDefinitions('web_page_archive_run', 'web_page_archive_run');
-    $configuration = [
-      'name' => 'field_captures',
-      'parent' => NULL,
-      'field_definition' => $field_definitions['field_captures'],
-    ];
-    $field = $this->fieldTypeManager->createInstance('web_page_archive_capture', $configuration);
-
-    $field->setValue($value);
-    return serialize($field->getValue());
-  }
-
-  /**
    * Tests RunComparisonController::generateRevisionLabel().
    */
   public function testGenerateRevisionLabel() {
-    $label = $this->controller->generateRevisionLabel(5, 'My Capture Run', 1387637515);
+    $label = $this->runComparisonController->generateRevisionLabel(5, 'My Capture Run', 1387637515);
     $expected = 'My Capture Run: 2013-12-21 14:51:55 (5)';
     $this->assertEquals($expected, $label);
 
-    $label = $this->controller->generateRevisionLabel(993, 'Another Run', 15939944323);
+    $label = $this->runComparisonController->generateRevisionLabel(993, 'Another Run', 15939944323);
     $expected = 'Another Run: 2475-02-12 02:18:43 (993)';
     $this->assertEquals($expected, $label);
   }
@@ -125,7 +51,7 @@ class RunComparisonControllerTest extends EntityKernelTestBase {
 
     // Partial-matching string should return all matching revisions.
     $request = new Request(['q' => 'entity']);
-    $response = $this->controller->handleRunAutocomplete($request);
+    $response = $this->runComparisonController->handleRunAutocomplete($request);
     $expected = [];
     foreach ($revision_ids as $second => $revision_id) {
       $expected[] = [
@@ -144,7 +70,7 @@ class RunComparisonControllerTest extends EntityKernelTestBase {
 
     // Full string match should return non-empty list.
     $request = new Request(['q' => "My run entity: 2017-12-21 12:40:02 ({$revision_ids[2]})"]);
-    $response = $this->controller->handleRunAutocomplete($request);
+    $response = $this->runComparisonController->handleRunAutocomplete($request);
     $expected = [
       [
         'label' => "My run entity: 2017-12-21 12:40:02 ({$revision_ids[2]})",
@@ -156,19 +82,19 @@ class RunComparisonControllerTest extends EntityKernelTestBase {
 
     // Non-matching string should return empty list.
     $request = new Request(['q' => 'Invalid String']);
-    $response = $this->controller->handleRunAutocomplete($request);
+    $response = $this->runComparisonController->handleRunAutocomplete($request);
     $expected = [];
     $this->assertEquals($expected, json_decode($response->getContent(), TRUE));
 
     // Empty string should return empty list.
     $request = new Request(['q' => '']);
-    $response = $this->controller->handleRunAutocomplete($request);
+    $response = $this->runComparisonController->handleRunAutocomplete($request);
     $expected = [];
     $this->assertEquals($expected, json_decode($response->getContent(), TRUE));
 
     // Unspecified string should return empty list.
     $request = new Request();
-    $response = $this->controller->handleRunAutocomplete($request);
+    $response = $this->runComparisonController->handleRunAutocomplete($request);
     $expected = [];
     $this->assertEquals($expected, json_decode($response->getContent(), TRUE));
   }
@@ -269,7 +195,7 @@ class RunComparisonControllerTest extends EntityKernelTestBase {
     ];
 
     foreach ($tests as $test) {
-      $this->assertEquals($test['expected'], $this->controller->stripCaptureKey($test['url'], $test['strip_type'], $test['strip_patterns']));
+      $this->assertEquals($test['expected'], $this->runComparisonController->stripCaptureKey($test['url'], $test['strip_type'], $test['strip_patterns']));
     }
   }
 
@@ -326,7 +252,7 @@ class RunComparisonControllerTest extends EntityKernelTestBase {
         ],
       ],
     ];
-    $this->assertEquals($expected, $this->controller->generateRunMatrix($entity_runs, 'string', ['www.', 'staging.']));
+    $this->assertEquals($expected, $this->runComparisonController->generateRunMatrix($entity_runs, 'string', ['www.', 'staging.']));
   }
 
   /**
@@ -334,19 +260,8 @@ class RunComparisonControllerTest extends EntityKernelTestBase {
    */
   public function testEnqueueRunComparisons() {
     // Create a run entity and then load the first two runs.
-    $entity = $this->getRunEntity('My run entity', 2);
-    list($run1_id, $run2_id) = $this->runStorage->revisionIds($entity);
-
-    // Create a run comparison.
-    $data = [
-      'run1' => $run1_id,
-      'run2' => $run2_id,
-      'name' => 'Compare job',
-      'strip_type' => 'string',
-      'strip_patterns' => serialize(['www.', 'staging.']),
-    ];
-    $run_comparison = $this->runComparisonStorage->create($data);
-    $run_comparison->save();
+    $strip_patterns = ['www.', 'staging.'];
+    $run_comparison = $this->getRunComparisonEntity('Compare job', 'My run entity', 2, 'string', $strip_patterns);
 
     // Evaluate a few capture response.
     $capture_results = [
@@ -372,22 +287,22 @@ class RunComparisonControllerTest extends EntityKernelTestBase {
     ])->save();
 
     // Enqueue the comparison and make sure there are 2 items in the queue.
-    $this->controller->enqueueRunComparisons($run_comparison);
+    $this->runComparisonController->enqueueRunComparisons($run_comparison);
     $queue = $run_comparison->getQueue();
     $this->assertEquals(2, $queue->numberOfItems());
 
     // Attempt to process the next item in the queue.
-    $this->assertTrue($this->controller->batchProcess($run_comparison));
+    $this->assertTrue($this->runComparisonController->batchProcess($run_comparison));
     $this->assertEquals(1, $queue->numberOfItems());
 
     // Attempt to process the next item in the queue.
-    $this->assertTrue($this->controller->batchProcess($run_comparison));
+    $this->assertTrue($this->runComparisonController->batchProcess($run_comparison));
     $this->assertEquals(0, $queue->numberOfItems());
 
     $expected = [
-      [
-        'run1' => $run1_id,
-        'run2' => $run2_id,
+      '1' => [
+        'run1' => $run_comparison->getRun1Id(),
+        'run2' => $run_comparison->getRun2Id(),
         'delta1' => '4',
         'delta2' => '4',
         'has_left' => '1',
@@ -396,9 +311,9 @@ class RunComparisonControllerTest extends EntityKernelTestBase {
         'url' => 'http://zombo.com',
         'variance' => '0',
       ],
-      [
-        'run1' => $run1_id,
-        'run2' => $run2_id,
+      '2' => [
+        'run1' => $run_comparison->getRun1Id(),
+        'run2' => $run_comparison->getRun2Id(),
         'delta1' => '13',
         'delta2' => '0',
         'has_left' => '1',
@@ -415,35 +330,41 @@ class RunComparisonControllerTest extends EntityKernelTestBase {
    * Tests RunComparisonController::markCompareComplete().
    */
   public function testMarkCompareComplete() {
-    // Create a run comparison.
-    $data = [
-      'run1' => 47,
-      'run2' => 93,
-      'name' => 'Compare job',
-      'strip_type' => 'string',
-      'strip_patterns' => serialize(['www.', 'staging.']),
-    ];
-    $run_comparison = $this->runComparisonStorage->create($data);
-    $run_comparison->save();
-
-    // Create initial array.
-    $data = [
-      'url' => 'http://www.homestarrunner.com',
-      'delta1' => 50,
-      'delta2' => 150,
-      'has_left' => TRUE,
-      'has_right' => FALSE,
-      'left_id' => 47,
-      'right_id' => 93,
-      'run_comparison' => $run_comparison,
-      'variance' => 53,
-    ];
-    $this->controller->markCompareComplete($data);
+    $strip_patterns = ['www.', 'staging.'];
+    $run_comparison = $this->getRunComparisonEntity('Compare job', 'My run entity', 2, 'string', $strip_patterns);
+    $this->setMockCompareResults($run_comparison, TRUE);
 
     $expected = [
-      [
-        'run1' => 47,
-        'run2' => 93,
+      '1' => [
+        'run1' => $run_comparison->getRun1Id(),
+        'run2' => $run_comparison->getRun2Id(),
+        'delta1' => '50',
+        'delta2' => '150',
+        'has_left' => '1',
+        'has_right' => '1',
+        'revision_id' => $run_comparison->getRevisionId(),
+        'url' => 'http://www.homestarrunner.com',
+        'variance' => '53',
+      ],
+    ];
+    $this->assertArraySubset($expected, $run_comparison->getResults());
+  }
+
+  /**
+   * Tests RunComparisonController::markCompareComplete().
+   *
+   * @expectedException Exception
+   * @expectedExceptionMessage run2 is required
+   */
+  public function testMarkCompareCompleteThrowsExceptionIfMissingSecondRun() {
+    $strip_patterns = ['www.', 'staging.'];
+    $run_comparison = $this->getRunComparisonEntity('Compare job', 'My run entity', 2, 'string', $strip_patterns);
+    $this->setMockCompareResults($run_comparison);
+
+    $expected = [
+      '1' => [
+        'run1' => $run_comparison->getRun1Id(),
+        'run2' => $run_comparison->getRun2Id(),
         'delta1' => '50',
         'delta2' => '150',
         'has_left' => '1',
@@ -453,7 +374,7 @@ class RunComparisonControllerTest extends EntityKernelTestBase {
         'variance' => '53',
       ],
     ];
-    $this->assertArraySubset($expected, $run_comparison->getResults());
+    $run_comparison->getResults();
   }
 
 }

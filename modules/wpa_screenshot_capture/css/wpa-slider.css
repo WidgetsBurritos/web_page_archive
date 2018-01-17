@@ -1,0 +1,7 @@
+.ui-dialog-content .wpa-slider {
+  max-width: 983px;
+}
+
+.ui-dialog-content .wpa-slider .wpa-handle:after {
+  position: fixed;
+}

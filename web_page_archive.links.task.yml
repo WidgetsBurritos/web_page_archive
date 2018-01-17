@@ -2,26 +2,29 @@ entity.web_page_archive.collection:
   title: 'Web Page Archive'
   route_name: entity.web_page_archive.collection
   base_route: entity.web_page_archive.collection
+  weight: 0
+
+web_page_archive.compare:
+  title: 'Compare Runs'
+  route_name: web_page_archive.compare
+  base_route: entity.web_page_archive.collection
+  weight: 25
+
+web_page_archive.compare.history:
+  title: 'Previous Run Comparisons'
+  route_name: entity.wpa_run_comparison.collection
+  base_route: entity.web_page_archive.collection
+  weight: 50
 
 web_page_archive_settings:
   title: 'Settings'
   base_route: entity.web_page_archive.collection
   route_name: web_page_archive_settings
-  weight: -10
+  weight: 75
 
 entity.web_page_archive.collection.prepare_uninstall:
   title: 'Prepare uninstall'
   description: 'Remove fields and data created by web page archive module.'
   base_route: entity.web_page_archive.collection
   route_name: entity.web_page_archive.collection.prepare_uninstall
-  weight: -4
-
-web_page_archive.compare:
-  title: 'Compare Runs'
-  route_name: web_page_archive.compare
-  base_route: web_page_archive.compare
-
-web_page_archive.compare.history:
-  title: 'Previous Run Comparisons'
-  route_name: entity.wpa_run_comparison.collection
-  base_route: web_page_archive.compare
+  weight: 100

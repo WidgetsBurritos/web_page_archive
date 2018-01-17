@@ -74,7 +74,12 @@ class ModalController extends ControllerBase implements ContainerInjectionInterf
     if (!isset($response)) {
       return ['#markup' => $this->t('Invalid compare response.')];
     }
-    return $response->renderable(['mode' => 'full', 'index' => $index]);
+    $options = [
+      'mode' => 'full',
+      'run_comparison' => $wpa_run_comparison,
+      'index' => $index,
+    ];
+    return $response->renderable($options);
   }
 
   /**
