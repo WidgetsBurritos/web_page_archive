@@ -26,6 +26,7 @@
         "spatie/browsershot": "3.13.0"
     },
     "require-dev": {
-        "microweber/screen": "1.0.*"
+        "microweber/screen": "1.0.*",
+        "drupal/drupal": "8.4.4"
     }
 }
