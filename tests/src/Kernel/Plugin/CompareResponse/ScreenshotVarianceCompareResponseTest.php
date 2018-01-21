@@ -27,11 +27,19 @@ class ScreenshotVarianceCompareResponseTest extends EntityStorageTestBase {
       'run_comparison' => $run_comparison,
       'index' => 1,
       'mode' => 'preview',
+      'delta1' => 3,
+      'delta2' => 5,
+      'runs' => [
+        [3 => ['capture_size' => 145553]],
+        [5 => ['capture_size' => 32343352]],
+      ],
     ];
 
     $expected = [
       'link' => ['#type' => 'link'],
       '#attached' => ['library' => ['web_page_archive/admin']],
+      'size1' => ['#markup' => 'Size 1: 142.14 KB'],
+      'size2' => ['#markup' => 'Size 2: 30.85 MB'],
     ];
 
     $this->assertArraySubset($expected, $response->renderable($options));

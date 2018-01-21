@@ -280,134 +280,6 @@ display:
           empty_zero: false
           hide_alter_empty: true
           plugin_id: standard
-        capture_size:
-          id: capture_size
-          table: web_page_archive_run_revision
-          field: capture_size
-          relationship: run1
-          group_type: group
-          admin_label: ''
-          label: ''
-          exclude: false
-          alter:
-            alter_text: true
-            text: '<div class="wpa-comparison-file-size">Size 1: {{ capture_size }}</div>'
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: false
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          click_sort_column: value
-          type: wpa_capture_size
-          settings: {  }
-          group_column: value
-          group_columns: {  }
-          group_rows: true
-          delta_limit: 0
-          delta_offset: 0
-          delta_reversed: false
-          delta_first_last: false
-          multi_type: separator
-          separator: ', '
-          field_api_classes: false
-          entity_type: web_page_archive_run
-          entity_field: capture_size
-          plugin_id: field
-        capture_size_1:
-          id: capture_size_1
-          table: web_page_archive_run_revision
-          field: capture_size
-          relationship: run1
-          group_type: group
-          admin_label: ''
-          label: ''
-          exclude: false
-          alter:
-            alter_text: true
-            text: '<div class="wpa-comparison-file-size">Size 2: {{ capture_size_1 }}</div>'
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: false
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          click_sort_column: value
-          type: wpa_capture_size
-          settings: {  }
-          group_column: value
-          group_columns: {  }
-          group_rows: true
-          delta_limit: 0
-          delta_offset: 0
-          delta_reversed: false
-          delta_first_last: false
-          multi_type: separator
-          separator: ', '
-          field_api_classes: false
-          entity_type: web_page_archive_run
-          entity_field: capture_size
-          plugin_id: field
         results:
           id: results
           table: web_page_archive_run_comparison_details
@@ -657,7 +529,7 @@ display:
           field: run1
           relationship: vid
           group_type: group
-          admin_label: 'Individual capture results.'
+          admin_label: 'The first individual capture results'
           required: false
           plugin_id: standard
         run2_1:
@@ -666,7 +538,7 @@ display:
           field: run2
           relationship: vid
           group_type: group
-          admin_label: 'Individual capture results.'
+          admin_label: 'The second individual capture results'
           required: false
           plugin_id: standard
       arguments:
@@ -714,7 +586,6 @@ display:
     cache_metadata:
       max-age: 0
       contexts:
-        - 'languages:language_content'
         - 'languages:language_interface'
         - url
         - url.query_args
@@ -731,7 +602,6 @@ display:
     cache_metadata:
       max-age: 0
       contexts:
-        - 'languages:language_content'
         - 'languages:language_interface'
         - url
         - url.query_args

@@ -47,11 +47,25 @@ class VarianceCompareResponse extends CompareResponseBase {
    * Renders "preview" mode.
    */
   protected function renderPreview(array $options) {
-    $link_array = [];
+    $render = [];
     $route_params = [
       'wpa_run_comparison' => $options['run_comparison']->id(),
       'index' => $options['index'],
     ];
+
+    $ct = 0;
+    foreach ($options['runs'] as $details) {
+      $ct++;
+      $replacements = [
+        '@number' => $ct,
+        '@size' => format_size($details[$options["delta{$ct}"]]['capture_size']),
+      ];
+      $render["size{$ct}"] = [
+        '#prefix' => '<div class="wpa-comparison-file-size">',
+        '#markup' => $this->t('Size @number: @size', $replacements),
+        '#suffix' => '</div>',
+      ];
+    }
 
     $render['link'] = [
       '#type' => 'link',
