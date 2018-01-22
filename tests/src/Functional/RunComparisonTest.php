@@ -78,6 +78,7 @@ class RunComparisonTest extends BrowserTestBase {
     $run2->save();
 
     $data = [
+      'name' => 'Really special comparison',
       'run1' => $run1->id(),
       'run2' => $run2->id(),
       'strip_type' => '',
@@ -118,6 +119,7 @@ class RunComparisonTest extends BrowserTestBase {
     $this->drupalLogin($this->authorizedAdminUser);
     $this->drupalGet("admin/config/system/web-page-archive/compare/{$comparison->id()}");
 
+    $assert->pageTextContains('Really special comparison');
     $assert->pageTextContains('Operator');
     $assert->pageTextContains('URL');
     $assert->pageTextContains('Exists in Run #1?');
