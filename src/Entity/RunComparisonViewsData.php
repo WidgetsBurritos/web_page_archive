@@ -15,6 +15,9 @@ class RunComparisonViewsData extends EntityViewsData {
   public function getViewsData() {
     $data = parent::getViewsData();
 
+    // Force ID field to use custom argument.
+    $data['wpa_run_comparison']['id']['argument']['id'] = 'wpa_cid';
+
     // Setup run relationships.
     $data['wpa_run_comparison']['run1']['relationship']['id'] = 'standard';
     $data['wpa_run_comparison']['run1']['relationship']['base'] = 'web_page_archive_run_revision';
