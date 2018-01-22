@@ -75,7 +75,7 @@ class VarianceCompareResponse extends CompareResponseBase {
         'class' => ['use-ajax', 'button', 'button--small', 'button--primary'],
         'data-dialog-type' => 'modal',
         // TODO: Pull this value from config?
-        'data-dialog-options' => Json::encode(['width' => 1024]),
+        'data-dialog-options' => Json::encode(['width' => 1280]),
       ],
     ];
 

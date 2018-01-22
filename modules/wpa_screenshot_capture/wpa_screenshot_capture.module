@@ -23,6 +23,6 @@ function wpa_screenshot_capture_theme($existing, $type, $theme, $path) {
  */
 function wpa_screenshot_capture_views_pre_render(ViewExecutable $view) {
   if (isset($view) && ($view->storage->id() == 'web_page_archive_run_comparison_summary')) {
-    $view->element['#attached']['library'][] = 'wpa_screenshot_capture/before-after';
+    $view->element['#attached']['library'][] = 'wpa_screenshot_capture/wpa-slider';
   }
 }

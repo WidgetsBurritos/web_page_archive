@@ -15,4 +15,5 @@ wpa-slider:
   js:
     js/wpa-slider.js: {}
   dependencies:
+    - core/jquery.once
     - wpa_screenshot_capture/before-after

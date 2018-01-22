@@ -58,7 +58,7 @@ class HtmlCaptureResponse extends UriCaptureResponse {
         'class' => ['use-ajax'],
         'data-dialog-type' => 'modal',
         // TODO: Pull this value from config?
-        'data-dialog-options' => Json::encode(['width' => 1024]),
+        'data-dialog-options' => Json::encode(['width' => 1280]),
       ],
     ];
 
