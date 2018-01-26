@@ -1,0 +1,4 @@
+services:
+  plugin.manager.wpa_image_comparison_utility:
+    class: Drupal\wpa_screenshot_capture\Plugin\ImageComparisonUtilityManager
+    parent: default_plugin_manager
