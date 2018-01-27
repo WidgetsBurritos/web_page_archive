@@ -20,6 +20,26 @@ web_page_archive.settings:
         file_cleanup:
           type: integer
           label: 'File Cleanup'
+    comparison:
+      type: mapping
+      mapping:
+        run1:
+          type: integer
+          label: 'Run ID #1'
+        run2:
+          type: integer
+          label: 'Run ID #2'
+        strip_type:
+          type: string
+          label: 'Strip Type'
+        strip_patterns:
+          type: string
+          label: 'Strip Patterns'
+        comparison_utilities:
+          type: sequence
+          label: 'Comparison Utilities'
+          sequence:
+            type: web_page_archive.comparison_utility_settings.[%key]
     defaults:
       type: mapping
       mapping:

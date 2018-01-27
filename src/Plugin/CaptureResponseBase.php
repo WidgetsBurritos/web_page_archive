@@ -147,7 +147,7 @@ abstract class CaptureResponseBase implements CaptureResponseInterface {
   /**
    * Performs a comparison two responses.
    */
-  public static function compare(CaptureResponseInterface $a, CaptureResponseInterface $b) {
+  public static function compare(CaptureResponseInterface $a, CaptureResponseInterface $b, array $capture_utilities) {
     // We should warn if this method is not overridden. This will allow for
     // graceful handling of any existing capture responses. In next major
     // release, this should get converted to an abstract method.

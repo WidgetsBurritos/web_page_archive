@@ -14,6 +14,15 @@ use Drupal\wpa_screenshot_capture\Plugin\CompareResponse\ScreenshotVarianceCompa
 class ScreenshotVarianceCompareResponseTest extends EntityStorageTestBase {
 
   /**
+   * Modules to enable.
+   *
+   * @var array
+   */
+  public static $modules = [
+    'wpa_screenshot_capture',
+  ];
+
+  /**
    * Tests ScreenshotVarianceCompareResponse::renderable().
    */
   public function testPreviewMode() {
@@ -52,6 +61,7 @@ class ScreenshotVarianceCompareResponseTest extends EntityStorageTestBase {
     // Get run comparison.
     $strip_patterns = ['www.', 'staging.'];
     $run_comparison = $this->getRunComparisonEntity('Compare job', 'My run entity', 2, 'string', $strip_patterns);
+    $run_comparison->set('comparison_utilities', serialize(['wpa_screenshot_capture_file_size_compare' => 'wpa_screenshot_capture_file_size_compare']));
 
     // Setup run capture data.
     $run1 = $run_comparison->getRun1();
@@ -103,14 +113,15 @@ class ScreenshotVarianceCompareResponseTest extends EntityStorageTestBase {
         'has_left' => '1',
         'has_right' => '1',
         'url' => 'https://drupal.org',
-        'variance' => 0.6,
       ],
     ];
     $this->assertArraySubset($expected, $results);
 
     // Unserialize results to get compare response.
     $unserialized = unserialize($results[1]['results']);
-    $response = $unserialized['compare_response'];
+    $response_collection = $unserialized['compare_response'];
+    $responses = $response_collection->getResponses();
+    $this->assertEquals(0.6, $responses[0]->getVariance());
 
     // Evaluate render array.
     $options = [
@@ -120,19 +131,21 @@ class ScreenshotVarianceCompareResponseTest extends EntityStorageTestBase {
     ];;
 
     $expected = [
-      '#theme' => 'wpa_screenshot_compare',
-      '#left' => [
-        '#theme' => 'image_style',
-        '#style_name' => 'web_page_archive_full',
-        '#uri' => __DIR__ . '/../../fixtures/drupal-org-1.png',
-      ],
-      '#right' => [
-        '#theme' => 'image_style',
-        '#style_name' => 'web_page_archive_full',
-        '#uri' => __DIR__ . '/../../fixtures/drupal-org-2.png',
+      [
+        '#theme' => 'wpa_screenshot_compare',
+        '#left' => [
+          '#theme' => 'image_style',
+          '#style_name' => 'web_page_archive_full',
+          '#uri' => __DIR__ . '/../../fixtures/drupal-org-1.png',
+        ],
+        '#right' => [
+          '#theme' => 'image_style',
+          '#style_name' => 'web_page_archive_full',
+          '#uri' => __DIR__ . '/../../fixtures/drupal-org-2.png',
+        ],
       ],
     ];
-    $this->assertArraySubset($expected, $response->renderable($options));
+    $this->assertArraySubset($expected, $response_collection->renderable($options));
   }
 
   /**

@@ -2,6 +2,9 @@ services:
   plugin.manager.capture_utility:
     class: Drupal\web_page_archive\Plugin\CaptureUtilityManager
     parent: default_plugin_manager
+  plugin.manager.comparison_utility:
+    class: Drupal\web_page_archive\Plugin\ComparisonUtilityManager
+    parent: default_plugin_manager
   web_page_archive:
     class: Drupal\web_page_archive\ParamConverter\WebPageArchiveParamConverter
     tags:

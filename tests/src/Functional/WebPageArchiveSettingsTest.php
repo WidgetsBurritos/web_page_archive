@@ -51,6 +51,7 @@ class WebPageArchiveSettingsTest extends BrowserTestBase {
   public function testSettingsExistAndHaveDefaultValues() {
     $assert = $this->assertSession();
     $this->drupalLogin($this->authorizedAdminUser);
+    $strip_patterns = implode(PHP_EOL, ['www.', 'staging.']);
 
     // Ensure settings link is exposed in UI.
     $this->drupalGet('admin/config/system/web-page-archive');
@@ -69,6 +70,12 @@ class WebPageArchiveSettingsTest extends BrowserTestBase {
     $this->assertFieldByName('defaults[user_agent]', 'WPA');
     $this->assertFieldByName('defaults[use_cron]', 1);
     $this->assertFieldByName('defaults[use_robots]', 1);
+    $this->assertFieldByName('comparison[run1]', '');
+    $this->assertFieldByName('comparison[run2]', '');
+    $this->assertFieldByName('comparison[strip_type]', '');
+    $this->assertFieldByName('comparison[strip_patterns]', '');
+    $this->assertNoFieldChecked('comparison[comparison_utilities][wpa_screenshot_capture_file_size_compare]');
+    $this->assertNoFieldChecked('comparison[comparison_utilities][wpa_screenshot_capture_imagemagick_compare]');
 
     // Attempt to set defaults.
     $this->drupalPostForm(
@@ -84,6 +91,12 @@ class WebPageArchiveSettingsTest extends BrowserTestBase {
         'defaults[url_type]' => 'sitemap',
         'defaults[user_agent]' => 'NinjaBot',
         'defaults[use_robots]' => 0,
+        'comparison[run1]' => 1,
+        'comparison[run2]' => 1,
+        'comparison[strip_type]' => 'string',
+        'comparison[strip_patterns]' => $strip_patterns,
+        'comparison[comparison_utilities][wpa_screenshot_capture_file_size_compare]' => 'wpa_screenshot_capture_file_size_compare',
+        'comparison[comparison_utilities][wpa_screenshot_capture_imagemagick_compare]' => 'wpa_screenshot_capture_imagemagick_compare',
       ],
       t('Save configuration')
     );
@@ -99,6 +112,12 @@ class WebPageArchiveSettingsTest extends BrowserTestBase {
     $this->assertFieldByName('defaults[url_type]', 'sitemap');
     $this->assertFieldByName('defaults[user_agent]', 'NinjaBot');
     $this->assertFieldByName('defaults[use_robots]', 0);
+    $this->assertFieldByName('comparison[run1]', '1');
+    $this->assertFieldByName('comparison[run2]', '1');
+    $this->assertFieldByName('comparison[strip_type]', 'string');
+    $this->assertFieldByName('comparison[strip_patterns]', $strip_patterns);
+    $this->assertFieldChecked('comparison[comparison_utilities][wpa_screenshot_capture_file_size_compare]');
+    $this->assertFieldChecked('comparison[comparison_utilities][wpa_screenshot_capture_imagemagick_compare]');
 
     // Ensure default values made it into the add form.
     $this->drupalGet('admin/config/system/web-page-archive/add');
@@ -108,6 +127,15 @@ class WebPageArchiveSettingsTest extends BrowserTestBase {
     $this->assertFieldByName('url_type', 'sitemap');
     $this->assertFieldByName('user_agent', 'NinjaBot');
     $this->assertFieldByName('use_robots', 0);
+
+    // Ensure default values made it into the compare form.
+    $this->drupalGet('admin/config/system/web-page-archive/compare');
+    $this->assertFieldByName('run1', '1');
+    $this->assertFieldByName('run2', '1');
+    $this->assertFieldByName('strip_type', 'string');
+    $this->assertFieldByName('strip_patterns', $strip_patterns);
+    $this->assertFieldChecked('comparison_utilities[wpa_screenshot_capture_file_size_compare]');
+    $this->assertFieldChecked('comparison_utilities[wpa_screenshot_capture_imagemagick_compare]');
   }
 
   /**

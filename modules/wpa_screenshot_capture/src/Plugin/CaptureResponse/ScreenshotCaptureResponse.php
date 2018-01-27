@@ -7,7 +7,6 @@ use Drupal\Component\Serialization\Json;
 use Drupal\Component\Utility\Html;
 use Drupal\web_page_archive\Plugin\CaptureResponseInterface;
 use Drupal\web_page_archive\Plugin\CaptureResponse\UriCaptureResponse;
-use Drupal\wpa_screenshot_capture\Plugin\CompareResponse\ScreenshotVarianceCompareResponse;
 
 /**
  * URI capture response.
@@ -96,14 +95,16 @@ class ScreenshotCaptureResponse extends UriCaptureResponse {
   /**
    * {@inheritdoc}
    */
-  public static function compare(CaptureResponseInterface $a, CaptureResponseInterface $b) {
-    $size1 = $a->getCaptureSize();
-    $size2 = $b->getCaptureSize();
-    $variance = 100 * abs($size2 - $size1) / $size1;
-    $response = new ScreenshotVarianceCompareResponse($variance);
-    $response->setFile1Size($size1);
-    $response->setFile2Size($size2);
-    return $response;
+  public static function compare(CaptureResponseInterface $a, CaptureResponseInterface $b, array $compare_utilities) {
+    $comparison_utility_manager = \Drupal::service('plugin.manager.comparison_utility');
+    $response_factory = \Drupal::service('web_page_archive.compare.response');
+    $response_collection = $response_factory->getCompareResponseCollection();
+    foreach ($compare_utilities as $compare_utility) {
+      $instance = $comparison_utility_manager->createInstance($compare_utility);
+      $comparison_response = $instance->compare($a, $b);
+      $response_collection->addResponse($comparison_response);
+    }
+    return $response_collection;
   }
 
 }

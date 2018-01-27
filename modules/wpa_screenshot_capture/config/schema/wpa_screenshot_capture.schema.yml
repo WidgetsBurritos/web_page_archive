@@ -58,3 +58,12 @@ web_page_archive.wpa_screenshot_capture.settings:
         delay:
           type: integer
           label: 'Delay'
+
+
+web_page_archive.comparison_utility_settings.wpa_screenshot_capture_file_size_compare:
+  type: string
+  label: 'File Size'
+
+web_page_archive.comparison_utility_settings.wpa_screenshot_capture_imagemagick_compare:
+  type: string
+  label: ImageMagick
