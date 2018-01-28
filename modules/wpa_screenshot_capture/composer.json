@@ -2,7 +2,7 @@
     "name": "drupal/wpa_screenshot_capture",
     "description": "Provides a screenshot capture utility based on PhantomJS.",
     "type": "drupal-module",
-    "license": "GPL-2.0+",
+    "license": "GPL-3.0-or-later",
     "homepage": "http://drupal.org/project/web_page_archive",
     "authors": [
         {

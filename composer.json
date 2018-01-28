@@ -2,7 +2,7 @@
     "name": "drupal/web_page_archive",
     "description": "Provides web page data archiving and reporting functionality.",
     "type": "drupal-module",
-    "license": "GPL-2.0+",
+    "license": "GPL-3.0-or-later",
     "homepage": "http://drupal.org/project/web_page_archive",
     "authors": [
         {
