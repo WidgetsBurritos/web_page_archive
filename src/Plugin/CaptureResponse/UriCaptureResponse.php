@@ -82,7 +82,7 @@ class UriCaptureResponse extends CaptureResponseBase {
   /**
    * {@inheritdoc}
    */
-  public static function compare(CaptureResponseInterface $a, CaptureResponseInterface $b) {
+  public static function compare(CaptureResponseInterface $a, CaptureResponseInterface $b, array $capture_utilities) {
     $response_factory = \Drupal::service('web_page_archive.compare.response');
     $a_content = explode(PHP_EOL, $a->getContent());
     $b_content = explode(PHP_EOL, $b->getContent());

@@ -2,12 +2,14 @@
 
 namespace Drupal\web_page_archive\Form;
 
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Component\Uuid\Php;
 use Drupal\web_page_archive\Controller\RunComparisonController;
 use Drupal\web_page_archive\Entity\Sql\WebPageArchiveRunStorageInterface;
 use Drupal\web_page_archive\Entity\Sql\RunComparisonStorageInterface;
+use Drupal\web_page_archive\Plugin\ComparisonUtilityManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -15,9 +17,11 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class RunComparisonForm extends FormBase {
 
-  private $runStorage;
-  private $runComparisonStorage;
-  private $uuid;
+  protected $comparisonUtilityManager;
+  protected $configFactory;
+  protected $runStorage;
+  protected $runComparisonStorage;
+  protected $uuid;
 
   /**
    * Constructs a base class for web page archive add and edit forms.
@@ -28,11 +32,17 @@ class RunComparisonForm extends FormBase {
    *   The run comparison entity storage service.
    * @param \Drupal\Component\Uuid\Php $uuid
    *   The UUID generator service.
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
+   *   The config factory service.
+   * @param \Drupal\web_page_archive\Plugin\ComparisonUtilityManager $comparison_utility_manager
+   *   The comparison utility manager service.
    */
-  public function __construct(WebPageArchiveRunStorageInterface $run_storage, RunComparisonStorageInterface $run_comparison_storage, Php $uuid) {
+  public function __construct(WebPageArchiveRunStorageInterface $run_storage, RunComparisonStorageInterface $run_comparison_storage, Php $uuid, ConfigFactoryInterface $config_factory, ComparisonUtilityManager $comparison_utility_manager) {
     $this->runStorage = $run_storage;
     $this->runComparisonStorage = $run_comparison_storage;
     $this->uuid = $uuid;
+    $this->configFactory = $config_factory;
+    $this->comparisonUtilityManager = $comparison_utility_manager;
   }
 
   /**
@@ -43,7 +53,9 @@ class RunComparisonForm extends FormBase {
     return new static(
       $entity_type_manager->getStorage('web_page_archive_run'),
       $entity_type_manager->getStorage('wpa_run_comparison'),
-      $container->get('uuid')
+      $container->get('uuid'),
+      $container->get('config.factory'),
+      $container->get('plugin.manager.comparison_utility')
     );
   }
 
@@ -58,6 +70,7 @@ class RunComparisonForm extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
+    $settings = $this->configFactory->getEditable('web_page_archive.settings');
     $form['actions'] = [
       '#type' => 'actions',
       'submit' => [
@@ -73,6 +86,7 @@ class RunComparisonForm extends FormBase {
       '#description' => $this->t('Specify the revision ID for the run you wish to use as your baseline.'),
       '#autocomplete_route_name' => 'web_page_archive.autocomplete.runs',
       '#required' => TRUE,
+      '#default_value' => $settings->get('comparison.run1'),
     ];
     $form['run2'] = [
       '#type' => 'textfield',
@@ -80,6 +94,7 @@ class RunComparisonForm extends FormBase {
       '#description' => $this->t('Specify the revision ID for the run you wish to compare against.'),
       '#autocomplete_route_name' => 'web_page_archive.autocomplete.runs',
       '#required' => TRUE,
+      '#default_value' => $settings->get('comparison.run2'),
     ];
     $form['strip_type'] = [
       '#type' => 'select',
@@ -90,6 +105,7 @@ class RunComparisonForm extends FormBase {
         'regex' => $this->t('RegEx-based'),
       ],
       '#description' => $this->t('If comparing across hosts (e.g. www.mysite.com vs staging.mysite.com), you can strip portions of the URL or comparison key off.'),
+      '#default_value' => $settings->get('comparison.strip_type'),
     ];
     $form['strip_patterns'] = [
       '#type' => 'textarea',
@@ -105,8 +121,23 @@ class RunComparisonForm extends FormBase {
           ['select[name="strip_type"]' => ['value' => 'regex']],
         ],
       ],
+      '#default_value' => $settings->get('comparison.strip_patterns'),
     ];
 
+    $comparison_utilities = $this->comparisonUtilityManager->getDefinitions();
+    $options = [];
+    foreach ($comparison_utilities as $key => $comparison_utility) {
+      $options[$key] = $comparison_utility['label'];
+    }
+    if (!empty($options)) {
+      $form['comparison_utilities'] = [
+        '#type' => 'checkboxes',
+        '#title' => $this->t('Comparison Utilities'),
+        '#description' => $this->t('Select which comparison utilities you want to use. If a particular comparison utility is not applicable to a specific capture it will be skipped.'),
+        '#options' => $options,
+        '#default_value' => $settings->get('comparison.comparison_utilities'),
+      ];
+    }
     return $form;
   }
 
@@ -137,6 +168,7 @@ class RunComparisonForm extends FormBase {
     ];
     $strip_type = $form_state->getValue('strip_type');
     $strip_patterns = !empty($strip_type) ? array_map('trim', explode(PHP_EOL, trim($form_state->getValue('strip_patterns')))) : [];
+    $comparison_utilities = $form_state->getValue('comparison_utilities');
 
     $data = [
       'user_id' => \Drupal::currentUser()->id(),
@@ -147,7 +179,9 @@ class RunComparisonForm extends FormBase {
       'status' => 1,
       'strip_type' => $strip_type,
       'strip_patterns' => serialize($strip_patterns),
+      'comparison_utilities' => serialize($comparison_utilities),
     ];
+
     $run_comparison = $this->runComparisonStorage->create($data);
     $run_comparison->save();
 

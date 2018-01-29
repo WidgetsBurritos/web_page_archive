@@ -44,11 +44,14 @@ class CompareQueueWorker extends QueueWorkerBase {
     $data['delta1'] = isset($data['runs'][$data['left_id']]) ? array_keys($data['runs'][$data['left_id']])[0] : 0;
     $data['delta2'] = isset($data['runs'][$data['right_id']]) ? array_keys($data['runs'][$data['right_id']])[0] : 0;
 
+    // Initialize comparison utilities array if it doesn't exist.
+    $comparison_utilities = $data['run_comparison']->getComparisonUtilities();
+
     // If has both left and right, we need to perform a comparison.
     if ($data['has_left'] && $data['has_right']) {
       $left_response = reset($data['runs'][$data['left_id']])['capture_response'];
       $right_response = reset($data['runs'][$data['right_id']])['capture_response'];
-      $response = call_user_func([$data['compare_class'], 'compare'], $left_response, $right_response);
+      $response = call_user_func([$data['compare_class'], 'compare'], $left_response, $right_response, $comparison_utilities);
     }
     elseif ($data['has_left']) {
       $response = $response_factory->getNoVariantCompareResponse()->markLeft();

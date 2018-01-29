@@ -190,6 +190,14 @@ class RunComparison extends RevisionableContentEntityBase implements RunComparis
   /**
    * {@inheritdoc}
    */
+  public function getComparisonUtilities() : array {
+    $first = $this->get('comparison_utilities')->first();
+    return isset($first) ? $first->getValue() : [];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getRunEntities() {
     return [$this->getRun1(), $this->getRun2()];
   }
@@ -285,6 +293,11 @@ class RunComparison extends RevisionableContentEntityBase implements RunComparis
     $fields['strip_patterns'] = BaseFieldDefinition::create('map')
       ->setLabel(t('Strip patterns'))
       ->setDescription(t('Patterns to strip from urls/comparison keys.'))
+      ->setRevisionable(FALSE);
+
+    $fields['comparison_utilities'] = BaseFieldDefinition::create('map')
+      ->setLabel(t('Comparison utilities'))
+      ->setDescription(t('List of comparison utilities to use.'))
       ->setRevisionable(FALSE);
 
     $fields['created'] = BaseFieldDefinition::create('created')

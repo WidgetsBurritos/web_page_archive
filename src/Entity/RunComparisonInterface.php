@@ -139,6 +139,14 @@ interface RunComparisonInterface extends RevisionableInterface, RevisionLogInter
   public function getStripPatterns();
 
   /**
+   * Retrieves list of comparison utilities.
+   *
+   * @return array
+   *   Result is hash map where the value and key are the same.
+   */
+  public function getComparisonUtilities();
+
+  /**
    * Retrieves both run entities as an array.
    *
    * @return RunComparisonInterface[]

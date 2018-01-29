@@ -3,6 +3,7 @@
 namespace Drupal\web_page_archive\Plugin;
 
 use Drupal\web_page_archive\Plugin\CompareResponse\EmptyCompareResponse;
+use Drupal\web_page_archive\Plugin\CompareResponse\CompareResponseCollection;
 use Drupal\web_page_archive\Plugin\CompareResponse\NoVariantCompareResponse;
 use Drupal\web_page_archive\Plugin\CompareResponse\SameCompareResponse;
 use Drupal\web_page_archive\Plugin\CompareResponse\VarianceCompareResponse;
@@ -50,6 +51,16 @@ class CompareResponseFactory {
    */
   public function getVarianceCompareResponse($variance) {
     return new VarianceCompareResponse($variance);
+  }
+
+  /**
+   * Retrieves a multiple compare response.
+   *
+   * @return \Drupal\web_page_archive\Plugin\CompareResponseInterface
+   *   A CompareResponseCollection object.
+   */
+  public function getCompareResponseCollection() {
+    return new CompareResponseCollection();
   }
 
 }
