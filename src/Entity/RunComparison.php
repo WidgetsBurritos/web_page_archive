@@ -213,6 +213,13 @@ class RunComparison extends RevisionableContentEntityBase implements RunComparis
   /**
    * {@inheritdoc}
    */
+  public function getResultAtIndex($index) {
+    return \Drupal::entityTypeManager()->getStorage('wpa_run_comparison')->getResultAtIndex($index);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getResults() {
     return \Drupal::entityTypeManager()->getStorage('wpa_run_comparison')->getResults($this);
   }

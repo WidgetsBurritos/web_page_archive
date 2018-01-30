@@ -17,6 +17,13 @@ class ImageMagickScreenshotVarianceCompareResponse extends ScreenshotVarianceCom
   /**
    * {@inheritdoc}
    */
+  public function getHumanReadableName() {
+    return $this->t('Pixel');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function renderPreview(array $options = []) {
     // TODO: Implement this later.
     return ['#markup' => $this->t('[TODO: ImageMagick]')];
