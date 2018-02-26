@@ -37,11 +37,11 @@ use GuzzleHttp\HandlerStack;
  *     "label" = "label"
  *   },
  *   links = {
- *     "canonical" = "/admin/config/system/web-page-archive/{web_page_archive}",
- *     "add-form" = "/admin/config/system/web-page-archive/add",
- *     "edit-form" = "/admin/config/system/web-page-archive/{web_page_archive}/edit",
- *     "delete-form" = "/admin/config/system/web-page-archive/{web_page_archive}/delete",
- *     "queue-form" = "/admin/config/system/web-page-archive/{web_page_archive}/queue",
+ *     "canonical" = "/admin/config/system/web-page-archive/jobs/{web_page_archive}",
+ *     "add-form" = "/admin/config/system/web-page-archive/jobs/add",
+ *     "edit-form" = "/admin/config/system/web-page-archive/jobs/{web_page_archive}/edit",
+ *     "delete-form" = "/admin/config/system/web-page-archive/jobs/{web_page_archive}/delete",
+ *     "queue-form" = "/admin/config/system/web-page-archive/jobs/{web_page_archive}/queue",
  *     "collection" = "/admin/config/system/web-page-archive"
  *   },
  *   config_export = {

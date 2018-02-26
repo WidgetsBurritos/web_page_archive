@@ -79,9 +79,9 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
 
     // Verify list exists with add button.
     $this->drupalGet('admin/config/system/web-page-archive');
-    $this->assertLinkByHref('admin/config/system/web-page-archive/add');
+    $this->assertLinkByHref('admin/config/system/web-page-archive/jobs/add');
     // Add an entity using the entity form.
-    $this->drupalGet('admin/config/system/web-page-archive/add');
+    $this->drupalGet('admin/config/system/web-page-archive/jobs/add');
     $this->drupalPostForm(
       NULL,
       [
@@ -100,7 +100,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $assert->pageTextContains('Created the Test Archive Web page archive entity.');
 
     // Verify previous values are retained.
-    $this->assertContains('admin/config/system/web-page-archive/test_archive/edit', $this->getSession()->getCurrentUrl());
+    $this->assertContains('admin/config/system/web-page-archive/jobs/test_archive/edit', $this->getSession()->getCurrentUrl());
     $this->assertFieldByName('timeout', '500');
     $this->assertFieldByName('url_type', 'url');
     $this->assertFieldByName('urls', 'http://localhost');
@@ -169,7 +169,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
 
     // Update the new entity using the entity form.
     $this->drupalPostForm(
-      'admin/config/system/web-page-archive/test_archive/edit',
+      'admin/config/system/web-page-archive/jobs/test_archive/edit',
       [
         'label' => 'Test Archiver',
         'timeout' => 250,
@@ -198,9 +198,9 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     // Verify entity view, edit, and delete buttons are present in collection.
     // This is to ensure the entity config is correct for user operations.
     $this->drupalGet('admin/config/system/web-page-archive');
-    $this->assertLinkByHref('admin/config/system/web-page-archive/test_archive');
-    $this->assertLinkByHref('admin/config/system/web-page-archive/test_archive/edit');
-    $this->assertLinkByHref('admin/config/system/web-page-archive/test_archive/delete');
+    $this->assertLinkByHref('admin/config/system/web-page-archive/jobs/test_archive');
+    $this->assertLinkByHref('admin/config/system/web-page-archive/jobs/test_archive/edit');
+    $this->assertLinkByHref('admin/config/system/web-page-archive/jobs/test_archive/delete');
     $assert->pageTextContains(t('Never'));
     $assert->pageTextNotContains(t('-01-01 @ 9:00am'));
   }
@@ -259,7 +259,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
 
     // Login.
     $this->drupalLogin($this->authorizedAdminUser);
-    $this->drupalGet('admin/config/system/web-page-archive/programmatic_archive/edit');
+    $this->drupalGet('admin/config/system/web-page-archive/jobs/programmatic_archive/edit');
     $this->assertResponse(Response::HTTP_OK);
     $this->assertFieldByName('label', 'Programmatic Archive');
     $this->assertFieldByName('timeout', '500');
@@ -271,7 +271,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     // Verify run entity was created.
     $this->drupalGet('admin/config/system/web-page-archive');
     $assert->pageTextContains('Programmatic Archive');
-    $this->drupalGet('admin/config/system/web-page-archive/programmatic_archive');
+    $this->drupalGet('admin/config/system/web-page-archive/jobs/programmatic_archive');
     $assert->pageTextContains('Programmatic Archive');
   }
 
@@ -301,7 +301,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
 
     $permitted_urls = [
       'admin/config/system/web-page-archive',
-      'admin/config/system/web-page-archive/read_only_archive',
+      'admin/config/system/web-page-archive/jobs/read_only_archive',
     ];
     foreach ($permitted_urls as $url) {
       $this->drupalGet($url);
@@ -309,10 +309,10 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     }
 
     $forbidden_urls = [
-      'admin/config/system/web-page-archive/add',
-      'admin/config/system/web-page-archive/read_only_archive/edit',
-      'admin/config/system/web-page-archive/read_only_archive/delete',
-      'admin/config/system/web-page-archive/read_only_archive/queue',
+      'admin/config/system/web-page-archive/jobs/add',
+      'admin/config/system/web-page-archive/jobs/read_only_archive/edit',
+      'admin/config/system/web-page-archive/jobs/read_only_archive/delete',
+      'admin/config/system/web-page-archive/jobs/read_only_archive/queue',
     ];
     foreach ($forbidden_urls as $url) {
       $this->drupalGet($url);
@@ -346,11 +346,11 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
 
     $urls = [
       'admin/config/system/web-page-archive',
-      'admin/config/system/web-page-archive/add',
-      'admin/config/system/web-page-archive/test_archive',
-      'admin/config/system/web-page-archive/test_archive/edit',
-      'admin/config/system/web-page-archive/test_archive/delete',
-      'admin/config/system/web-page-archive/test_archive/queue',
+      'admin/config/system/web-page-archive/jobs/add',
+      'admin/config/system/web-page-archive/jobs/test_archive',
+      'admin/config/system/web-page-archive/jobs/test_archive/edit',
+      'admin/config/system/web-page-archive/jobs/test_archive/delete',
+      'admin/config/system/web-page-archive/jobs/test_archive/queue',
     ];
     foreach ($urls as $url) {
       $this->drupalGet($url);
@@ -441,10 +441,10 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
 
     // Verify list exists with add button.
     $this->drupalGet('admin/config/system/web-page-archive');
-    $this->assertLinkByHref('admin/config/system/web-page-archive/add');
+    $this->assertLinkByHref('admin/config/system/web-page-archive/jobs/add');
 
     // Add an entity using the entity form.
-    $this->drupalGet('admin/config/system/web-page-archive/add');
+    $this->drupalGet('admin/config/system/web-page-archive/jobs/add');
     $this->drupalPostForm(
       NULL,
       [
@@ -475,7 +475,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     web_page_archive_cron();
 
     // Check canonical view to see if run occurred.
-    $this->drupalGet('admin/config/system/web-page-archive/localhost');
+    $this->drupalGet('admin/config/system/web-page-archive/jobs/localhost');
     $assert->pageTextContains('HTML capture utility');
 
     // Switched to detailed view.
@@ -497,7 +497,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $this->assertTrue(file_exists($file_path));
 
     // Delete the config entity.
-    $this->drupalGet('admin/config/system/web-page-archive/localhost/delete');
+    $this->drupalGet('admin/config/system/web-page-archive/jobs/localhost/delete');
     $this->drupalPostForm(NULL, [], t('Delete'));
     $assert->pageTextContains(t('content web_page_archive: deleted localhost'));
     $assert->pageTextContains(t('There is no Web Page Archive yet.'));

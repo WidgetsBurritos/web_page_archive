@@ -120,7 +120,7 @@ class WebPageArchiveSettingsTest extends BrowserTestBase {
     $this->assertFieldChecked('comparison[comparison_utilities][wpa_screenshot_capture_imagemagick_compare]');
 
     // Ensure default values made it into the add form.
-    $this->drupalGet('admin/config/system/web-page-archive/add');
+    $this->drupalGet('admin/config/system/web-page-archive/jobs/add');
     $this->assertFieldByName('label', 'New default label');
     $this->assertFieldByName('cron_schedule', '30 * * * *');
     $this->assertFieldByName('timeout', 1500);
@@ -216,12 +216,12 @@ class WebPageArchiveSettingsTest extends BrowserTestBase {
     $wpa->save();
 
     // Add a HTML capture utility to the config entity and test defaults.
-    $this->drupalGet('admin/config/system/web-page-archive/programmatic_archive/edit');
+    $this->drupalGet('admin/config/system/web-page-archive/jobs/programmatic_archive/edit');
     $this->drupalPostForm(NULL, ['new' => 'wpa_html_capture'], t('Add'));
     $this->assertNoFieldChecked('data[capture]');
 
     // Add a screenshot capture utilitiy to the config entity and test defaults.
-    $this->drupalGet('admin/config/system/web-page-archive/programmatic_archive/edit');
+    $this->drupalGet('admin/config/system/web-page-archive/jobs/programmatic_archive/edit');
     $this->drupalPostForm(NULL, ['new' => 'wpa_screenshot_capture'], t('Add'));
     $this->assertFieldByName('data[browser]', 'phantomjs');
     $this->assertFieldByName('data[background_color]', '#abc123');
@@ -230,7 +230,7 @@ class WebPageArchiveSettingsTest extends BrowserTestBase {
     $this->assertFieldByName('data[width]', 1400);
 
     // Add a screenshot capture utilitiy to the config entity and test defaults.
-    $this->drupalGet('admin/config/system/web-page-archive/programmatic_archive/edit');
+    $this->drupalGet('admin/config/system/web-page-archive/jobs/programmatic_archive/edit');
     $this->drupalPostForm(NULL, ['new' => 'wpa_skeleton_capture'], t('Add'));
     $this->assertFieldByName('data[width]', 480);
 
