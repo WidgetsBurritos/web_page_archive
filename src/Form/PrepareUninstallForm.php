@@ -4,11 +4,14 @@ namespace Drupal\web_page_archive\Form;
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Messenger\MessengerTrait;
 
 /**
  * Removes fields and data used by web_page_archive.
  */
 class PrepareUninstallForm extends FormBase {
+
+  use MessengerTrait;
 
   /**
    * {@inheritdoc}
@@ -53,7 +56,7 @@ class PrepareUninstallForm extends FormBase {
     ];
     batch_set($batch);
 
-    drupal_set_message($this->t('web_page_archive data has been deleted.'));
+    $this->messenger()->addStatus($this->t('web_page_archive data has been deleted.'));
   }
 
 }

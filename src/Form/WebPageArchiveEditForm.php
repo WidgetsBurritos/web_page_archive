@@ -227,7 +227,7 @@ class WebPageArchiveEditForm extends WebPageArchiveFormBase {
       $capture_utility_id = $this->entity->addCaptureUtility($capture_utility);
       $this->entity->save();
       if (!empty($capture_utility_id)) {
-        drupal_set_message($this->t('The capture utility was successfully applied.'));
+        $this->messenger()->addStatus($this->t('The capture utility was successfully applied.'));
       }
     }
   }
@@ -250,7 +250,7 @@ class WebPageArchiveEditForm extends WebPageArchiveFormBase {
    */
   public function save(array $form, FormStateInterface $form_state) {
     parent::save($form, $form_state);
-    drupal_set_message($this->t('Saved the %label Web page archive entity.', [
+    $this->messenger()->addStatus($this->t('Saved the %label Web page archive entity.', [
       '%label' => $this->entity->label(),
     ]));
   }

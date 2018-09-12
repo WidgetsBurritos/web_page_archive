@@ -55,13 +55,13 @@ function wpa_screenshot_capture_update_8002() {
 function wpa_screenshot_capture_update_8003() {
   if (class_exists('\\PhantomInstaller\\PhantomBinary')) {
     $phantom_path = PhantomBinary::getDir() . '/phantomjs';
-    \drupal_set_message(t('Setting phantomjs path to "@path". To use a different version goto /admin/config/system/web-page-archive/settings to change the setting.', ['@path' => $phantom_path]));
+    \Drupal::messenger()->addStatus(t('Setting phantomjs path to "@path". To use a different version goto /admin/config/system/web-page-archive/settings to change the setting.', ['@path' => $phantom_path]));
     $config = \Drupal::configFactory()->getEditable('web_page_archive.wpa_screenshot_capture.settings');
     $config->set('system.phantomjs_path', $phantom_path);
     $config->save();
   }
   else {
-    \drupal_set_message('No previously installed version of phantomjs could be found. To set this you will need to go to /admin/config/system/web-page-archive/settings in your browser.');
+    \Drupal::messenger()->addStatus('No previously installed version of phantomjs could be found. To set this you will need to go to /admin/config/system/web-page-archive/settings in your browser.');
   }
 }
 

@@ -50,10 +50,10 @@ function drush_web_page_archive_capture($config_entity = NULL) {
     drush_backend_batch_process();
   }
   elseif (is_array($ids)) {
-    drupal_set_message(dt('Could not find any config entities matching "@config_entity".', ['@config_entity' => implode('|', $ids)]), 'status');
+    \Drupal::messenger()->addStatus(dt('Could not find any config entities matching "@config_entity".', ['@config_entity' => implode('|', $ids)]));
   }
   else {
-    drupal_set_message(dt('Could not find any config entities.'), 'status');
+    \Drupal::messenger()->addStatus(dt('Could not find any config entities.'));
   }
 }
 

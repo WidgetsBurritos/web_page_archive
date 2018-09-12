@@ -4,6 +4,7 @@ namespace Drupal\web_page_archive\Form;
 
 use Drupal\Core\Entity\ContentEntityDeleteForm;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Messenger\MessengerTrait;
 use Drupal\Core\Url;
 
 /**
@@ -12,6 +13,8 @@ use Drupal\Core\Url;
  * @ingroup web_page_archive
  */
 class RunComparisonDeleteForm extends ContentEntityDeleteForm {
+
+  use MessengerTrait;
 
   /**
    * {@inheritdoc}
@@ -40,7 +43,7 @@ class RunComparisonDeleteForm extends ContentEntityDeleteForm {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $this->entity->delete();
 
-    drupal_set_message($this->t('content @type: deleted @label.', [
+    $this->messenger()->addStatus($this->t('content @type: deleted @label.', [
       '@type' => $this->entity->bundle(),
       '@label' => $this->entity->label(),
     ]));

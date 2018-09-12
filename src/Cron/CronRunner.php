@@ -6,6 +6,7 @@ use Cron\CronExpression;
 use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Lock\LockBackendInterface;
+use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\State\StateInterface;
 use Drupal\web_page_archive\Controller\WebPageArchiveController;
 
@@ -43,6 +44,13 @@ class CronRunner {
   protected $configFactory;
 
   /**
+   * The Messenger service.
+   *
+   * @var \Drupal\Core\Messenger\MessengerInterface
+   */
+  protected $messenger;
+
+  /**
    * Constructs an WebPageArchiveEditForm object.
    *
    * @param \Drupal\Core\Lock\LockBackendInterface $lock
@@ -53,12 +61,15 @@ class CronRunner {
    *   The datetime time service.
    * @param \Drupal\Core\Config\ConfigFactory $config_factory
    *   The config factory service.
+   * @param \Drupal\Core\Messenger\MessengerInterface $messenger
+   *   Thee messenger service.
    */
-  public function __construct(LockBackendInterface $lock, StateInterface $state, TimeInterface $datetime_time, ConfigFactory $config_factory) {
+  public function __construct(LockBackendInterface $lock, StateInterface $state, TimeInterface $datetime_time, ConfigFactory $config_factory, MessengerInterface $messenger) {
     $this->lock = $lock;
     $this->state = $state;
     $this->time = $datetime_time;
     $this->configFactory = $config_factory;
+    $this->messenger = $messenger;
   }
 
   /**
@@ -124,10 +135,10 @@ class CronRunner {
 
     // Set messages.
     if ($success_ct > 0) {
-      \drupal_set_message(\t('Processed @count URLs.', ['@count' => $success_ct]), 'status');
+      $this->messenger->addStatus(\t('Processed @count URLs.', ['@count' => $success_ct]));
     }
     if ($fail_ct > 0) {
-      \drupal_set_message(\t('Failed to process @count URLs.', ['@count' => $success_ct]), 'error');
+      $this->messenger->addError(\t('Failed to process @count URLs.', ['@count' => $success_ct]));
     }
 
     $this->state->set("web_page_archive.next_run.{$id}", $config_entity->calculateNextRun());

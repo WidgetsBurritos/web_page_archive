@@ -7,6 +7,7 @@ use Drupal\Component\Utility\UrlHelper;
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Messenger\MessengerTrait;
 use Drupal\web_page_archive\Controller\WebPageArchiveController;
 use Drupal\web_page_archive\Parser\SitemapParser;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -15,6 +16,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Base form for web page archive add and edit forms.
  */
 abstract class WebPageArchiveFormBase extends EntityForm {
+
+  use MessengerTrait;
 
   /**
    * The entity being used by this form.

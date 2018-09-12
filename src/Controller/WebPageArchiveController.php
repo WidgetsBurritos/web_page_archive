@@ -121,7 +121,7 @@ class WebPageArchiveController extends ControllerBase {
    */
   public static function batchFinished($success, $results, $operations) {
     if ($success) {
-      drupal_set_message(t("The capture has been completed."));
+      \Drupal::messenger()->addStatus(t("The capture has been completed."));
     }
     else {
       $error_operation = reset($operations);
@@ -129,7 +129,7 @@ class WebPageArchiveController extends ControllerBase {
         '@operation' => $error_operation[0],
         '@args' => print_r($error_operation[0], TRUE),
       ];
-      drupal_set_message(t('An error occurred while processing @operation with arguments : @args', $values));
+      \Drupal::messenger()->addError(t('An error occurred while processing @operation with arguments : @args', $values));
     }
   }
 
@@ -141,7 +141,7 @@ class WebPageArchiveController extends ControllerBase {
       $urlObj = Url::fromUri('https://www.drupal.org/project/web_page_archive#installation');
       $urlObj->setOptions(['attributes' => ['target' => '_blank']]);
       $instructions_link = Link::fromTextAndUrl(t('installation instructions'), $urlObj)->toString();
-      \drupal_set_message(t('Missing mtdowling/cron-expression package. Web page archive must be installed via composer. See @instructions for more information.', ['@instructions' => $instructions_link]), 'error');
+      \Drupal::messenger()->addError(t('Missing mtdowling/cron-expression package. Web page archive must be installed via composer. See @instructions for more information.', ['@instructions' => $instructions_link]));
       return FALSE;
     }
     return TRUE;

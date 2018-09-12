@@ -182,22 +182,3 @@ class CaptureQueueWorkerTest extends UnitTestCase {
   }
 
 }
-
-/**
- * Since drupal_set_message() is unavailable we need to cheat to get it in.
- *
- * @todo Delete after https://www.drupal.org/node/2278383 is in.
- * @see https://api.drupal.org/api/drupal/core!modules!aggregator!tests!src!Unit!Plugin!AggregatorPluginSettingsBaseTest.php/8.2.x
- */
-namespace Drupal\web_page_archive\Plugin\QueueWorker;
-
-if (!function_exists('drupal_set_message')) {
-
-  /**
-   * Stubs out drupal_set_message.
-   */
-  function drupal_set_message($message) {
-    throw new \Exception($message);
-  }
-
-}

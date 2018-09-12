@@ -5,6 +5,7 @@ namespace Drupal\web_page_archive\Form;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Form\SubformState;
+use Drupal\Core\Messenger\MessengerTrait;
 use Drupal\web_page_archive\Entity\WebPageArchiveInterface;
 use Drupal\web_page_archive\Plugin\ConfigurableCaptureUtilityInterface;
 use Drupal\Component\Plugin\Exception\PluginNotFoundException;
@@ -14,6 +15,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * Provides a base form for capture utilities.
  */
 abstract class CaptureUtilityFormBase extends FormBase {
+
+  use MessengerTrait;
 
   /**
    * The web page archive.
@@ -127,7 +130,7 @@ abstract class CaptureUtilityFormBase extends FormBase {
     }
     $this->webPageArchive->save();
 
-    drupal_set_message($this->t('The capture utility was successfully applied.'));
+    $this->messenger()->addStatus($this->t('The capture utility was successfully applied.'));
     $form_state->setRedirectUrl($this->webPageArchive->urlInfo('edit-form'));
   }
 

@@ -26,7 +26,7 @@ class WebPageArchiveListBuilder extends ConfigEntityListBuilder {
     if (empty($capture_utilities)) {
       $url = Url::fromRoute('system.modules_list', [], ['fragment' => 'edit-modules-web-page-archive']);
       $link = \Drupal::l($this->t('install a capture utility module'), $url);
-      \drupal_set_message($this->t('You have installed Web Page Archive, but do not have any capture utilities installed. You will need to @install before you use this module.', ['@install' => $link]), 'warning');
+      \Drupal::messenger()->addWarning($this->t('You have installed Web Page Archive, but do not have any capture utilities installed. You will need to @install before you use this module.', ['@install' => $link]));
     }
     return parent::load();
   }
