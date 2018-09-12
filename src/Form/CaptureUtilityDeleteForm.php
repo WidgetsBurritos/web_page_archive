@@ -68,7 +68,7 @@ class CaptureUtilityDeleteForm extends ConfirmFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $this->webPageArchive->deleteCaptureUtility($this->captureUtility);
-    drupal_set_message($this->t('The capture utility %name has been deleted.', ['%name' => $this->captureUtility->label()]));
+    $this->messenger()->addStatus($this->t('The capture utility %name has been deleted.', ['%name' => $this->captureUtility->label()]));
     $form_state->setRedirectUrl($this->webPageArchive->urlInfo('edit-form'));
   }
 

@@ -4,7 +4,6 @@ namespace Drupal\web_page_archive\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Component\Utility\Tags;
-use Drupal\Component\Utility\Unicode;
 use Drupal\web_page_archive\Entity\RunComparisonInterface;
 use Drupal\web_page_archive\Entity\Sql\WebPageArchiveRunStorageInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -57,7 +56,7 @@ class RunComparisonController extends ControllerBase {
 
     if ($input = $request->query->get('q')) {
       $typed_string = Tags::explode($input);
-      $typed_string = Unicode::strtolower(array_pop($typed_string));
+      $typed_string = mb_strtolower(array_pop($typed_string));
       $count = 0;
       foreach ($revisions as $revision) {
         $label = static::generateRevisionLabel($revision->vid, $revision->name, $revision->revision_created);
@@ -243,7 +242,7 @@ class RunComparisonController extends ControllerBase {
    */
   public static function batchFinished($success, $results, $operations) {
     if ($success) {
-      \drupal_set_message(\t("The comparison has been completed."));
+      \Drupal::messenger()->addStatus(\t("The comparison has been completed."));
     }
     else {
       $error_operation = reset($operations);
@@ -251,7 +250,7 @@ class RunComparisonController extends ControllerBase {
         '@operation' => $error_operation[0],
         '@args' => print_r($error_operation[0], TRUE),
       ];
-      \drupal_set_message(\t('An error occurred while processing @operation with arguments : @args', $values));
+      \Drupal::messenger()->addError(\t('An error occurred while processing @operation with arguments : @args', $values));
     }
   }
 

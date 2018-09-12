@@ -34,7 +34,7 @@ env:
 
     # The environment to use, supported are: drupal-7, drupal-8
     - DRUPAL_TI_ENVIRONMENT="drupal-8"
-    - DRUPAL_TI_CORE_BRANCH="8.4.x"
+    - DRUPAL_TI_CORE_BRANCH="8.6.x"
 
     # The installation profile to use:
     #- DRUPAL_TI_INSTALL_PROFILE="testing"
@@ -97,7 +97,7 @@ mysql:
 
 before_install:
   - composer self-update
-  - composer global require "lionsad/drupal_ti:1.*" "drupal/coder:8.2.*" "sensiolabs/security-checker:*"
+  - composer global require "lionsad/drupal_ti:dev-master#019dc85b6de24455e11492e63364c2a9f193c84c" "drupal/coder:8.2.*" "sensiolabs/security-checker:*"
   - drupal-ti before_install
 
 install:

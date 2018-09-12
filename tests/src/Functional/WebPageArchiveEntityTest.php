@@ -482,7 +482,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $this->clickLink('View Details');
 
     // Parse file path.
-    if (preg_match_all('/<span class="wpa-hidden wpa-file-path">(.*\.html)<\/span>/', $this->getRawContent(), $matches)) {
+    if (preg_match_all('/<span class="wpa-hidden wpa-file-path">(.*\.html)<\/span>/', $this->getSession()->getPage()->getContent(), $matches)) {
       $file_path = $matches[1][0];
 
       // Despite attempting to capture two URLs we should only capture 1 due
@@ -500,7 +500,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $this->drupalGet('admin/config/system/web-page-archive/jobs/localhost/delete');
     $this->drupalPostForm(NULL, [], t('Delete'));
     $assert->pageTextContains(t('content web_page_archive: deleted localhost'));
-    $assert->pageTextContains(t('There is no Web Page Archive yet.'));
+    $assert->pageTextContains(t('There are no web page archive entities yet.'));
 
     // Simulate a cron run.
     web_page_archive_cron();

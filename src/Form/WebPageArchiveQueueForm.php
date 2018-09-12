@@ -6,6 +6,7 @@ use Drupal\Core\Link;
 use Drupal\Core\Url;
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Messenger\MessengerTrait;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueWorkerManagerInterface;
 use Drupal\web_page_archive\Controller\WebPageArchiveController;
@@ -17,6 +18,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * @package Drupal\web_page_archive\Form
  */
 class WebPageArchiveQueueForm extends EntityForm {
+
+  use MessengerTrait;
 
   /**
    * Queue factory.
@@ -101,7 +104,7 @@ class WebPageArchiveQueueForm extends EntityForm {
     }
     // If there are missing dependencies, display message.
     else {
-      drupal_set_message($this->t("Capture job can't run at this time!"), 'error');
+      $this->messenger()->addError($this->t("Capture job can't run at this time!"));
       $form['help'] = [
         '#theme' => 'item_list',
         '#items' => $this->missingDependencies,

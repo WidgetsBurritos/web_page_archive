@@ -84,7 +84,7 @@ function wpa_html_capture_update_8001(&$sandbox = NULL) {
   $sandbox['#finished'] = empty($sandbox['max']) ? 1 : ($sandbox['progress'] / $sandbox['max']);
   if ($sandbox['#finished']) {
     $message = \Drupal::service('string_translation')->formatPlural($sandbox['progress'], 'Updated 1 web page archive run', 'Updated @count web page archive runs');
-    \drupal_set_message($message, 'status');
+    \Drupal::messenger()->addStatus($message);
   }
 
 }

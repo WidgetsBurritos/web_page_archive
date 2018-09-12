@@ -95,6 +95,16 @@ class CronRunnerTest extends UnitTestCase {
   }
 
   /**
+   * Helper function to get a mock messenger service.
+   */
+  private function getMockMessenger() {
+    $mock_messenger = $this->getMockBuilder('\Drupal\Core\Messenger\MessengerInterface')
+      ->getMock();
+
+    return $mock_messenger;
+  }
+
+  /**
    * Helper function to get a cron runner based on default or supplied mocks.
    */
   private function getCronRunner(array $options = []) {
@@ -110,8 +120,11 @@ class CronRunnerTest extends UnitTestCase {
     if (empty($options['mock_config_factory'])) {
       $options['mock_config_factory'] = $this->getMockConfigFactory();
     }
+    if (empty($options['mock_messenger'])) {
+      $options['mock_messenger'] = $this->getMockMessenger();
+    }
 
-    return new CronRunner($options['mock_lock'], $options['mock_state'], $options['mock_time'], $options['mock_config_factory']);
+    return new CronRunner($options['mock_lock'], $options['mock_state'], $options['mock_time'], $options['mock_config_factory'], $options['mock_messenger']);
   }
 
   /**

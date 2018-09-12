@@ -5,6 +5,7 @@ namespace Drupal\web_page_archive\Entity;
 use Cron\CronExpression;
 use Drupal\Core\Config\Entity\ConfigEntityBase;
 use Drupal\Core\Entity\EntityWithPluginCollectionInterface;
+use Drupal\Core\Messenger\MessengerTrait;
 use Drupal\Core\Plugin\DefaultLazyPluginCollection;
 use Drupal\web_page_archive\Plugin\CaptureUtilityInterface;
 use Drupal\web_page_archive\Controller\WebPageArchiveController;
@@ -61,6 +62,8 @@ use GuzzleHttp\HandlerStack;
  * )
  */
 class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface, EntityWithPluginCollectionInterface {
+
+  use MessengerTrait;
 
   /**
    * The Web Page Archive ID.
@@ -376,7 +379,7 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
     }
     catch (\Exception $e) {
       // TODO: What to do here? (future task)
-      drupal_set_message($e->getMessage(), 'warning');
+      $this->messenger()->addWarning($e->getMessage());
       return FALSE;
     }
   }

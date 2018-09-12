@@ -6,6 +6,7 @@ use Drupal\Core\Database\Connection;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Messenger\MessengerTrait;
 use Drupal\Core\Url;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -16,6 +17,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class WebPageArchiveRunRevisionDeleteForm extends ConfirmFormBase {
 
+  use MessengerTrait;
 
   /**
    * The Web page archive run revision.
@@ -107,7 +109,7 @@ class WebPageArchiveRunRevisionDeleteForm extends ConfirmFormBase {
     $this->WebPageArchiveRunStorage->deleteRevision($this->revision->getRevisionId());
 
     $this->logger('content')->notice('Web page archive run: deleted %title revision %revision.', ['%title' => $this->revision->label(), '%revision' => $this->revision->getRevisionId()]);
-    drupal_set_message(t('Revision from %revision-date of Web page archive run %title has been deleted.', ['%revision-date' => format_date($this->revision->getRevisionCreationTime()), '%title' => $this->revision->label()]));
+    $this->messenger()->addStatus(t('Revision from %revision-date of Web page archive run %title has been deleted.', ['%revision-date' => format_date($this->revision->getRevisionCreationTime()), '%title' => $this->revision->label()]));
     $form_state->setRedirect(
       'entity.web_page_archive_run.canonical',
        ['web_page_archive_run' => $this->revision->id()]
