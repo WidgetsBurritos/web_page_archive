@@ -152,6 +152,7 @@ class RunComparisonTest extends BrowserTestBase {
     $urls = [
       'admin/config/system/web-page-archive/compare',
       'admin/config/system/web-page-archive/compare/history',
+      'admin/config/system/web-page-archive/compare/runs/json',
       "admin/config/system/web-page-archive/compare/{$comparison->id()}",
       "admin/config/system/web-page-archive/compare/{$comparison->id()}/delete",
     ];

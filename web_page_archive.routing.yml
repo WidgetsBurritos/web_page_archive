@@ -38,7 +38,7 @@ entity.wpa_run_comparison.delete_form:
     _permission: 'administer web page archive'
 
 web_page_archive.autocomplete.runs:
-  path: 'admin/config/system/web-page-archive/compare/runs'
+  path: 'admin/config/system/web-page-archive/compare/runs/json'
   defaults:
     _controller: '\Drupal\web_page_archive\Controller\RunComparisonController::handleRunAutocomplete'
     _format: json
