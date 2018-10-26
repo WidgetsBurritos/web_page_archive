@@ -50,6 +50,14 @@ interface ComparisonUtilityInterface {
   public function setWeight($weight);
 
   /**
+   * Indicates whether or not the compare utility is available for use.
+   *
+   * @return bool
+   *   A boolean value indicating available. Defaults to TRUE.
+   */
+  public function isAvailable();
+
+  /**
    * Indicates whether or not a tag is applicable for this comparison utility.
    *
    * @return bool
@@ -63,6 +71,19 @@ interface ComparisonUtilityInterface {
    * @return \Drupal\web_page_archive\Plugin\CompareResponseInterface
    *   The results of a comparison.
    */
-  public function compare(CaptureResponseInterface $a, CaptureResponseInterface $b);
+  public function compare(CaptureResponseInterface $a, CaptureResponseInterface $b, array $data);
+
+  /**
+   * Retrieves a filename based on the specified data.
+   *
+   * @param array $data
+   *   Capture data array.
+   * @param string $extension
+   *   File extension of the comparison.
+   *
+   * @return string
+   *   Retrieves a filename for a capture.
+   */
+  public function getFileName(array $data, $extension);
 
 }

@@ -25,7 +25,7 @@ class HtmlDiffComparisonUtility extends ComparisonUtilityBase {
   /**
    * {@inheritdoc}
    */
-  public function compare(CaptureResponseInterface $a, CaptureResponseInterface $b) {
+  public function compare(CaptureResponseInterface $a, CaptureResponseInterface $b, array $data = []) {
     $response_factory = \Drupal::service('web_page_archive.compare.response');
     $a_content = explode(PHP_EOL, $a->retrieveFileContents());
     $b_content = explode(PHP_EOL, $b->retrieveFileContents());

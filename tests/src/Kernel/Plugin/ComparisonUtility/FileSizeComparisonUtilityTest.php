@@ -32,7 +32,7 @@ class FileSizeComparisonUtilityTest extends EntityKernelTestBase {
     parent::setUp();
 
     $comparison_utility_manager = $this->container->get('plugin.manager.comparison_utility');
-    $this->fileSizeComparisonUtility = $comparison_utility_manager->createInstance('wpa_screenshot_capture_file_size_compare');
+    $this->fileSizeComparisonUtility = $comparison_utility_manager->createInstance('web_page_archive_file_size_compare');
   }
 
   /**
@@ -54,14 +54,14 @@ class FileSizeComparisonUtilityTest extends EntityKernelTestBase {
     $capture1 = new ScreenshotCaptureResponse($file1, 'http://www.drupal.org/');
     $capture2 = new ScreenshotCaptureResponse($file2, 'http://www.drupal.org/');
     $response = $this->fileSizeComparisonUtility->compare($capture1, $capture2);
-    $this->assertEquals('Drupal\wpa_screenshot_capture\Plugin\CompareResponse\FileSizeScreenshotVarianceCompareResponse', get_class($response));
+    $this->assertEquals('Drupal\web_page_archive\Plugin\CompareResponse\FileSizeVarianceCompareResponse', get_class($response));
     $this->assertEquals(0.6, $response->getVariance());
 
     // Assert screenshots have 0.6% file size variance (reversed order).
     $capture1 = new ScreenshotCaptureResponse($file1, 'http://www.drupal.org/');
     $capture2 = new ScreenshotCaptureResponse($file2, 'http://www.drupal.org/');
     $response = $this->fileSizeComparisonUtility->compare($capture2, $capture1);
-    $this->assertEquals('Drupal\wpa_screenshot_capture\Plugin\CompareResponse\FileSizeScreenshotVarianceCompareResponse', get_class($response));
+    $this->assertEquals('Drupal\web_page_archive\Plugin\CompareResponse\FileSizeVarianceCompareResponse', get_class($response));
     $this->assertEquals(0.6, $response->getVariance());
   }
 

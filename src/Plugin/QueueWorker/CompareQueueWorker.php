@@ -51,7 +51,8 @@ class CompareQueueWorker extends QueueWorkerBase {
     if ($data['has_left'] && $data['has_right']) {
       $left_response = reset($data['runs'][$data['left_id']])['capture_response'];
       $right_response = reset($data['runs'][$data['right_id']])['capture_response'];
-      $response = call_user_func([$data['compare_class'], 'compare'], $left_response, $right_response, $comparison_utilities);
+      $tags = [];
+      $response = call_user_func([$data['compare_class'], 'compare'], $left_response, $right_response, $comparison_utilities, $tags, $data);
     }
     elseif ($data['has_left']) {
       $response = $response_factory->getNoVariantCompareResponse()->markLeft();

@@ -13,6 +13,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 abstract class ComparisonUtilityBase extends PluginBase implements ComparisonUtilityInterface, ContainerFactoryPluginInterface {
 
   use StringTranslationTrait;
+  use FileStorageTrait;
 
   /**
    * The capture utility ID.
@@ -144,8 +145,22 @@ abstract class ComparisonUtilityBase extends PluginBase implements ComparisonUti
   /**
    * {@inheritdoc}
    */
+  public function isAvailable() {
+    return TRUE;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function isApplicable($tag) {
     return in_array($tag, $this->getPluginDefinition()['tags']);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getFileName(array $data, $extension) {
+    return $this->getUniqueFileName($data['run_comparison']->id(), NULL, $data['url'], 'comparisons', $extension);
   }
 
 }

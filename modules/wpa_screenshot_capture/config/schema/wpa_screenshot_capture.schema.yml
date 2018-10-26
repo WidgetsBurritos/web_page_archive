@@ -31,6 +31,15 @@ web_page_archive.wpa_screenshot_capture.settings:
         phantomjs_path:
           type: string
           label: 'PhantomJS path'
+        magick_path:
+          type: string
+          label: 'ImageMagick path'
+        magick_extension:
+          type: string
+          label: 'ImageMagick extension'
+        magick_color:
+          type: string
+          label: 'ImageMagick highlight color'
         node_modules_path:
           type: string
           label: 'node_modules path'
@@ -59,11 +68,10 @@ web_page_archive.wpa_screenshot_capture.settings:
           type: integer
           label: 'Delay'
 
-
-web_page_archive.comparison_utility_settings.wpa_screenshot_capture_file_size_compare:
+web_page_archive.comparison_utility_settings.wpa_screenshot_capture_pixel_compare:
   type: string
-  label: 'File Size'
+  label: Pixel
 
-web_page_archive.comparison_utility_settings.wpa_screenshot_capture_imagemagick_compare:
+web_page_archive.comparison_utility_settings.wpa_screenshot_capture_slider_compare:
   type: string
-  label: ImageMagick
+  label: Slider

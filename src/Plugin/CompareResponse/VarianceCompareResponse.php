@@ -3,7 +3,6 @@
 namespace Drupal\web_page_archive\Plugin\CompareResponse;
 
 use Drupal\Core\Url;
-use Drupal\Component\Serialization\Json;
 use Drupal\web_page_archive\Plugin\CompareResponseBase;
 
 /**
@@ -34,106 +33,45 @@ class VarianceCompareResponse extends CompareResponseBase {
    * Renders this response.
    */
   public function renderable(array $options = []) {
-    // If diff has not be sent, just show percentage summary.
-    if (empty($this->getDiff())) {
-      return ['#markup' => $this->t('There is a @variance% difference between the two captures.', ['@variance' => $this->variance])];
-    }
     // Otherwise render the proper mode.
     return (isset($options['mode']) && $options['mode'] == 'full') ?
       $this->renderFull($options) : $this->renderPreview($options);
   }
 
   /**
-   * Renders "preview" mode.
+   * Retrieves the full preview Url from the options array.
    */
-  protected function renderPreview(array $options) {
-    $render = [];
+  protected function getFullModeUrlFromOptions(array $options) {
     $route_params = [
       'wpa_run_comparison' => $options['run_comparison']->id(),
       'index' => $options['index'],
     ];
+    return Url::fromRoute('entity.wpa_run_comparison.modal', $route_params);
+  }
 
-    // Retrieve variance calculations.
-    if (!empty($options['index'])) {
-      $result = $options['run_comparison']->getResultAtIndex($options['index']);
-      if ($result) {
-        $results = unserialize($result['results']);
-        if (!empty($results['compare_response'])) {
-          $variance_ct = 0;
-          foreach ($results['compare_response']->getResponses() as $response) {
-            $replacements = [
-              '@variance' => $response->getVariance(),
-              '@response_type' => $response->getHumanReadableName(),
-            ];
-            $render["variance{$variance_ct}"] = [
-              '#prefix' => '<div class="wpa-comparison-variance">',
-              '#markup' => $this->t('@response_type Variance: @variance%', $replacements),
-              '#suffix' => '</div>',
-            ];
-            $variance_ct++;
-          }
-        }
-      }
+  /**
+   * Attaches the WPA library to the render array.
+   */
+  protected function attachLibrary(array $render = []) {
+    $library = 'web_page_archive/admin';
+    if (empty($render['#attached']['library']) || !in_array($library, $render['#attached']['library'])) {
+      $render['#attached']['library'][] = $library;
     }
-
-    // Show file sizes.
-    $ct = 0;
-    foreach ($options['runs'] as $details) {
-      $ct++;
-      $replacements = [
-        '@number' => $ct,
-        '@size' => format_size($details[$options["delta{$ct}"]]['capture_size']),
-      ];
-      $render["size{$ct}"] = [
-        '#prefix' => '<div class="wpa-comparison-file-size">',
-        '#markup' => $this->t('Size @number: @size', $replacements),
-        '#suffix' => '</div>',
-      ];
-    }
-
-    $render['link'] = [
-      '#type' => 'link',
-      '#url' => Url::fromRoute('entity.wpa_run_comparison.modal', $route_params),
-      '#title' => $this->t('Display'),
-      '#attributes' => [
-        'class' => ['use-ajax', 'button', 'button--small', 'button--primary'],
-        'data-dialog-type' => 'modal',
-        // TODO: Pull this value from config?
-        'data-dialog-options' => Json::encode(['width' => 1280]),
-      ],
-    ];
-
-    $render['#attached'] = ['library' => ['web_page_archive/admin']];
-
     return $render;
+  }
+
+  /**
+   * Renders "preview" mode.
+   */
+  protected function renderPreview(array $options = []) {
+    return [];
   }
 
   /**
    * Renders "full" mode.
    */
   protected function renderFull(array $options = []) {
-    $diff_formatter = \Drupal::service('diff.formatter');
-    $diff_formatter->show_header = FALSE;
-    $build = [
-      '#attached' => ['library' => ['web_page_archive/diff']],
-      'diff' => [
-        '#type' => 'table',
-        '#attributes' => ['class' => ['wpa-diff']],
-        '#header' => [
-          ['data' => $this->t('Run #1'), 'colspan' => '2'],
-          ['data' => $this->t('Run #2'), 'colspan' => '2'],
-        ],
-        '#rows' => $diff_formatter->format($this->getDiff()),
-      ],
-    ];
-    return $build;
-  }
-
-  /**
-   * Returns a human-readable string for the compare response.
-   */
-  public function getHumanReadableName() {
-    return $this->t('Size');
+    return [];
   }
 
 }

@@ -109,9 +109,10 @@ class HtmlCaptureResponse extends UriCaptureResponse {
   /**
    * {@inheritdoc}
    */
-  public static function compare(CaptureResponseInterface $a, CaptureResponseInterface $b, array $compare_utilities, array $tags = []) {
+  public static function compare(CaptureResponseInterface $a, CaptureResponseInterface $b, array $compare_utilities, array $tags = [], array $data = []) {
     $tags[] = 'html';
-    return parent::compare($a, $b, $compare_utilities, $tags);
+    $tags[] = 'file';
+    return parent::compare($a, $b, $compare_utilities, $tags, $data);
   }
 
 }

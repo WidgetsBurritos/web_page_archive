@@ -15,6 +15,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 abstract class CaptureUtilityBase extends PluginBase implements CaptureUtilityInterface, ContainerFactoryPluginInterface {
 
   use StringTranslationTrait;
+  use FileStorageTrait;
 
   /**
    * The capture utility ID.
@@ -166,45 +167,9 @@ abstract class CaptureUtilityBase extends PluginBase implements CaptureUtilityIn
   /**
    * {@inheritdoc}
    */
-  public function storagePath($entity_id = NULL, $run_uuid = NULL) {
-    // TODO: Use custom stream wrapper.
-    // @see https://www.drupal.org/node/2901781
-    $scheme = file_default_scheme();
-    $utility = $this->pluginDefinition['id'];
-    $path_tokens = [
-      "{$scheme}:/",
-      'web-page-archive',
-      $utility,
-    ];
-    if (isset($entity_id)) {
-      $path_tokens[] = $entity_id;
-    }
-    if (isset($run_uuid)) {
-      $path_tokens[] = $run_uuid;
-    }
-    $path = implode('/', $path_tokens);
-    if (!file_prepare_directory($path, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS)) {
-      throw new \Exception("Could not write to $path");
-    }
-    return $path;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getFileName(array $data, $extension, $index = 1) {
-    // Determine file name.
+  public function getFileName(array $data, $extension) {
     $entity_id = $data['run_entity']->getConfigEntity()->id();
-    $file_name = preg_replace('/[^a-z0-9]+/', '-', strtolower($data['url']));
-    $file_name .= "-{$index}.{$extension}";
-    $file_path = $this->storagePath($entity_id, $data['run_uuid']) . '/' . $file_name;
-
-    // If file exists update our index and try again.
-    if (file_exists($file_path)) {
-      return $this->getFileName($data, $extension, $index + 1);
-    }
-
-    return $file_path;
+    return $this->getUniqueFileName($entity_id, $data['run_uuid'], $data['url'], 'captures', $extension);
   }
 
 }

@@ -13,3 +13,10 @@ defaults:
   use_cron: true
   use_robots: true
   user_agent: WPA
+comparison:
+  run1: null
+  run2: null
+  strip_type: ''
+  strip_patterns: ''
+  comparison_utilities:
+    web_page_archive_file_size_compare: null

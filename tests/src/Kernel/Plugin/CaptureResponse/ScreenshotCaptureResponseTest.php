@@ -30,7 +30,7 @@ class ScreenshotCaptureResponseTest extends EntityKernelTestBase {
     $file2 = __DIR__ . '/../../fixtures/drupal-org-2.png';
 
     $compare_utilities = [
-      'wpa_screenshot_capture_file_size_compare' => 'wpa_screenshot_capture_file_size_compare',
+      'web_page_archive_file_size_compare' => 'web_page_archive_file_size_compare',
     ];
 
     // Assert screenshots have 0.6% file size variance.
@@ -38,7 +38,7 @@ class ScreenshotCaptureResponseTest extends EntityKernelTestBase {
     $capture2 = new ScreenshotCaptureResponse($file2, 'http://www.drupal.org/');
     $response = ScreenshotCaptureResponse::compare($capture1, $capture2, $compare_utilities);
     $this->assertEquals('Drupal\web_page_archive\Plugin\CompareResponse\CompareResponseCollection', get_class($response));
-    $this->assertEquals('Drupal\wpa_screenshot_capture\Plugin\CompareResponse\FileSizeScreenshotVarianceCompareResponse', get_class($response->getResponses()[0]));
+    $this->assertEquals('Drupal\web_page_archive\Plugin\CompareResponse\FileSizeVarianceCompareResponse', get_class($response->getResponses()[0]));
     $this->assertEquals(0.6, $response->getResponses()[0]->getVariance());
   }
 

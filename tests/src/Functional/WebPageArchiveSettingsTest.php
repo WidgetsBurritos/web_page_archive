@@ -74,8 +74,9 @@ class WebPageArchiveSettingsTest extends BrowserTestBase {
     $this->assertFieldByName('comparison[run2]', '');
     $this->assertFieldByName('comparison[strip_type]', '');
     $this->assertFieldByName('comparison[strip_patterns]', '');
-    $this->assertNoFieldChecked('comparison[comparison_utilities][wpa_screenshot_capture_file_size_compare]');
-    $this->assertNoFieldChecked('comparison[comparison_utilities][wpa_screenshot_capture_imagemagick_compare]');
+    $this->assertNoFieldChecked('comparison[comparison_utilities][web_page_archive_file_size_compare]');
+    $this->assertNoFieldChecked('comparison[comparison_utilities][wpa_screenshot_capture_pixel_compare]');
+    $this->assertNoFieldChecked('comparison[comparison_utilities][wpa_screenshot_capture_slider_compare]');
 
     // Attempt to set defaults.
     $this->drupalPostForm(
@@ -95,8 +96,9 @@ class WebPageArchiveSettingsTest extends BrowserTestBase {
         'comparison[run2]' => 1,
         'comparison[strip_type]' => 'string',
         'comparison[strip_patterns]' => $strip_patterns,
-        'comparison[comparison_utilities][wpa_screenshot_capture_file_size_compare]' => 'wpa_screenshot_capture_file_size_compare',
-        'comparison[comparison_utilities][wpa_screenshot_capture_imagemagick_compare]' => 'wpa_screenshot_capture_imagemagick_compare',
+        'comparison[comparison_utilities][web_page_archive_file_size_compare]' => 'web_page_archive_file_size_compare',
+        'comparison[comparison_utilities][wpa_screenshot_capture_pixel_compare]' => 'wpa_screenshot_capture_pixel_compare',
+        'comparison[comparison_utilities][wpa_screenshot_capture_slider_compare]' => 'wpa_screenshot_capture_slider_compare',
       ],
       t('Save configuration')
     );
@@ -116,8 +118,9 @@ class WebPageArchiveSettingsTest extends BrowserTestBase {
     $this->assertFieldByName('comparison[run2]', '1');
     $this->assertFieldByName('comparison[strip_type]', 'string');
     $this->assertFieldByName('comparison[strip_patterns]', $strip_patterns);
-    $this->assertFieldChecked('comparison[comparison_utilities][wpa_screenshot_capture_file_size_compare]');
-    $this->assertFieldChecked('comparison[comparison_utilities][wpa_screenshot_capture_imagemagick_compare]');
+    $this->assertFieldChecked('comparison[comparison_utilities][web_page_archive_file_size_compare]');
+    $this->assertFieldChecked('comparison[comparison_utilities][wpa_screenshot_capture_pixel_compare]');
+    $this->assertFieldChecked('comparison[comparison_utilities][wpa_screenshot_capture_slider_compare]');
 
     // Ensure default values made it into the add form.
     $this->drupalGet('admin/config/system/web-page-archive/jobs/add');
@@ -134,8 +137,9 @@ class WebPageArchiveSettingsTest extends BrowserTestBase {
     $this->assertFieldByName('run2', '1');
     $this->assertFieldByName('strip_type', 'string');
     $this->assertFieldByName('strip_patterns', $strip_patterns);
-    $this->assertFieldChecked('comparison_utilities[wpa_screenshot_capture_file_size_compare]');
-    $this->assertFieldChecked('comparison_utilities[wpa_screenshot_capture_imagemagick_compare]');
+    $this->assertFieldChecked('comparison_utilities[web_page_archive_file_size_compare]');
+    $this->assertFieldChecked('comparison_utilities[wpa_screenshot_capture_pixel_compare]');
+    $this->assertFieldChecked('comparison_utilities[wpa_screenshot_capture_slider_compare]');
   }
 
   /**
@@ -160,6 +164,9 @@ class WebPageArchiveSettingsTest extends BrowserTestBase {
     $this->assertFieldByName('wpa_screenshot_capture[defaults][image_type]', 'png');
     $this->assertFieldByName('wpa_screenshot_capture[defaults][width]', 1280);
     $this->assertFieldByName('wpa_screenshot_capture[system][phantomjs_path]', '');
+    $this->assertFieldByName('wpa_screenshot_capture[system][magick_path]', '');
+    $this->assertFieldByName('wpa_screenshot_capture[system][magick_color]', '#ccc000');
+    $this->assertFieldByName('wpa_screenshot_capture[system][magick_extension]', 'png');
     $this->assertFieldByName('wpa_screenshot_capture[system][node_modules_path]', '');
     $this->assertNoFieldChecked('wpa_screenshot_capture[system][puppeteer_disable_sandbox]');
     $this->assertFieldByName('wpa_skeleton_capture[defaults][width]', 1280);
@@ -175,6 +182,9 @@ class WebPageArchiveSettingsTest extends BrowserTestBase {
         'wpa_screenshot_capture[defaults][image_type]' => 'jpg',
         'wpa_screenshot_capture[defaults][width]' => 1400,
         'wpa_screenshot_capture[system][phantomjs_path]' => '/path/to/phantomjs',
+        'wpa_screenshot_capture[system][magick_path]' => '/path/to/magick',
+        'wpa_screenshot_capture[system][magick_color]' => '#ff0000',
+        'wpa_screenshot_capture[system][magick_extension]' => 'jpg',
         'wpa_screenshot_capture[system][node_modules_path]' => '/path/to/node_modules/',
         'wpa_screenshot_capture[system][puppeteer_disable_sandbox]' => 1,
         'wpa_skeleton_capture[defaults][width]' => 480,
@@ -192,6 +202,9 @@ class WebPageArchiveSettingsTest extends BrowserTestBase {
     $this->assertFieldByName('wpa_screenshot_capture[defaults][image_type]', 'jpg');
     $this->assertFieldByName('wpa_screenshot_capture[defaults][width]', 1400);
     $this->assertFieldByName('wpa_screenshot_capture[system][phantomjs_path]', '/path/to/phantomjs');
+    $this->assertFieldByName('wpa_screenshot_capture[system][magick_path]', '/path/to/magick');
+    $this->assertFieldByName('wpa_screenshot_capture[system][magick_color]', '#ff0000');
+    $this->assertFieldByName('wpa_screenshot_capture[system][magick_extension]', 'jpg');
     $this->assertFieldByName('wpa_screenshot_capture[system][node_modules_path]', '/path/to/node_modules/');
     $this->assertFieldChecked('wpa_screenshot_capture[system][puppeteer_disable_sandbox]');
 

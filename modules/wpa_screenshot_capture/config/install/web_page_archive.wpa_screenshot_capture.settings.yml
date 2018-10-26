@@ -1,5 +1,8 @@
 system:
   phantomjs_path: ''
+  magick_path: ''
+  magick_extension: 'png'
+  magick_color: '#ccc000'
 defaults:
   background_color: '#ffffff'
   browser: 'chrome'
