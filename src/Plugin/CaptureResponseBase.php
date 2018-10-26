@@ -147,15 +147,22 @@ abstract class CaptureResponseBase implements CaptureResponseInterface {
   /**
    * Performs a comparison two responses.
    */
-  public static function compare(CaptureResponseInterface $a, CaptureResponseInterface $b, array $capture_utilities) {
-    // We should warn if this method is not overridden. This will allow for
-    // graceful handling of any existing capture responses. In next major
-    // release, this should get converted to an abstract method.
-    $class = get_called_class();
-    \Drupal::logger('web_page_archive')
-      ->notice('@class should override the compare() method.', ['@class' => $class]);
-
-    return \Drupal::service('web_page_archive.compare.response')->getEmptyCompareResponse();
+  public static function compare(CaptureResponseInterface $a, CaptureResponseInterface $b, array $compare_utilities, array $tags = []) {
+    $comparison_utility_manager = \Drupal::service('plugin.manager.comparison_utility');
+    $response_factory = \Drupal::service('web_page_archive.compare.response');
+    $response_collection = $response_factory->getCompareResponseCollection();
+    foreach ($compare_utilities as $compare_utility) {
+      if ($compare_utility) {
+        $instance = $comparison_utility_manager->createInstance($compare_utility);
+        foreach ($tags as $tag) {
+          if ($instance->isApplicable($tag)) {
+            $comparison_response = $instance->compare($a, $b);
+            $response_collection->addResponse($comparison_response);
+          }
+        }
+      }
+    }
+    return $response_collection;
   }
 
   /**

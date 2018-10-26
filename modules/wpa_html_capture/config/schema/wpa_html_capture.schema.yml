@@ -16,3 +16,7 @@ web_page_archive.wpa_html_capture.settings:
         capture:
           type: boolean
           label: 'Capture?'
+
+web_page_archive.comparison_utility_settings.wpa_html_diff_compare:
+  type: string
+  label: 'HTML Diff'

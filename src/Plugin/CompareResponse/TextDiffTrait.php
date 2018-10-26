@@ -28,4 +28,32 @@ trait TextDiffTrait {
     return isset($this->diff) ? $this->diff : [];
   }
 
+  /**
+   * Calulates variance based on a edit array from DiffEngine.
+   */
+  public static function calculateDiffVariance(array $diff_edits) {
+    // If both strings are empty, there is 0% variance.
+    $counts = [
+      'empty' => 0,
+      'add' => 1,
+      'copy' => 0,
+      'change' => 1,
+      'delete' => 1,
+      'copy-and-change' => 1,
+      'copy-change-copy' => 1,
+      'copy-change-copy-add' => 1,
+      'copy-delete' => 1,
+    ];
+    $changes = 0;
+    $total_ct = 0;
+    foreach ($diff_edits as $diff_edit) {
+      if (isset($counts[$diff_edit->type])) {
+        $lines = max(count($diff_edit->orig), count($diff_edit->closing));
+        $changes += $counts[$diff_edit->type] * $lines;
+        $total_ct += $lines;
+      }
+    }
+    return $total_ct > 0 ? 100 * $changes / $total_ct : 0;
+  }
+
 }

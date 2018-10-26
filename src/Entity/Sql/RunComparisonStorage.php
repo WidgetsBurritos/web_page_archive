@@ -111,6 +111,16 @@ class RunComparisonStorage extends SqlContentEntityStorage implements RunCompari
   /**
    * {@inheritdoc}
    */
+  public function getResultAtIndex($index) : array {
+    $query = $this->database->query(
+      'SELECT * FROM {web_page_archive_run_comparison_details} WHERE cid=:cid ORDER BY url',
+      [':cid' => $index]);
+    return $query->fetchAssoc();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getResults(RunComparisonInterface $entity) {
     $query = $this->database->query(
       'SELECT * FROM {web_page_archive_run_comparison_details} WHERE revision_id=:revision_id ORDER BY url',

@@ -53,6 +53,30 @@ class VarianceCompareResponse extends CompareResponseBase {
       'index' => $options['index'],
     ];
 
+    // Retrieve variance calculations.
+    if (!empty($options['index'])) {
+      $result = $options['run_comparison']->getResultAtIndex($options['index']);
+      if ($result) {
+        $results = unserialize($result['results']);
+        if (!empty($results['compare_response'])) {
+          $variance_ct = 0;
+          foreach ($results['compare_response']->getResponses() as $response) {
+            $replacements = [
+              '@variance' => $response->getVariance(),
+              '@response_type' => $response->getHumanReadableName(),
+            ];
+            $render["variance{$variance_ct}"] = [
+              '#prefix' => '<div class="wpa-comparison-variance">',
+              '#markup' => $this->t('@response_type Variance: @variance%', $replacements),
+              '#suffix' => '</div>',
+            ];
+            $variance_ct++;
+          }
+        }
+      }
+    }
+
+    // Show file sizes.
     $ct = 0;
     foreach ($options['runs'] as $details) {
       $ct++;
@@ -103,6 +127,13 @@ class VarianceCompareResponse extends CompareResponseBase {
       ],
     ];
     return $build;
+  }
+
+  /**
+   * Returns a human-readable string for the compare response.
+   */
+  public function getHumanReadableName() {
+    return $this->t('Size');
   }
 
 }

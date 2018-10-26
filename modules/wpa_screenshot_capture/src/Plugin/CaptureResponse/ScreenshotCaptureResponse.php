@@ -95,16 +95,9 @@ class ScreenshotCaptureResponse extends UriCaptureResponse {
   /**
    * {@inheritdoc}
    */
-  public static function compare(CaptureResponseInterface $a, CaptureResponseInterface $b, array $compare_utilities) {
-    $comparison_utility_manager = \Drupal::service('plugin.manager.comparison_utility');
-    $response_factory = \Drupal::service('web_page_archive.compare.response');
-    $response_collection = $response_factory->getCompareResponseCollection();
-    foreach ($compare_utilities as $compare_utility) {
-      $instance = $comparison_utility_manager->createInstance($compare_utility);
-      $comparison_response = $instance->compare($a, $b);
-      $response_collection->addResponse($comparison_response);
-    }
-    return $response_collection;
+  public static function compare(CaptureResponseInterface $a, CaptureResponseInterface $b, array $compare_utilities, array $tags = []) {
+    $tags[] = 'screenshot';
+    return parent::compare($a, $b, $compare_utilities, $tags);
   }
 
 }

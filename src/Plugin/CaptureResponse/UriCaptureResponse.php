@@ -6,11 +6,14 @@ use Drupal\Component\Diff\Diff;
 use Drupal\web_page_archive\Controller\CleanupController;
 use Drupal\web_page_archive\Plugin\CaptureResponseBase;
 use Drupal\web_page_archive\Plugin\CaptureResponseInterface;
+use Drupal\web_page_archive\Plugin\CompareResponse\TextDiffTrait;
 
 /**
  * URI capture response.
  */
 class UriCaptureResponse extends CaptureResponseBase {
+
+  use TextDiffTrait;
 
   /**
    * UriCaptureResponse constructor.
@@ -52,37 +55,15 @@ class UriCaptureResponse extends CaptureResponseBase {
   }
 
   /**
-   * Calulates variance based on a edit array from DiffEngine.
-   */
-  public static function calculateDiffVariance(array $diff_edits) {
-    // If both strings are empty, there is 0% variance.
-    $counts = [
-      'empty' => 0,
-      'add' => 1,
-      'copy' => 0,
-      'change' => 1,
-      'delete' => 1,
-      'copy-and-change' => 1,
-      'copy-change-copy' => 1,
-      'copy-change-copy-add' => 1,
-      'copy-delete' => 1,
-    ];
-    $changes = 0;
-    $total_ct = 0;
-    foreach ($diff_edits as $diff_edit) {
-      if (isset($counts[$diff_edit->type])) {
-        $lines = max(count($diff_edit->orig), count($diff_edit->closing));
-        $changes += $counts[$diff_edit->type] * $lines;
-        $total_ct += $lines;
-      }
-    }
-    return $total_ct > 0 ? 100 * $changes / $total_ct : 0;
-  }
-
-  /**
    * {@inheritdoc}
    */
-  public static function compare(CaptureResponseInterface $a, CaptureResponseInterface $b, array $capture_utilities) {
+  public static function compare(CaptureResponseInterface $a, CaptureResponseInterface $b, array $compare_utilities, array $tags = []) {
+    // If tags were supplied defer to base class behavior.
+    if (!empty($tags)) {
+      return parent::compare($a, $b, $compare_utilities, $tags);
+    }
+
+    // Otherwise do a simple line-by-line comparison.
     $response_factory = \Drupal::service('web_page_archive.compare.response');
     $a_content = explode(PHP_EOL, $a->getContent());
     $b_content = explode(PHP_EOL, $b->getContent());

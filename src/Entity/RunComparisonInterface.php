@@ -163,6 +163,14 @@ interface RunComparisonInterface extends RevisionableInterface, RevisionLogInter
   public function getQueue();
 
   /**
+   * Retrieves a particular comparison result.
+   *
+   * @return array
+   *   An associative array containing comparison results.
+   */
+  public function getResultAtIndex($index);
+
+  /**
    * Retrieves list of comparison results.
    *
    * @return array

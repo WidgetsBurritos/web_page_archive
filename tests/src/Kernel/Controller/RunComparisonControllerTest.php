@@ -301,8 +301,8 @@ class RunComparisonControllerTest extends EntityStorageTestBase {
 
     $expected = [
       '1' => [
-        'run1' => $run_comparison->getRun1Id(),
-        'run2' => $run_comparison->getRun2Id(),
+        'run1' => (string) $run_comparison->getRun1Id(),
+        'run2' => (string) $run_comparison->getRun2Id(),
         'delta1' => '4',
         'delta2' => '4',
         'has_left' => '1',
@@ -312,8 +312,8 @@ class RunComparisonControllerTest extends EntityStorageTestBase {
         'variance' => '0',
       ],
       '2' => [
-        'run1' => $run_comparison->getRun1Id(),
-        'run2' => $run_comparison->getRun2Id(),
+        'run1' => (string) $run_comparison->getRun1Id(),
+        'run2' => (string) $run_comparison->getRun2Id(),
         'delta1' => '13',
         'delta2' => '0',
         'has_left' => '1',
