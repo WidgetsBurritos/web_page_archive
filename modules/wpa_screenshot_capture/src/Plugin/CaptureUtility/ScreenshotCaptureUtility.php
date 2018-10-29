@@ -253,6 +253,29 @@ class ScreenshotCaptureUtility extends ConfigurableCaptureUtilityBase {
       '#description' => $this->t('Full path to phantomjs binary on your system. (e.g. /usr/local/bin/phantomjs)'),
       '#default_value' => $config->get('system.phantomjs_path'),
     ];
+    $form['magick_path'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('ImageMagick path'),
+      '#description' => $this->t('Full path to magick binary on your system. (e.g. /usr/local/bin/magick): Requires ImageMagick 7.'),
+      '#default_value' => $config->get('system.magick_path'),
+    ];
+    $form['magick_color'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('ImageMagick highlight color'),
+      '#description' => $this->t('The color used to identify pixel discrepancies. (e.g. #fff000)'),
+      '#default_value' => $config->get('system.magick_color'),
+    ];
+    $image_types = Types::available();
+    $image_types = array_combine($image_types, $image_types);
+    $form['magick_extension'] = [
+      '#type' => 'select',
+      '#title' => $this->t('ImageMagick extension'),
+      '#description' => $this->t('Extension to use for pixel comparison images.'),
+      '#options' => $image_types,
+      '#empty_option' => $this->t('Select an image type'),
+      '#default_value' => $config->get('system.magick_extension'),
+      '#required' => TRUE,
+    ];
     $url = 'https://github.com/spatie/browsershot#custom-node-module-path';
     $label = $this->t('more details');
     $node_modules_details_link = $this->getFormDescriptionLinkFromUrl($url, $label);

@@ -57,10 +57,10 @@ class UriCaptureResponse extends CaptureResponseBase {
   /**
    * {@inheritdoc}
    */
-  public static function compare(CaptureResponseInterface $a, CaptureResponseInterface $b, array $compare_utilities, array $tags = []) {
+  public static function compare(CaptureResponseInterface $a, CaptureResponseInterface $b, array $compare_utilities, array $tags = [], array $data = []) {
     // If tags were supplied defer to base class behavior.
     if (!empty($tags)) {
-      return parent::compare($a, $b, $compare_utilities, $tags);
+      return parent::compare($a, $b, $compare_utilities, $tags, $data);
     }
 
     // Otherwise do a simple line-by-line comparison.

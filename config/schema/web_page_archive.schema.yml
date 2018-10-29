@@ -186,3 +186,7 @@ views.field.web_page_archive_serialized_comparison_results:
     key:
       type: string
       label: 'Which key should be displayed'
+
+web_page_archive.comparison_utility_settings.web_page_archive_file_size_compare:
+  type: string
+  label: 'File Size'

@@ -1,19 +1,19 @@
 <?php
 
-namespace Drupal\wpa_screenshot_capture\Plugin\ComparisonUtility;
+namespace Drupal\web_page_archive\Plugin\ComparisonUtility;
 
 use Drupal\web_page_archive\Plugin\CaptureResponseInterface;
 use Drupal\web_page_archive\Plugin\ComparisonUtilityBase;
-use Drupal\wpa_screenshot_capture\Plugin\CompareResponse\FileSizeScreenshotVarianceCompareResponse;
+use Drupal\web_page_archive\Plugin\CompareResponse\FileSizeVarianceCompareResponse;
 
 /**
- * Captures screenshot of a remote uri.
+ * Compares file size of two captures.
  *
  * @ComparisonUtility(
- *   id = "wpa_screenshot_capture_file_size_compare",
- *   label = @Translation("Screenshot: File Size", context = "Web Page Archive"),
+ *   id = "web_page_archive_file_size_compare",
+ *   label = @Translation("File: Size", context = "Web Page Archive"),
  *   description = @Translation("Compares images based on file size.", context = "Web Page Archive"),
- *   tags = {"screenshot"}
+ *   tags = {"file"}
  * )
  */
 class FileSizeComparisonUtility extends ComparisonUtilityBase {
@@ -21,7 +21,7 @@ class FileSizeComparisonUtility extends ComparisonUtilityBase {
   /**
    * {@inheritdoc}
    */
-  public function compare(CaptureResponseInterface $a, CaptureResponseInterface $b) {
+  public function compare(CaptureResponseInterface $a, CaptureResponseInterface $b, array $data = []) {
     $size1 = $a->getCaptureSize();
     $size2 = $b->getCaptureSize();
     $variance = 100 * abs($size2 - $size1) / $size1;
@@ -30,7 +30,7 @@ class FileSizeComparisonUtility extends ComparisonUtilityBase {
       return $this->compareResponseFactory->getSameCompareResponse();
     }
 
-    $response = new FileSizeScreenshotVarianceCompareResponse($variance);
+    $response = new FileSizeVarianceCompareResponse($variance);
     $response->setFile1Size($size1);
     $response->setFile2Size($size2);
     return $response;

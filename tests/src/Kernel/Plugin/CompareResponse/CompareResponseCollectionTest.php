@@ -32,12 +32,7 @@ class CompareResponseCollectionTest extends EntityStorageTestBase {
     $expected = [
       ['#markup' => 'No comparison could be performed.'],
       ['#markup' => 'Captures are identical.'],
-      [
-        '#attached' => ['library' => ['web_page_archive/admin']],
-        'link' => ['#title' => 'Display'],
-        'size1' => ['#markup' => 'Size 1: 139.09 KB'],
-        'size2' => ['#markup' => 'Size 2: 3.37 MB'],
-      ],
+      [],
     ];
     $data = [];
     $run_comparison = $this->container->get('entity_type.manager')->getStorage('wpa_run_comparison')->create($data);
@@ -71,24 +66,7 @@ class CompareResponseCollectionTest extends EntityStorageTestBase {
     $expected = [
       ['#markup' => 'No comparison could be performed.'],
       ['#markup' => 'Captures are identical.'],
-      [
-        '#attached' => [
-          'library' => ['web_page_archive/diff'],
-        ],
-        'diff' => [
-          '#type' => 'table',
-          '#attributes' => ['class' => ['wpa-diff']],
-          '#header' => [['data' => 'Run #1'], ['data' => 'Run #2']],
-          '#rows' => [
-            [
-              ['data' => '-'],
-              ['data' => ['#markup' => '<span class="diffchange">b</span>']],
-              ['data' => '+'],
-              ['data' => ['#markup' => '<span class="diffchange">d</span>']],
-            ],
-          ],
-        ],
-      ],
+      [],
     ];
     $options = ['mode' => 'full'];
     $this->assertArraySubset($expected, $response_collection->renderable($options));

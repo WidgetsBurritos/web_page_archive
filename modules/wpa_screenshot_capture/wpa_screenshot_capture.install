@@ -94,3 +94,14 @@ function wpa_screenshot_capture_update_8004() {
     }
   }
 }
+
+/**
+ * Sets default magick_path.
+ */
+function wpa_screenshot_capture_update_8005() {
+  $config = \Drupal::configFactory()->getEditable('web_page_archive.wpa_screenshot_capture.settings');
+  $config->set('system.magick_path', '');
+  $config->set('system.magick_color', '#ccc000');
+  $config->set('system.magick_extension', 'png');
+  $config->save();
+}

@@ -147,7 +147,7 @@ abstract class CaptureResponseBase implements CaptureResponseInterface {
   /**
    * Performs a comparison two responses.
    */
-  public static function compare(CaptureResponseInterface $a, CaptureResponseInterface $b, array $compare_utilities, array $tags = []) {
+  public static function compare(CaptureResponseInterface $a, CaptureResponseInterface $b, array $compare_utilities, array $tags = [], array $data = []) {
     $comparison_utility_manager = \Drupal::service('plugin.manager.comparison_utility');
     $response_factory = \Drupal::service('web_page_archive.compare.response');
     $response_collection = $response_factory->getCompareResponseCollection();
@@ -156,7 +156,7 @@ abstract class CaptureResponseBase implements CaptureResponseInterface {
         $instance = $comparison_utility_manager->createInstance($compare_utility);
         foreach ($tags as $tag) {
           if ($instance->isApplicable($tag)) {
-            $comparison_response = $instance->compare($a, $b);
+            $comparison_response = $instance->compare($a, $b, $data);
             $response_collection->addResponse($comparison_response);
           }
         }
