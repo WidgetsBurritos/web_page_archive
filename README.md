@@ -1,12 +1,14 @@
 # Web Page Archive
 
-The Web Page Archive module allows you to use Drupal to perform periodic snapshots on local and remote websites based of a list of URLs or XML sitemaps.
+The Web Page Archive module allows you to use Drupal to perform periodic snapshots and visual regression testing on local and remote websites based of a list of URLs or XML sitemaps, all within the familiar Drupal admin interface.
+
+Watch [Texas Camp 2018 - Archiving and Visual Regression using Drupal 8](https://www.youtube.com/watch?v=G_gEr8V1Tjo) for a basic walkthrough of functionality and a demonstration.
 
 See [Project Roadmap](https://www.drupal.org/node/2916976) to see what's on the horizon.
 
-## Capture Utilities
+## Capture Utilities (Archiving)
 
-Snapshots are performed by *Capture Utility* plugins. Web Page Archive provides the following capture utilities:
+Snapshots are performed by Capture Utility plugins. Web Page Archive provides the following capture utilities:
 
 | Plugin | Machine Name | Purpose |
 |-----------------|------------------------|-----------------------------------------------------------------------|
@@ -14,7 +16,18 @@ Snapshots are performed by *Capture Utility* plugins. Web Page Archive provides 
 | Screenshot Capture Utility | wpa_screenshot_capture | Capture Screenshots of URLs (uses [Headless Chrome](https://developers.google.com/web/updates/2017/04/headless-chrome#screenshots) or [PhantomJS](http://phantomjs.org/)). |
 | Skeleton Capture Utility | wpa_skeleton_capture | Example code that provides a template for building additional capture utility plugins. |
 
-Other modules extending Web Page Archive:
+## Comparison Utilities (Visual Regression)
+
+Comparisons are performed by Comparison Utility plugins. Web Page Archive provides the following capture utilities:
+
+| Plugin | Machine Name | Purpose | Applies to |
+|-----------------|------------------------|-----------------------------------------------------------------------|---------|
+| File: Size | web_page_archive_file_size_compare | Compares files based on size | Screenshots, HTML |
+| HTML: Diff | wpa_html_diff_compare | Compares HTML line-by-line | HTML |
+| Screenshot: Pixel | wpa_screenshot_capture_pixel_compare | Compares images and generates diff images (uses ImageMagick 7.0+) | Screenshots |
+| Screenshot: Slider | wpa_screenshot_capture_slider_compare | Compares images via slider | Screenshots |
+
+## Other modules extending Web Page Archive:
 
 - [Performance Budget (Experimental)](https://www.drupal.org/project/performance_budget) - Creates and manages performance budgets for websites.
 - [Configuration Archive (Experimental)](https://www.drupal.org/project/configuration_archive) - Creates and maintains snapshots of system configurations over time.
@@ -33,6 +46,8 @@ See the following guides for installing web page archive and capture utility dep
 - [Getting Started with Web Page Archive](https://www.drupal.org/docs/8/modules/web-page-archive/getting-started-with-the-web-page-archive-module)
 - [Installing Headless Chrome](https://www.drupal.org/docs/8/modules/web-page-archive/installing-headless-chrome-or-chromium)
 - [Installing PhantomJS](https://www.drupal.org/docs/8/modules/web-page-archive/installing-phantomjs)
+- [Installing ImageMagick](https://www.drupal.org/docs/8/modules/web-page-archive/getting-started-with-web-page-archive/installing-imagemagick)
+- [Comparing HTML and Screenshots](https://www.drupal.org/docs/8/modules/web-page-archive/getting-started-with-web-page-archive/comparing-html-and-screenshots)
 - [Uninstalling Web Page Archive](https://www.drupal.org/docs/8/modules/web-page-archive/uninstalling-web-page-archive)
 
 ## Contributing
@@ -62,5 +77,7 @@ Please follow the [Drupal Coding Standards](https://www.drupal.org/docs/develop/
 - David Stinemetze (aka @WidgetsBurritos) - [Drupal](https://www.drupal.org/u/widgetsburritos) / [GitHub](https://github.com/WidgetsBurritos)
 - David Porter (aka @bighappyface) - [Drupal](https://www.drupal.org/u/bighappyface) / [GitHub](https://github.com/bighappyface)
 - Paul Maddern (aka @pobster) - [Drupal](https://www.drupal.org/u/pobster) / [GitHub](https://github.com/pobtastic)
+- Adrianna Flores (aka @vessel_adrift)
+[Drupal](https://www.drupal.org/u/vessel_adrift) / [GitHub](https://github.com/xinbin)
 
 This project has been sponsored by [Rackspace](https://www.rackspace.com).
