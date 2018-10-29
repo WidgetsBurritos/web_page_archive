@@ -1,10 +1,26 @@
 CHANGELOG for Web Page Archive for Drupal 8
 
-Web Page Archive 8.x-1.x-dev
+Web Page Archive 8.x-2.0 (2018-10-29)
 ----------------------------------------------
 #2931285 by WidgetsBurritos, bighappyface: Diff Form and Batch Processing
 #2935291 by dpi: Add GPL License
 #2935513 by WidgetsBurritos: Add a Change Log
+#2932529 by WidgetsBurritos, bighappyface: Diff Summary View
+#2932530 by WidgetsBurritos, bighappyface: Diff Base Path Stripping Option
+#2932533 by WidgetsBurritos, bighappyface: Comparison Criteria for UriCaptureResponse
+#2932534 by WidgetsBurritos: Comparison Criteria for HtmlCaptureResponse
+#2936373 by WidgetsBurritos, bighappyface: Comparison Criteria for ScreenshotCaptureResponse - Before & After
+#2937229 by WidgetsBurritos, bighappyface: All captures showing same file size
+#2937233 by WidgetsBurritos, bighappyface: Screenshot Before/After Redraw Issue
+#2935677 by WidgetsBurritos, bighappyface: Add run titles to comparison run view
+#2940171 by rickmcdux: Make GPL versions consistent
+#2940064 by WidgetsBurritos, xinbin, bighappyface: Introduce comparison utilities
+#2935854 by dishabhadra, WidgetsBurritos: Route overlap
+#2998919 by WidgetsBurritos, bighappyface: Test failures on dev branch for Drupal 8.6.x (#89)
+#3009269 by WidgetsBurritos, pobster: Auto-Complete Broken in Drupal 8.6+
+#2940351 by WidgetsBurritos, vessel_adrift: Relocate CompareResponseCollection functionality to CaptureResponseBase
+#2936374 by WidgetsBurritos, vessel_adrift: Comparison Criteria for ScreenshotCaptureResponse - Image Diff
+#2932535 by WidgetsBurritos: Run Comparison Documentation
 
 
 Web Page Archive 8.x-1.0 (2017-12-14)
