@@ -11,7 +11,7 @@ class FileSizeVarianceCompareResponse extends VarianceCompareResponse {
    * {@inheritdoc}
    */
   public static function getId() {
-    return 'wpa_file_size_screenshot_variance_compare_response';
+    return 'wpa_file_size_variance_compare_response';
   }
 
   /**

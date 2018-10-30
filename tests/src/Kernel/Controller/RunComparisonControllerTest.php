@@ -3,6 +3,8 @@
 namespace Drupal\Tests\web_page_archive\Kernel\Controller;
 
 use Drupal\web_page_archive\Plugin\CaptureResponse\UriCaptureResponse;
+use Drupal\web_page_archive\Plugin\CompareResponse\CompareResponseCollection;
+use Drupal\web_page_archive\Plugin\CompareResponse\FileSizeVarianceCompareResponse;
 use Drupal\Tests\web_page_archive\Kernel\EntityStorageTestBase;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -332,7 +334,10 @@ class RunComparisonControllerTest extends EntityStorageTestBase {
   public function testMarkCompareComplete() {
     $strip_patterns = ['www.', 'staging.'];
     $run_comparison = $this->getRunComparisonEntity('Compare job', 'My run entity', 2, 'string', $strip_patterns);
-    $this->setMockCompareResults($run_comparison, TRUE);
+    $response_collection = new CompareResponseCollection();
+    $response_collection->addResponse(new FileSizeVarianceCompareResponse(45));
+    $response_collection->addResponse(new FileSizeVarianceCompareResponse(34));
+    $this->setMockCompareResults($run_comparison, TRUE, $response_collection);
 
     $expected = [
       '1' => [
@@ -348,6 +353,25 @@ class RunComparisonControllerTest extends EntityStorageTestBase {
       ],
     ];
     $this->assertArraySubset($expected, $run_comparison->getResults());
+
+    // Confirm normalized variance gets added to the database.
+    $normalized_variance = $this->runComparisonStorage->getNormalizedVarianceAtIndex($run_comparison->id());
+    $expected = [
+      (object) [
+        'cid' => $run_comparison->id(),
+        'response_index' => '0',
+        'plugin_id' => 'wpa_file_size_variance_compare_response',
+        'variance' => '45',
+      ],
+      (object) [
+        'cid' => $run_comparison->id(),
+        'response_index' => '1',
+        'plugin_id' => 'wpa_file_size_variance_compare_response',
+        'variance' => '34',
+      ],
+    ];
+    $this->assertEquals($expected, $normalized_variance);
+
   }
 
   /**

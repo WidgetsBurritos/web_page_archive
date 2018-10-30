@@ -6,7 +6,7 @@ use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\File\FileSystem;
 use Drupal\web_page_archive\Plugin\CaptureResponseInterface;
 use Drupal\web_page_archive\Plugin\CompareResponseFactory;
-use Drupal\web_page_archive\Plugin\ComparisonUtilityBase;
+use Drupal\web_page_archive\Plugin\FilterableComparisonUtilityBase;
 use Drupal\wpa_screenshot_capture\Plugin\CompareResponse\PixelScreenshotVarianceCompareResponse;
 use Symfony\Component\Process\Process;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -21,7 +21,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   tags = {"screenshot"}
  * )
  */
-class PixelComparisonUtility extends ComparisonUtilityBase {
+class PixelComparisonUtility extends FilterableComparisonUtilityBase {
 
   /**
    * {@inheritdoc}
@@ -96,6 +96,15 @@ class PixelComparisonUtility extends ComparisonUtilityBase {
     $process = new Process([$magick, '--version']);
     $process->run();
     return (substr($process->getOutput(), 0, 22) === 'Version: ImageMagick 7');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getFilterCriteria() {
+    return [
+      PixelScreenshotVarianceCompareResponse::getId() => $this->label(),
+    ];
   }
 
 }

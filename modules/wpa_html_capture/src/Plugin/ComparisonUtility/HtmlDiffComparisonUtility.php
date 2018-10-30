@@ -4,7 +4,7 @@ namespace Drupal\wpa_html_capture\Plugin\ComparisonUtility;
 
 use Drupal\Component\Diff\Diff;
 use Drupal\web_page_archive\Plugin\CaptureResponseInterface;
-use Drupal\web_page_archive\Plugin\ComparisonUtilityBase;
+use Drupal\web_page_archive\Plugin\FilterableComparisonUtilityBase;
 use Drupal\wpa_html_capture\Plugin\CompareResponse\HtmlVarianceCompareResponse;
 use Drupal\web_page_archive\Plugin\CompareResponse\TextDiffTrait;
 
@@ -18,7 +18,7 @@ use Drupal\web_page_archive\Plugin\CompareResponse\TextDiffTrait;
  *   tags = {"html"}
  * )
  */
-class HtmlDiffComparisonUtility extends ComparisonUtilityBase {
+class HtmlDiffComparisonUtility extends FilterableComparisonUtilityBase {
 
   use TextDiffTrait;
 
@@ -37,6 +37,15 @@ class HtmlDiffComparisonUtility extends ComparisonUtilityBase {
     $response = new HtmlVarianceCompareResponse($variance);
     $response->setDiff($diff);
     return $response;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getFilterCriteria() {
+    return [
+      HtmlVarianceCompareResponse::getId() => $this->label(),
+    ];
   }
 
 }

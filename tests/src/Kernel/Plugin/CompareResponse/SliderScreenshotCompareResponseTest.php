@@ -30,7 +30,7 @@ class SliderScreenshotCompareResponseTest extends EntityStorageTestBase {
 
     $strip_patterns = ['www.', 'staging.'];
     $run_comparison = $this->getRunComparisonEntity('Compare job', 'My run entity', 2, 'string', $strip_patterns);
-    $this->setMockCompareResults($run_comparison, TRUE);
+    $this->setMockCompareResults($run_comparison, TRUE, $response);
 
     $options = [
       'run_comparison' => $run_comparison,

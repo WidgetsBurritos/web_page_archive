@@ -3,7 +3,7 @@
 namespace Drupal\web_page_archive\Plugin\ComparisonUtility;
 
 use Drupal\web_page_archive\Plugin\CaptureResponseInterface;
-use Drupal\web_page_archive\Plugin\ComparisonUtilityBase;
+use Drupal\web_page_archive\Plugin\FilterableComparisonUtilityBase;
 use Drupal\web_page_archive\Plugin\CompareResponse\FileSizeVarianceCompareResponse;
 
 /**
@@ -16,7 +16,7 @@ use Drupal\web_page_archive\Plugin\CompareResponse\FileSizeVarianceCompareRespon
  *   tags = {"file"}
  * )
  */
-class FileSizeComparisonUtility extends ComparisonUtilityBase {
+class FileSizeComparisonUtility extends FilterableComparisonUtilityBase {
 
   /**
    * {@inheritdoc}
@@ -34,6 +34,15 @@ class FileSizeComparisonUtility extends ComparisonUtilityBase {
     $response->setFile1Size($size1);
     $response->setFile2Size($size2);
     return $response;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getFilterCriteria() {
+    return [
+      FileSizeVarianceCompareResponse::getId() => $this->label(),
+    ];
   }
 
 }

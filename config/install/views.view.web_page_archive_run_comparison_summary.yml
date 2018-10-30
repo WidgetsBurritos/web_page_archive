@@ -449,6 +449,93 @@ display:
             default_group_multiple: {  }
             group_items: {  }
           plugin_id: boolean
+        plugin_id:
+          id: plugin_id
+          table: web_page_archive_comparison_variance
+          field: plugin_id
+          relationship: cid
+          group_type: group
+          admin_label: ''
+          operator: contains
+          value: {  }
+          group: 1
+          exposed: true
+          expose:
+            operator_id: plugin_id_op
+            label: 'Variance Type'
+            description: ''
+            use_operator: false
+            operator: plugin_id_op
+            identifier: plugin_id
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              administrator: '0'
+              wpa_admin: '0'
+              wpa_readonly: '0'
+            reduce: 0
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          plugin_id: web_page_archive_compare_response_filter
+        variance:
+          id: variance
+          table: web_page_archive_comparison_variance
+          field: variance
+          relationship: cid
+          group_type: group
+          admin_label: ''
+          operator: '>='
+          value:
+            min: ''
+            max: ''
+            value: '0'
+          group: 1
+          exposed: true
+          expose:
+            operator_id: variance_op
+            label: Variance
+            description: ''
+            use_operator: true
+            operator: variance_op
+            identifier: variance
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              administrator: '0'
+              wpa_admin: '0'
+              wpa_readonly: '0'
+            placeholder: ''
+            min_placeholder: ''
+            max_placeholder: ''
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          plugin_id: numeric
       sorts:
         cid:
           id: cid
@@ -541,6 +628,15 @@ display:
           admin_label: 'The second individual capture results'
           required: false
           plugin_id: standard
+        cid:
+          id: cid
+          table: web_page_archive_run_comparison_details
+          field: cid
+          relationship: vid
+          group_type: group
+          admin_label: 'The web page archive comparison variance details.'
+          required: false
+          plugin_id: standard
       arguments:
         id:
           id: id
@@ -583,6 +679,7 @@ display:
         operator: AND
         groups:
           1: AND
+      group_by: true
     cache_metadata:
       max-age: 0
       contexts:

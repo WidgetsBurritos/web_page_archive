@@ -165,6 +165,33 @@ views.filter.web_page_archive_capture_utility_filter:
             type: views.filter.group_item.in_operator
             label: 'Group item'
 
+views.filter.web_page_archive_compare_response_filter:
+  type: views_filter
+  label: 'Web page archive compare response filter'
+  mapping:
+    operator:
+      type: string
+      label: 'Operator'
+    value:
+      type: sequence
+      label: 'Values'
+      sequence:
+        type: string
+        label: 'Value'
+    expose:
+      type: mapping
+      label: 'Expose'
+      mapping:
+        reduce:
+          type: integer
+          label: 'Reduce'
+    group_info:
+      mapping:
+        group_items:
+          sequence:
+            type: views.filter.group_item.in_operator
+            label: 'Group item'
+
 views.field.web_page_archive_serialized_capture:
   type: views_field
   label: 'Serialized Capture Results'

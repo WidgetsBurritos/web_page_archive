@@ -195,6 +195,39 @@ function web_page_archive_schema() {
       ],
     ],
   ];
+  $schema['web_page_archive_comparison_variance'] = [
+    'description' => 'Stores detailed comparison variances',
+    'fields' => [
+      'cid' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Maps to {wpa_run_comparison}.id.',
+      ],
+      'response_index' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Response index.',
+      ],
+      'plugin_id' => [
+        'type' => 'varchar_ascii',
+        'length' => 128,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'Which compare response type this is.',
+      ],
+      'variance' => [
+        'type' => 'float',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'How much variance exists between the two compare items.',
+      ],
+    ],
+    'primary key' => ['cid', 'response_index'],
+  ];
 
   return $schema;
 }
@@ -597,4 +630,46 @@ function web_page_archive_update_8018() {
 
   \Drupal::entityDefinitionUpdateManager()
     ->installFieldStorageDefinition('comparison_utilities', 'wpa_run_comparison', 'wpa_run_comparison', $storage_definition);
+}
+
+/**
+ * Adds the web_page_archive_comparison_variance table.
+ */
+function web_page_archive_update_8201() {
+  $spec = [
+    'description' => 'Stores detailed comparison variances',
+    'fields' => [
+      'cid' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Maps to {wpa_run_comparison}.id.',
+      ],
+      'response_index' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Response index.',
+      ],
+      'plugin_id' => [
+        'type' => 'varchar_ascii',
+        'length' => 128,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'Which compare response type this is.',
+      ],
+      'variance' => [
+        'type' => 'float',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'How much variance exists between the two compare items.',
+      ],
+    ],
+    'primary key' => ['cid', 'response_index'],
+  ];
+
+  $schema = Database::getConnection()->schema();
+  $schema->createTable('web_page_archive_comparison_variance', $spec);
 }
