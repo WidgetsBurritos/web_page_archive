@@ -8,7 +8,7 @@ dependencies:
   - drupal:system (>= 8.3)
   - drupal:views
 test_dependencies:
-  - drupal:wpa_html_capture
-  - drupal:wpa_screenshot_capture
-  - drupal:wpa_skeleton_capture
+  - web_page_archive:wpa_html_capture
+  - web_page_archive:wpa_screenshot_capture
+  - web_page_archive:wpa_skeleton_capture
 php: 7.0
