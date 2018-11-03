@@ -145,6 +145,8 @@ class RunComparisonTest extends BrowserTestBase {
     $assert->pageTextContains('Exists in Run #1?');
     $assert->pageTextContains('Exists in Run #2?');
     $assert->pageTextContains('Variance Type');
+    $assert->pageTextContains('File: Size');
+    $assert->pageTextContains('Is greater than or equal to');
     $assert->pageTextContains('Variance: 23.3%');
     $assert->pageTextNotContains('Variance: -1%');
 

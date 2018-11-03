@@ -4,10 +4,9 @@ namespace Drupal\Tests\web_page_archive\Kernel\Plugin\ComparisonUtility;
 
 use Drupal\KernelTests\Core\Entity\EntityKernelTestBase;
 use Drupal\wpa_screenshot_capture\Plugin\CaptureResponse\ScreenshotCaptureResponse;
-use Drupal\wpa_screenshot_capture\Plugin\ComparisonUtility\FileSizeComparisonUtility;
 
 /**
- * Tests the functionality of the screenshot capture response.
+ * Tests the functionality of the file size comparison utility.
  *
  * @group web_page_archive
  */
@@ -20,10 +19,7 @@ class FileSizeComparisonUtilityTest extends EntityKernelTestBase {
    *
    * @var array
    */
-  public static $modules = [
-    'web_page_archive',
-    'wpa_screenshot_capture',
-  ];
+  public static $modules = ['web_page_archive'];
 
   /**
    * {@inheritdoc}
@@ -50,19 +46,27 @@ class FileSizeComparisonUtilityTest extends EntityKernelTestBase {
     $this->assertEquals('Drupal\web_page_archive\Plugin\CompareResponse\SameCompareResponse', get_class($response));
     $this->assertEquals(0, $response->getVariance());
 
-    // Assert screenshots have 0.6% file size variance.
+    // Assert files have 0.6% file size variance.
     $capture1 = new ScreenshotCaptureResponse($file1, 'http://www.drupal.org/');
     $capture2 = new ScreenshotCaptureResponse($file2, 'http://www.drupal.org/');
     $response = $this->fileSizeComparisonUtility->compare($capture1, $capture2);
     $this->assertEquals('Drupal\web_page_archive\Plugin\CompareResponse\FileSizeVarianceCompareResponse', get_class($response));
     $this->assertEquals(0.6, $response->getVariance());
 
-    // Assert screenshots have 0.6% file size variance (reversed order).
+    // Assert files have 0.6% file size variance (reversed order).
     $capture1 = new ScreenshotCaptureResponse($file1, 'http://www.drupal.org/');
     $capture2 = new ScreenshotCaptureResponse($file2, 'http://www.drupal.org/');
     $response = $this->fileSizeComparisonUtility->compare($capture2, $capture1);
     $this->assertEquals('Drupal\web_page_archive\Plugin\CompareResponse\FileSizeVarianceCompareResponse', get_class($response));
     $this->assertEquals(0.6, $response->getVariance());
+  }
+
+  /**
+   * Tests FileSizeComparisonUtility::getFilterCriteria().
+   */
+  public function testGetFilterCriteria() {
+    $expected = ['wpa_file_size_variance_compare_response' => 'File: Size'];
+    $this->assertEquals($expected, $this->fileSizeComparisonUtility->getFilterCriteria());
   }
 
 }

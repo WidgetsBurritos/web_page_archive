@@ -14,6 +14,9 @@ use Drupal\web_page_archive\Controller\RunComparisonController;
 function web_page_archive_post_update_2937227_normalize_compare_response_variances(&$sandbox) {
   if (!isset($sandbox['total'])) {
     $sandbox['total'] = \Drupal::entityQuery('wpa_run_comparison')->count()->execute();
+    if ($sandbox['total'] == 0) {
+      return;
+    }
     $sandbox['progress'] = 0;
   }
 
@@ -35,7 +38,7 @@ function web_page_archive_post_update_2937227_normalize_compare_response_varianc
     $sandbox['progress']++;
   }
 
-  \Drupal::messenger()->addStatus($sandbox['progress'] . ' taxonomy terms processed out of ' . $sandbox['total']);
+  \Drupal::messenger()->addStatus($sandbox['progress'] . ' run comparisons processed out of ' . $sandbox['total']);
   $sandbox['#finished'] = ($sandbox['progress'] / $sandbox['total']);
 }
 

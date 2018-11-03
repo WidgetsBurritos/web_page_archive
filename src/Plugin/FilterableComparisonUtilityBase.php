@@ -3,7 +3,7 @@
 namespace Drupal\web_page_archive\Plugin;
 
 /**
- * Base class for image comparison utility plugins.
+ * Base class for filterable comparison utility plugins.
  */
 abstract class FilterableComparisonUtilityBase extends ComparisonUtilityBase {
 
