@@ -429,11 +429,14 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $assert = $this->assertSession();
 
     // Grab the URL of the front page.
+    $base_url = $this->getUrl();
     $urls = [
       // Front page is crawlable via default Drupal robots.txt.
-      $this->getUrl(),
+      $base_url,
+      // Front page is crawlable via default Drupal robots.txt.
+      $base_url . '?somearg=1',
       // Login page is not crawlable via default Drupal robots.txt.
-      $this->getUrl() . '/user/login/',
+      $base_url . '/user/login/',
     ];
 
     // Login.
@@ -482,19 +485,59 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $this->clickLink('View Details');
 
     // Parse file path.
+    $file_paths = [];
     if (preg_match_all('/<span class="wpa-hidden wpa-file-path">(.*\.html)<\/span>/', $this->getSession()->getPage()->getContent(), $matches)) {
-      $file_path = $matches[1][0];
+      $file_paths = $matches[1];
 
       // Despite attempting to capture two URLs we should only capture 1 due
       // to robots.txt restrictions.
-      $this->assertEquals(1, count($matches[1]));
+      $this->assertEquals(2, count($matches[1]));
     }
     else {
-      $file_path = 'this-test-will-fail.html';
+      $file_paths[] = 'this-test-will-fail.html';
     }
 
-    // Assert file exists.
-    $this->assertTrue(file_exists($file_path));
+    // Assert files exist.
+    $this->assertTrue(file_exists($file_paths[0]));
+    $this->assertTrue(file_exists($file_paths[1]));
+
+    // Attempt to download captures.
+    $this->drupalGet('admin/config/system/web-page-archive/jobs/localhost');
+    $this->clickLink('Download Run');
+    $assert->pageTextContains('You can download all images from the specified run as a *.zip file.');
+    $this->drupalPostForm(NULL, [], t('Download Run'));
+
+    // Ensure our response contains the expected headers.
+    $assert->responseHeaderEquals('Content-Type', 'application/zip;charset=UTF-8');
+    $assert->responseHeaderContains('Content-Disposition', 'attachment; filename="localhost-');
+
+    // Ensure our response is a valid zip file containing the expected files.
+    $tmp_file = \file_directory_temp() . '/tmp.zip';
+    file_put_contents($tmp_file, $this->getSession()->getPage()->getContent());
+    $zip = new \ZipArchive();
+    $zip->open($tmp_file);
+    $this->assertEquals(3, $zip->numFiles);
+
+    // Verify the first file.
+    $file_name_1 = basename($file_paths[0]);
+    $this->assertEquals($file_name_1, $zip->statIndex(0)['name']);
+    $this->assertEquals(file_get_contents($file_paths[0]), $zip->getFromIndex(0));
+
+    // Verify the second file.
+    $file_name_2 = basename($file_paths[1]);
+    $this->assertEquals($file_name_2, $zip->statIndex(1)['name']);
+    $this->assertEquals(file_get_contents($file_paths[1]), $zip->getFromIndex(1));
+
+    // Verify the summary file.
+    $this->assertEquals('summary.csv', $zip->statIndex(2)['name']);
+    $expected_summary = implode([
+      'Url,File',
+      "{$base_url},{$file_name_1}",
+      "{$base_url}?somearg=1,{$file_name_2}",
+      '',
+    ], PHP_EOL);
+    $this->assertEquals($expected_summary, $zip->getFromIndex(2));
+    $zip->close();
 
     // Delete the config entity.
     $this->drupalGet('admin/config/system/web-page-archive/jobs/localhost/delete');
@@ -505,9 +548,10 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     // Simulate a cron run.
     web_page_archive_cron();
 
-    // Assert file and directory no longer exist, but that the containing
+    // Assert files and directory no longer exist, but that the containing
     // directory still does exist (i.e. make sure we're only deleting our run).
-    $this->assertFalse(file_exists($file_path));
+    $this->assertFalse(file_exists($file_paths[0]));
+    $this->assertFalse(file_exists($file_paths[1]));
     $this->assertFalse(file_exists('public://web-page-archive/wpa_html_capture/localhost'));
     $this->assertTrue(file_exists('public://web-page-archive/wpa_html_capture'));
 
