@@ -56,7 +56,7 @@ class ScreenshotCaptureUtility extends ConfigurableCaptureUtilityBase {
     $config = \Drupal::configFactory()->get('web_page_archive.wpa_screenshot_capture.settings');
     $screenCapture->binPath = dirname($config->get('system.phantomjs_path')) . '/';
     if (!file_exists($screenCapture->binPath . 'phantomjs')) {
-      throw new \Exception($this->t('phantomjs could not be found at "@path"', ['@path' => $screenCapture->binPath . 'phantomjs']));
+      throw new \Exception("phantomjs could not be found at {$screenCapture->binPath}phantomjs");
     }
     $screenCapture->setWidth((int) $this->configuration['width']);
     if (!empty($this->configuration['background_color'])) {
@@ -87,11 +87,11 @@ class ScreenshotCaptureUtility extends ConfigurableCaptureUtilityBase {
     $capture_utility_settings = $config->get('web_page_archive.wpa_screenshot_capture.settings')->get('system');
 
     if (!file_exists($system_settings['npm_path'])) {
-      throw new \Exception($this->t('npm could not be found at "@path"', ['@path' => $system_settings['npm_path']]));
+      throw new \Exception("npm could not be found at '{$system_settings['npm_path']}'");
     }
 
     if (!file_exists($system_settings['node_path'])) {
-      throw new \Exception($this->t('node could not be found at "@path"', ['@path' => $system_settings['node_path']]));
+      throw new \Exception("npm could not be found at '{$system_settings['node_path']}'");
     }
 
     // Capture screenshot.
@@ -250,7 +250,7 @@ class ScreenshotCaptureUtility extends ConfigurableCaptureUtilityBase {
     $form['phantomjs_path'] = [
       '#type' => 'textfield',
       '#title' => $this->t('PhantomJS path'),
-      '#description' => $this->t('Full path to phantomjs binary on your system. (e.g. /usr/local/bin/phantomjs)'),
+      '#description' => $this->t('Full path to phantomjs binary on your system. (e.g. /usr/local/bin/phantomjs) *Important*: Due to package dependency binary must be called "phantomjs" or this will not work.'),
       '#default_value' => $config->get('system.phantomjs_path'),
     ];
     $form['magick_path'] = [
