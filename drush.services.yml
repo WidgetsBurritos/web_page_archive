@@ -1,0 +1,5 @@
+services:
+  web_page_archive.commands:
+    class: \Drupal\web_page_archive\Commands\WebPageArchiveCommands
+    tags:
+      - { name: drush.command }

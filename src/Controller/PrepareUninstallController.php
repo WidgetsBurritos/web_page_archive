@@ -20,7 +20,7 @@ class PrepareUninstallController extends ControllerBase {
     if ($run = $storage->loadMultiple($run_ids)) {
       $storage->delete($run);
     }
-    $context['finished'] = (int) count($subscriber_ids) < 100;
+    $context['finished'] = (int) count($run_ids) < 100;
   }
 
   /**
