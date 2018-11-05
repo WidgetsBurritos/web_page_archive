@@ -169,8 +169,35 @@ class RunComparisonController extends ControllerBase {
       'variance' => $data['variance'],
     ];
 
-    \Drupal::entityTypeManager()->getStorage('wpa_run_comparison')
+    $comparison_id = \Drupal::entityTypeManager()->getStorage('wpa_run_comparison')
       ->addResult($data['run_comparison'], $store_data);
+
+    static::normalizeCompareResponseData($comparison_id, $data['compare_response']);
+  }
+
+  /**
+   * Normalizes compare response data.
+   */
+  public static function normalizeCompareResponseData($comparison_id, $compare_response, $response_index = 0) {
+    // Ensure our response is a valid class.
+    if (get_class($compare_response) !== '__PHP_Incomplete_Class') {
+      // If a collection, look at each individual item.
+      if ($compare_response->getId() == 'wpa_multiple_compare_response') {
+        foreach ($compare_response->getResponses() as $idx => $response) {
+          static::normalizeCompareResponseData($comparison_id, $response, $idx);
+        }
+      }
+      // If single response and a valid response, then normalize data.
+      elseif (method_exists($compare_response, 'getVariance')) {
+        $row = [
+          'cid' => $comparison_id,
+          'response_index' => $response_index,
+          'plugin_id' => $compare_response->getId(),
+          'variance' => $compare_response->getVariance(),
+        ];
+        \Drupal::entityTypeManager()->getStorage('wpa_run_comparison')->addNormalizedVariance($row);
+      }
+    }
   }
 
   /**

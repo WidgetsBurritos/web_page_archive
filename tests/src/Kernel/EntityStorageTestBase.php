@@ -5,6 +5,7 @@ namespace Drupal\Tests\web_page_archive\Kernel;
 use Drupal\KernelTests\Core\Entity\EntityKernelTestBase;
 use Drupal\web_page_archive\Controller\RunComparisonController;
 use Drupal\web_page_archive\Entity\RunComparison;
+use Drupal\web_page_archive\Plugin\CompareResponseInterface;
 
 /**
  * A base class for kernel tests that can create and store entities.
@@ -44,6 +45,7 @@ abstract class EntityStorageTestBase extends EntityKernelTestBase {
     // Install schemas and config.
     $this->installSchema('web_page_archive', 'web_page_archive_capture_details');
     $this->installSchema('web_page_archive', 'web_page_archive_run_comparison_details');
+    $this->installSchema('web_page_archive', 'web_page_archive_comparison_variance');
     $this->installEntitySchema('web_page_archive_run');
     $this->installEntitySchema('wpa_run_comparison');
     $this->installConfig(['web_page_archive']);
@@ -121,7 +123,7 @@ abstract class EntityStorageTestBase extends EntityKernelTestBase {
   /**
    * Sets mock compare results.
    */
-  protected function setMockCompareResults(RunComparison $run_comparison, $has_right = FALSE) {
+  protected function setMockCompareResults(RunComparison $run_comparison, $has_right = FALSE, CompareResponseInterface $compare_response = NULL) {
     // Create initial array.
     $data = [
       'url' => 'http://www.homestarrunner.com',
@@ -133,6 +135,7 @@ abstract class EntityStorageTestBase extends EntityKernelTestBase {
       'right_id' => $has_right ? $run_comparison->getRun2Id() : NULL,
       'run_comparison' => $run_comparison,
       'variance' => 53,
+      'compare_response' => $compare_response,
     ];
     $this->runComparisonController->markCompareComplete($data);
   }

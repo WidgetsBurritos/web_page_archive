@@ -116,6 +116,57 @@ class RunComparisonViewsData extends EntityViewsData {
       ['field' => 'langcode', 'left_field' => 'langcode'],
     ];
 
+    // Setup relationship to comparison variance table.
+    $data['web_page_archive_run_comparison_details']['cid']['relationship']['id'] = 'standard';
+    $data['web_page_archive_run_comparison_details']['cid']['relationship']['base'] = 'web_page_archive_comparison_variance';
+    $data['web_page_archive_run_comparison_details']['cid']['relationship']['base field'] = 'cid';
+    $data['web_page_archive_run_comparison_details']['cid']['relationship']['title'] = $this->t('Web Page Archive Comparison Variance Details');
+    $data['web_page_archive_run_comparison_details']['cid']['relationship']['label'] = $this->t('The web page archive comparison variance details.');
+    $data['web_page_archive_run_comparison_details']['cid']['relationship']['extra'] = [
+      ['field' => 'cid', 'left_field' => 'cid'],
+    ];
+
+    // Expose web_page_archive_comparison_variance table and fields to views.
+    $data['web_page_archive_comparison_variance'] = [];
+    $data['web_page_archive_comparison_variance']['table'] = [];
+    $data['web_page_archive_comparison_variance']['table']['group'] = t('Web page archive run comparison variance data');
+
+    $data['web_page_archive_comparison_variance']['cid'] = [
+      'title' => $this->t('Comparison ID'),
+      'help' => $this->t('The comparison ID.'),
+      'argument' => ['id' => 'numeric'],
+      'field' => ['id' => 'standard'],
+      'filter' => ['id' => 'numeric'],
+      'sort' => ['id' => 'standard'],
+    ];
+
+    $data['web_page_archive_comparison_variance']['response_index'] = [
+      'title' => $this->t('Response Index'),
+      'help' => $this->t('The response index.'),
+      'argument' => ['id' => 'numeric'],
+      'field' => ['id' => 'standard'],
+      'filter' => ['id' => 'numeric'],
+      'sort' => ['id' => 'standard'],
+    ];
+
+    $data['web_page_archive_comparison_variance']['plugin_id'] = [
+      'title' => $this->t('Plugin ID'),
+      'help' => $this->t('The compare response plugin ID.'),
+      'argument' => ['id' => 'string'],
+      'field' => ['id' => 'standard'],
+      'filter' => ['id' => 'web_page_archive_compare_response_filter'],
+      'sort' => ['id' => 'standard'],
+    ];
+
+    $data['web_page_archive_comparison_variance']['variance'] = [
+      'title' => $this->t('Variance'),
+      'help' => $this->t('Variance between two captures.'),
+      'argument' => ['id' => 'numeric'],
+      'field' => ['id' => 'standard'],
+      'filter' => ['id' => 'numeric'],
+      'sort' => ['id' => 'standard'],
+    ];
+
     return $data;
   }
 

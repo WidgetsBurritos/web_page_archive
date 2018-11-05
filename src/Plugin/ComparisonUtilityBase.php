@@ -152,6 +152,13 @@ abstract class ComparisonUtilityBase extends PluginBase implements ComparisonUti
   /**
    * {@inheritdoc}
    */
+  public function isFilterable() {
+    return FALSE;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function isApplicable($tag) {
     return in_array($tag, $this->getPluginDefinition()['tags']);
   }

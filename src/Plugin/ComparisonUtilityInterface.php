@@ -66,6 +66,11 @@ interface ComparisonUtilityInterface {
   public function isApplicable($tag);
 
   /**
+   * Indicates whether or not a comparison utility is filterable.
+   */
+  public function isFilterable();
+
+  /**
    * Performs a comparison between two capture responses.
    *
    * @return \Drupal\web_page_archive\Plugin\CompareResponseInterface

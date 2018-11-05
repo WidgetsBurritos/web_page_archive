@@ -2,6 +2,8 @@
 
 namespace Drupal\Tests\web_page_archive\Functional;
 
+use Drupal\web_page_archive\Plugin\CompareResponse\CompareResponseCollection;
+use Drupal\web_page_archive\Plugin\CompareResponse\FileSizeVarianceCompareResponse;
 use Drupal\Tests\BrowserTestBase;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -87,6 +89,9 @@ class RunComparisonTest extends BrowserTestBase {
     $comparison = $this->comparisonStorage->create($data);
     $comparison->save();
 
+    $response_collection = new CompareResponseCollection();
+    $response_collection->addResponse(new FileSizeVarianceCompareResponse(23.3));
+
     $data = [
       'delta1' => 1,
       'delta2' => 2,
@@ -98,9 +103,17 @@ class RunComparisonTest extends BrowserTestBase {
       'run2' => $run2->id(),
       'url' => 'http://www.zombo.com',
       'variance' => 23.3,
+      'compare_response' => $response_collection,
     ];
     $this->comparisonStorage->addResult($comparison, $data);
+    $this->comparisonStorage->addNormalizedVariance([
+      'cid' => $comparison->id(),
+      'response_index' => 0,
+      'plugin_id' => FileSizeVarianceCompareResponse::getId(),
+      'variance' => 23.3,
+    ]);
 
+    $response_collection = new CompareResponseCollection();
     $data = [
       'delta1' => 2,
       'delta2' => 3,
@@ -112,8 +125,15 @@ class RunComparisonTest extends BrowserTestBase {
       'run2' => $run2->id(),
       'url' => 'http://www.homestarrunner.com',
       'variance' => -1,
+      'compare_response' => $response_collection,
     ];
     $this->comparisonStorage->addResult($comparison, $data);
+    $this->comparisonStorage->addNormalizedVariance([
+      'cid' => $comparison->id(),
+      'response_index' => 1,
+      'plugin_id' => FileSizeVarianceCompareResponse::getId(),
+      'variance' => -1,
+    ]);
 
     // Login.
     $this->drupalLogin($this->authorizedAdminUser);
@@ -124,6 +144,9 @@ class RunComparisonTest extends BrowserTestBase {
     $assert->pageTextContains('URL');
     $assert->pageTextContains('Exists in Run #1?');
     $assert->pageTextContains('Exists in Run #2?');
+    $assert->pageTextContains('Variance Type');
+    $assert->pageTextContains('File: Size');
+    $assert->pageTextContains('Is greater than or equal to');
     $assert->pageTextContains('Variance: 23.3%');
     $assert->pageTextNotContains('Variance: -1%');
 

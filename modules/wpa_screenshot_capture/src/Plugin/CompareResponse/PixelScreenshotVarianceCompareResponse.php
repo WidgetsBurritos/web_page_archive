@@ -8,10 +8,10 @@ namespace Drupal\wpa_screenshot_capture\Plugin\CompareResponse;
 class PixelScreenshotVarianceCompareResponse extends ScreenshotVarianceCompareResponse {
 
   /**
-   * Creates a new VarianceCompareResponse object.
+   * Creates a new PixelScreenshotVarianceCompareResponse object.
    */
   public function __construct($variance, $compare_path) {
-    $this->variance = (float) $variance;
+    parent::__construct($variance);
     $this->pixelComparePath = $compare_path;
   }
 

@@ -3,6 +3,7 @@
 namespace Drupal\Tests\web_page_archive\Kernel\Plugin\CompareResponse;
 
 use Drupal\Tests\web_page_archive\Kernel\EntityStorageTestBase;
+use Drupal\web_page_archive\Plugin\CompareResponse\CompareResponseCollection;
 use Drupal\wpa_screenshot_capture\Plugin\CompareResponse\PixelScreenshotVarianceCompareResponse;
 
 /**
@@ -29,10 +30,14 @@ class PixelScreenshotVarianceCompareResponseTest extends EntityStorageTestBase {
     $empty_response = new PixelScreenshotVarianceCompareResponse(45, '');
     $invalid_response = new PixelScreenshotVarianceCompareResponse(45, '/path/to/nowhere');
     $valid_response = new PixelScreenshotVarianceCompareResponse(45, $valid_path);
+    $response_collection = new CompareResponseCollection();
+    $response_collection->addResponse($empty_response);
+    $response_collection->addResponse($invalid_response);
+    $response_collection->addResponse($valid_response);
 
     $strip_patterns = ['www.', 'staging.'];
     $run_comparison = $this->getRunComparisonEntity('Compare job', 'My run entity', 2, 'string', $strip_patterns);
-    $this->setMockCompareResults($run_comparison, TRUE);
+    $this->setMockCompareResults($run_comparison, TRUE, $response_collection);
 
     $options = [
       'run_comparison' => $run_comparison,
@@ -77,7 +82,7 @@ class PixelScreenshotVarianceCompareResponseTest extends EntityStorageTestBase {
 
     $strip_patterns = ['www.', 'staging.'];
     $run_comparison = $this->getRunComparisonEntity('Compare job', 'My run entity', 2, 'string', $strip_patterns);
-    $this->setMockCompareResults($run_comparison, TRUE);
+    $this->setMockCompareResults($run_comparison, TRUE, $response);
 
     $options = [
       'run_comparison' => $run_comparison,
