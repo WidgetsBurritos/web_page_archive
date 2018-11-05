@@ -91,7 +91,6 @@ class CompareResponseFilter extends InOperator {
    * {@inheritdoc}
    */
   protected function opEquals($field) {
-    // TODO: Check this:
     foreach ($this->value as $value) {
       $this->query->addWhere($this->options['group'], $field, $value, '=');
     }
