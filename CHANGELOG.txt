@@ -1,5 +1,14 @@
 CHANGELOG for Web Page Archive for Drupal 8
 
+Web Page Archive 8.x-2.1 (2018-11-05)
+----------------------------------------------
+Issue #2937227 by WidgetsBurritos, vessel_adrift: Variance filter
+Issue #2956141 by WidgetsBurritos, mikerastiello, vessel_adrift: Bulk Download
+Issue #2975917 by WidgetsBurritos, vessel_adrift: Drush 9 support
+Issue #3011372 & 2922939 by WidgetsBurritos, vessel_adrift: Inject CSS and greyscale
+Issue #2977939 by WidgetsBurritos, staniel25, adityaj, vessel_adrift: Maximum nesting issue
+Issue #3010618 by alonaoneill, WidgetsBurritos: Dependency namespacing in .info.yml
+
 Web Page Archive 8.x-2.0 (2018-10-29)
 ----------------------------------------------
 #2931285 by WidgetsBurritos, bighappyface: Diff Form and Batch Processing
