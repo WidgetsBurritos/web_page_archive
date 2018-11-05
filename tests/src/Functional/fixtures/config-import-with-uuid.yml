@@ -31,4 +31,6 @@ capture_utilities:
       background_color: '#abc123'
       image_type: jpg
       delay: 1000
+      css: ''
+      greyscale: false
 run_entity: 1915f871-7e08-4d53-9139-dc86b0d8e5a0
