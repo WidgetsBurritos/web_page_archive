@@ -163,6 +163,7 @@ class WebPageArchiveSettingsTest extends BrowserTestBase {
     $this->assertFieldByName('wpa_screenshot_capture[defaults][delay]', 0);
     $this->assertFieldByName('wpa_screenshot_capture[defaults][image_type]', 'png');
     $this->assertFieldByName('wpa_screenshot_capture[defaults][width]', 1280);
+    $this->assertFieldByName('wpa_screenshot_capture[defaults][css]', '');
     $this->assertFieldByName('wpa_screenshot_capture[system][phantomjs_path]', '');
     $this->assertFieldByName('wpa_screenshot_capture[system][magick_path]', '');
     $this->assertFieldByName('wpa_screenshot_capture[system][magick_color]', '#ccc000');

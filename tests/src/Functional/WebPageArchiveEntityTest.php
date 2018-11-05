@@ -120,6 +120,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $this->assertFieldByName('data[width]', '1280');
     $this->assertFieldByName('data[image_type]', 'png');
     $this->assertFieldByName('data[delay]', '0');
+    $this->assertFieldByName('data[css]', '');
 
     // Alter a few values and then submit.
     $this->drupalPostForm(
@@ -128,6 +129,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
         'data[width]' => '1400',
         'data[image_type]' => 'jpg',
         'data[delay]' => '250',
+        'data[css]' => 'body { font-weight: 900; }',
       ],
       t('Add capture utility')
     );
@@ -140,6 +142,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $this->assertFieldByName('data[width]', '1400');
     $this->assertFieldByName('data[image_type]', 'jpg');
     $this->assertFieldByName('data[delay]', '250');
+    $this->assertFieldByName('data[css]', 'body { font-weight: 900; }');
 
     // Attempt to image type.
     $this->drupalPostForm(

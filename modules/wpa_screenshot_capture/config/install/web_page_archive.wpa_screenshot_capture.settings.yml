@@ -10,3 +10,4 @@ defaults:
   image_type: png
   user_agent: WPA
   width: 1280
+  css: ''

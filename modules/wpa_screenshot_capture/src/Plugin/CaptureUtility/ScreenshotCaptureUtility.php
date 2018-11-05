@@ -103,6 +103,11 @@ class ScreenshotCaptureUtility extends ConfigurableCaptureUtilityBase {
       ->fullPage()
       ->setOption('viewport.width', (int) $this->configuration['width']);
 
+    $css = trim($this->configuration['css']);
+    if (!empty($css)) {
+      $screenCapture->setOption('addStyleTag', json_encode(['content' => $css]));
+    }
+
     if (!empty($system_settings['node_modules_path'])) {
       $screenCapture->setNodeModulePath($system_settings['node_modules_path']);
     }
@@ -168,6 +173,7 @@ class ScreenshotCaptureUtility extends ConfigurableCaptureUtilityBase {
       'delay' => $config->get('defaults.delay'),
       'background_color' => $config->get('defaults.background_color'),
       'image_type' => $config->get('defaults.image_type'),
+      'css' => $config->get('defaults.css'),
     ];
   }
 
@@ -224,6 +230,18 @@ class ScreenshotCaptureUtility extends ConfigurableCaptureUtilityBase {
       '#default_value' => $this->configuration['delay'],
       '#required' => TRUE,
     ];
+    $form['css'] = [
+      '#type' => 'textarea',
+      '#title' => $this->t('CSS'),
+      '#description' => $this->t('Additional CSS to apply prioring to capturing.'),
+      '#default_value' => $this->configuration['css'],
+      '#required' => FALSE,
+      '#states' => [
+        'visible' => [
+          'select[name="data[browser]"]' => ['value' => 'chrome'],
+        ],
+      ],
+    ];
 
     return $form;
   }
@@ -234,7 +252,14 @@ class ScreenshotCaptureUtility extends ConfigurableCaptureUtilityBase {
   public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
     parent::submitConfigurationForm($form, $form_state);
 
-    $fields = ['browser', 'width', 'image_type', 'background_color', 'delay'];
+    $fields = [
+      'browser',
+      'width',
+      'image_type',
+      'background_color',
+      'delay',
+      'css',
+    ];
 
     foreach ($fields as $field) {
       $this->configuration[$field] = $form_state->getValue($field);
