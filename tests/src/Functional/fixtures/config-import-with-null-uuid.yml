@@ -31,4 +31,5 @@ capture_utilities:
       image_type: jpg
       delay: 1000
       css: 'body { font-size: 30px; }'
+      greyscale: true
 run_entity: null

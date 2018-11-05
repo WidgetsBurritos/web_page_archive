@@ -9,6 +9,20 @@
  * Issue 3011372: Sets CSS value to empty string for existing config entities.
  */
 function wpa_screenshot_capture_post_update_3011372_set_default_css_value() {
+  _wpa_screenshot_capture_update_data_fields(['css' => '']);
+}
+
+/**
+ * Issue 2922939: Sets greyscale value to false for existing config entities.
+ */
+function wpa_screenshot_capture_post_update_2922939_set_default_greyscale_value() {
+  _wpa_screenshot_capture_update_data_fields(['greyscale' => FALSE]);
+}
+
+/**
+ * Helper function for updating the data array values in screenshot entities.
+ */
+function _wpa_screenshot_capture_update_data_fields(array $data = []) {
   $config_factory = \Drupal::configFactory();
   $config_prefix = 'web_page_archive.web_page_archive';
   $keys = $config_factory->listAll($config_prefix);
@@ -22,8 +36,12 @@ function wpa_screenshot_capture_post_update_3011372_set_default_css_value() {
     // Search for screenshot capture utilities, remove clip_width and set delay.
     foreach ($utilities as $key => $utility) {
       if ($utilities[$key]['id'] == 'wpa_screenshot_capture') {
-        $utilities[$key]['data']['css'] = '';
-        $changed = TRUE;
+        if (!empty($data)) {
+          foreach ($data as $data_key => $data_value) {
+            $utilities[$key]['data'][$data_key] = $data_value;
+          }
+          $changed = TRUE;
+        }
       }
     }
 

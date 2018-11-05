@@ -108,6 +108,11 @@ class ScreenshotCaptureUtility extends ConfigurableCaptureUtilityBase {
       $screenCapture->setOption('addStyleTag', json_encode(['content' => $css]));
     }
 
+    $greyscale = $this->configuration['greyscale'];
+    if ($greyscale) {
+      $screenCapture->greyscale();
+    }
+
     if (!empty($system_settings['node_modules_path'])) {
       $screenCapture->setNodeModulePath($system_settings['node_modules_path']);
     }
@@ -174,6 +179,7 @@ class ScreenshotCaptureUtility extends ConfigurableCaptureUtilityBase {
       'background_color' => $config->get('defaults.background_color'),
       'image_type' => $config->get('defaults.image_type'),
       'css' => $config->get('defaults.css'),
+      'greyscale' => $config->get('defaults.greyscale'),
     ];
   }
 
@@ -242,6 +248,17 @@ class ScreenshotCaptureUtility extends ConfigurableCaptureUtilityBase {
         ],
       ],
     ];
+    $form['greyscale'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Capture in Greyscale?'),
+      '#description' => $this->t('If checked, images will be captured in greyscale, which can help minimize file size.'),
+      '#default_value' => $this->configuration['greyscale'],
+      '#states' => [
+        'visible' => [
+          'select[name="data[browser]"]' => ['value' => 'chrome'],
+        ],
+      ],
+    ];
 
     return $form;
   }
@@ -259,6 +276,7 @@ class ScreenshotCaptureUtility extends ConfigurableCaptureUtilityBase {
       'background_color',
       'delay',
       'css',
+      'greyscale',
     ];
 
     foreach ($fields as $field) {

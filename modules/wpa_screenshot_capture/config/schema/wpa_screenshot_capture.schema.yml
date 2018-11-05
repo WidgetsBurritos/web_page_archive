@@ -23,6 +23,9 @@ web_page_archive.capture_utility.wpa_screenshot_capture:
     css:
       type: string
       label: 'CSS'
+    greyscale:
+      type: boolean
+      label: 'Greyscale'
 
 web_page_archive.wpa_screenshot_capture.settings:
   type: config_object
@@ -73,6 +76,9 @@ web_page_archive.wpa_screenshot_capture.settings:
         css:
           type: string
           label: 'CSS'
+        greyscale:
+          type: boolean
+          label: 'Greyscale'
 
 web_page_archive.comparison_utility_settings.wpa_screenshot_capture_pixel_compare:
   type: string

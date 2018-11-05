@@ -124,6 +124,7 @@ class WebPageArchiveConfigTest extends BrowserTestBase {
     $this->assertFieldByName('data[image_type]', 'jpg');
     $this->assertFieldByName('data[delay]', 1000);
     $this->assertFieldByName('data[css]', 'body { font-size: 30px; }');
+    $this->assertFieldChecked('data[greyscale]');
   }
 
 }
