@@ -11,7 +11,9 @@ language: php
 sudo: false
 
 php:
-  - 7
+  - 7.0
+  - 7.1
+  - 7.2
 
 cache:
   directories:
@@ -97,7 +99,7 @@ mysql:
 
 before_install:
   - composer self-update
-  - composer global require "lionsad/drupal_ti:dev-master#019dc85b6de24455e11492e63364c2a9f193c84c" "drupal/coder:8.2.*" "sensiolabs/security-checker:*"
+  - composer global require "lionsad/drupal_ti:dev-master#019dc85b6de24455e11492e63364c2a9f193c84c" "symfony/yaml:2.*" "drupal/coder:8.2.*" "sensiolabs/security-checker:*"
   - drupal-ti before_install
 
 install:
