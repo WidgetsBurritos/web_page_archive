@@ -23,8 +23,8 @@
         "mtdowling/cron-expression": "1.2.0",
         "t1gor/robots-txt-parser": "0.2.3",
         "kukulich/fshl": "2.1.0",
-        "spatie/browsershot": "3.26.0",
-        "php": ">=7.0.0"
+        "spatie/browsershot": "~3.26.0",
+        "php": ">=7.1.0"
     },
     "require-dev": {
         "microweber/screen": "1.0.*"

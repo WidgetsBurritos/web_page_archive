@@ -11,4 +11,4 @@ test_dependencies:
   - web_page_archive:wpa_html_capture
   - web_page_archive:wpa_screenshot_capture
   - web_page_archive:wpa_skeleton_capture
-php: 7.0
+php: 7.1
