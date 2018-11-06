@@ -48,7 +48,7 @@ trait TextDiffTrait {
     $total_ct = 0;
     foreach ($diff_edits as $diff_edit) {
       if (isset($counts[$diff_edit->type])) {
-        $lines = max(count($diff_edit->orig), count($diff_edit->closing));
+        $lines = max(count((array) $diff_edit->orig), count((array) $diff_edit->closing));
         $changes += $counts[$diff_edit->type] * $lines;
         $total_ct += $lines;
       }
