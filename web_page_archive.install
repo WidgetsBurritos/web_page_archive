@@ -673,3 +673,19 @@ function web_page_archive_update_8201() {
   $schema = Database::getConnection()->schema();
   $schema->createTable('web_page_archive_comparison_variance', $spec);
 }
+
+/**
+ * Drop the manually created index so --entity-updates can create it.
+ */
+function web_page_archive_update_8202() {
+  $change_list = \Drupal::entityDefinitionUpdateManager()->getChangeSummary();
+  if (!empty($change_list['wpa_run_comparison'])) {
+    if (count(array_filter($change_list['wpa_run_comparison'], function($item) {
+      $args = $item->getArguments();
+      return isset($args['%field_name']) && $args['%field_name']->__toString() == 'UUID';
+    })) > 0) {
+      $schema = Database::getConnection()->schema();
+      $schema->dropIndex('wpa_run_comparison', 'wpa_run_comparison_field__uuid__value');
+    }
+  }
+}
