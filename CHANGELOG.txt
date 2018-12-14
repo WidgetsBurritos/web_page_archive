@@ -1,5 +1,19 @@
 CHANGELOG for Web Page Archive for Drupal 8
 
+Web Page Archive 8.x-2.4 (2018-12-14)
+----------------------------------------------
+Issue #3017739 by pobster, WidgetsBurritos: Cannot add unique key
+Issue #3020551 by guptahemant, WidgetsBurritos: Node modules path configuration is not used correctly in screenshot capture utility
+
+Web Page Archive 8.x-2.3 (2018-11-05)
+----------------------------------------------
+Issue #3011598 by WidgetsBurritos: Browsershot requires PHP 7.1
+Issue #3011599 by WidgetsBurritos: PHP 7.2 failures
+
+Web Page Archive 8.x-2.2 (2018-11-05)
+----------------------------------------------
+Issue #3011567 by WidgetsBurritos: Browsershot package out of date
+
 Web Page Archive 8.x-2.1 (2018-11-05)
 ----------------------------------------------
 Issue #2937227 by WidgetsBurritos, vessel_adrift: Variance filter
