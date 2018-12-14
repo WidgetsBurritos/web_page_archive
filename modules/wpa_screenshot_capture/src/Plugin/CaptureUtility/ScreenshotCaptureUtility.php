@@ -113,8 +113,8 @@ class ScreenshotCaptureUtility extends ConfigurableCaptureUtilityBase {
       $screenCapture->greyscale();
     }
 
-    if (!empty($system_settings['node_modules_path'])) {
-      $screenCapture->setNodeModulePath($system_settings['node_modules_path']);
+    if (!empty($capture_utility_settings['node_modules_path'])) {
+      $screenCapture->setNodeModulePath($capture_utility_settings['node_modules_path']);
     }
 
     if (!empty($capture_utility_settings['puppeteer_disable_sandbox'])) {
