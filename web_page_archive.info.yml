@@ -2,10 +2,10 @@ name: Web Page Archive
 type: module
 description: 'Provides web page data archiving and reporting functionality.'
 package: Web Page Archive
-core: 8.x
+core: 9.x
 configure: entity.web_page_archive.collection
 dependencies:
-  - drupal:system (>= 8.3)
+  - drupal:system (>= 9.0)
   - drupal:views
 test_dependencies:
   - web_page_archive:wpa_html_capture
