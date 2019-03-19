@@ -12,3 +12,4 @@ defaults:
   width: 1280
   css: ''
   greyscale: false
+  click: ''

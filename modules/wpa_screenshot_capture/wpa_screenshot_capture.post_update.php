@@ -20,6 +20,13 @@ function wpa_screenshot_capture_post_update_2922939_set_default_greyscale_value(
 }
 
 /**
+ * Issue 3021730: Sets greyscale value to false for existing config entities.
+ */
+function wpa_screenshot_capture_post_update_3021730_set_default_greyscale_value() {
+  _wpa_screenshot_capture_update_data_fields(['click' => '']);
+}
+
+/**
  * Helper function for updating the data array values in screenshot entities.
  */
 function _wpa_screenshot_capture_update_data_fields(array $data = []) {

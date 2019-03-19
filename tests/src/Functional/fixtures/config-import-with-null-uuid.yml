@@ -32,4 +32,5 @@ capture_utilities:
       delay: 1000
       css: 'body { font-size: 30px; }'
       greyscale: true
+      click: 'body'
 run_entity: null

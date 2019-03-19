@@ -113,6 +113,11 @@ class ScreenshotCaptureUtility extends ConfigurableCaptureUtilityBase {
       $screenCapture->greyscale();
     }
 
+    $click = $this->configuration['click'];
+    if (!empty($click)) {
+      $screenCapture->click($click);
+    }
+
     if (!empty($capture_utility_settings['node_modules_path'])) {
       $screenCapture->setNodeModulePath($capture_utility_settings['node_modules_path']);
     }
@@ -180,6 +185,7 @@ class ScreenshotCaptureUtility extends ConfigurableCaptureUtilityBase {
       'image_type' => $config->get('defaults.image_type'),
       'css' => $config->get('defaults.css'),
       'greyscale' => $config->get('defaults.greyscale'),
+      'click' => $config->get('defaults.click'),
     ];
   }
 
@@ -259,7 +265,18 @@ class ScreenshotCaptureUtility extends ConfigurableCaptureUtilityBase {
         ],
       ],
     ];
-
+    $form['click'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Click an element on page.'),
+      '#description' => $this->t('Add the css selector for an element on page, Useful for triggering javascript.'),
+      '#default_value' => $this->configuration['click'],
+      '#required' => FALSE,
+      '#states' => [
+        'visible' => [
+          'select[name="data[browser]"]' => ['value' => 'chrome'],
+        ],
+      ],
+    ];
     return $form;
   }
 
@@ -277,6 +294,7 @@ class ScreenshotCaptureUtility extends ConfigurableCaptureUtilityBase {
       'delay',
       'css',
       'greyscale',
+      'click',
     ];
 
     foreach ($fields as $field) {

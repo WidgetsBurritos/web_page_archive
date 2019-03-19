@@ -122,6 +122,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $this->assertFieldByName('data[delay]', '0');
     $this->assertFieldByName('data[css]', '');
     $this->assertNoFieldChecked('data[greyscale]');
+    $this->assertFieldByName('data[click]', '');
 
     // Alter a few values and then submit.
     $this->drupalPostForm(
@@ -132,6 +133,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
         'data[delay]' => '250',
         'data[css]' => 'body { font-weight: 900; }',
         'data[greyscale]' => TRUE,
+        'data[click]' => 'body',
       ],
       t('Add capture utility')
     );
@@ -146,6 +148,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $this->assertFieldByName('data[delay]', '250');
     $this->assertFieldByName('data[css]', 'body { font-weight: 900; }');
     $this->assertFieldChecked('data[greyscale]');
+    $this->assertFieldByName('data[click]', 'body');
 
     // Attempt to image type.
     $this->drupalPostForm(

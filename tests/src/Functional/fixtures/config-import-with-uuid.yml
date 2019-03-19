@@ -33,4 +33,5 @@ capture_utilities:
       delay: 1000
       css: ''
       greyscale: false
+      click: ''
 run_entity: 1915f871-7e08-4d53-9139-dc86b0d8e5a0
