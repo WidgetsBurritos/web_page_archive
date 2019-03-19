@@ -1,5 +1,9 @@
 CHANGELOG for Web Page Archive for Drupal 8
 
+Web Page Archive 8.x-2.5 (2019-03-18)
+----------------------------------------------
+Issue #3021730 by guptahemant, rgristroph: Integrate Browsershot clicking on the page functionality
+
 Web Page Archive 8.x-2.4 (2018-12-14)
 ----------------------------------------------
 Issue #3017739 by pobster, WidgetsBurritos: Cannot add unique key
