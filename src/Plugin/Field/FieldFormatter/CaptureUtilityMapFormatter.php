@@ -42,7 +42,14 @@ class CaptureUtilityMapFormatter extends FormatterBase {
    *   The textual output generated.
    */
   protected function viewValue(FieldItemInterface $item) {
-    return nl2br(Html::escape(implode("\n", array_values($item->toArray()))));
+    $values = array_values($item->toArray());
+    foreach ($values as $idx => $value) {
+      // If incomplete, serialize and then unserialize to clean this up.
+      if (get_class($value) == '__PHP_Incomplete_Class') {
+        $values[$idx] = unserialize(serialize($value));
+      }
+    }
+    return nl2br(Html::escape(implode("\n", $values)));
   }
 
 }
