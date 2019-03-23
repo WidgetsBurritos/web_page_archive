@@ -30,3 +30,7 @@ services:
     class: Drupal\web_page_archive\Plugin\CompareResponseFactory
     tags:
       - { name: factory }
+  web_page_archive.event_subscriber:
+    class: Drupal\web_page_archive\EventSubscriber\WebPageArchiveEventSubscriber
+    tags:
+      - { name: event_subscriber }

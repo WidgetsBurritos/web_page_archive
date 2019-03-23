@@ -6,6 +6,7 @@ use Drupal\Core\Controller\ControllerBase;
 use Drupal\Component\Utility\Tags;
 use Drupal\web_page_archive\Entity\RunComparisonInterface;
 use Drupal\web_page_archive\Entity\Sql\WebPageArchiveRunStorageInterface;
+use Drupal\web_page_archive\Event\CompareJobCompleteEvent;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -234,6 +235,9 @@ class RunComparisonController extends ControllerBase {
    * Processes a batch request.
    */
   public static function batchProcess(RunComparisonInterface $run_comparison, &$context = NULL) {
+    if (empty($context['results']['entity'])) {
+      $context['results']['entity'] = $run_comparison;
+    }
     $queue = $run_comparison->getQueue();
     $queue_worker = \Drupal::service('plugin.manager.queue_worker')->createInstance('web_page_archive_compare');
 
@@ -269,7 +273,12 @@ class RunComparisonController extends ControllerBase {
    */
   public static function batchFinished($success, $results, $operations) {
     if ($success) {
-      \Drupal::messenger()->addStatus(\t("The comparison has been completed."));
+      // Dispatch an event.
+      if (isset($results['entity'])) {
+        $event = new CompareJobCompleteEvent($results['entity']);
+        $event_dispatcher = \Drupal::service('event_dispatcher');
+        $event_dispatcher->dispatch($event::EVENT_NAME, $event);
+      }
     }
     else {
       $error_operation = reset($operations);

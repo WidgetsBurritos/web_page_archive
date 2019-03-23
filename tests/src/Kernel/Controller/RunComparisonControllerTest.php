@@ -293,13 +293,22 @@ class RunComparisonControllerTest extends EntityStorageTestBase {
     $queue = $run_comparison->getQueue();
     $this->assertEquals(2, $queue->numberOfItems());
 
+    $context = [];
+
     // Attempt to process the next item in the queue.
-    $this->assertTrue($this->runComparisonController->batchProcess($run_comparison));
+    $this->assertTrue($this->runComparisonController->batchProcess($run_comparison, $context));
     $this->assertEquals(1, $queue->numberOfItems());
+    $this->assertEquals($run_comparison, $context['results']['entity']);
 
     // Attempt to process the next item in the queue.
     $this->assertTrue($this->runComparisonController->batchProcess($run_comparison));
     $this->assertEquals(0, $queue->numberOfItems());
+    $this->assertEquals($run_comparison, $context['results']['entity']);
+
+    // Simulate "batch finish" process.
+    $this->runComparisonController->batchFinished(TRUE, $context['results'], []);
+    $expected = ['status' => ['The comparison has been completed.']];
+    $this->assertEquals($expected, \Drupal::messenger()->all());
 
     $expected = [
       '1' => [
