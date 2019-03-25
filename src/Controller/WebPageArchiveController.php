@@ -8,6 +8,7 @@ use Drupal\Core\Queue\RequeueException;
 use Drupal\Core\Url;
 use Drupal\views\Views;
 use Drupal\web_page_archive\Entity\WebPageArchive;
+use Drupal\web_page_archive\Event\CaptureJobCompleteEvent;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -85,6 +86,9 @@ class WebPageArchiveController extends ControllerBase {
    * Common batch processing callback for all operations.
    */
   public static function batchProcess(WebPageArchive $web_page_archive, &$context = NULL) {
+    if (empty($context['results']['entity'])) {
+      $context['results']['entity'] = $web_page_archive;
+    }
     $queue = $web_page_archive->getQueue();
     $queue_worker = \Drupal::service('plugin.manager.queue_worker')->createInstance('web_page_archive_capture');
 
@@ -121,7 +125,13 @@ class WebPageArchiveController extends ControllerBase {
    */
   public static function batchFinished($success, $results, $operations) {
     if ($success) {
-      \Drupal::messenger()->addStatus(t("The capture has been completed."));
+      // Dispatch an event.
+      if (isset($results['entity'])) {
+        $run_entity = $results['entity']->getRunEntity();
+        $event = new CaptureJobCompleteEvent($run_entity);
+        $event_dispatcher = \Drupal::service('event_dispatcher');
+        $event_dispatcher->dispatch($event::EVENT_NAME, $event);
+      }
     }
     else {
       $error_operation = reset($operations);

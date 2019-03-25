@@ -4,6 +4,7 @@ namespace Drupal\Tests\web_page_archive\Kernel;
 
 use Drupal\KernelTests\Core\Entity\EntityKernelTestBase;
 use Drupal\web_page_archive\Controller\RunComparisonController;
+use Drupal\web_page_archive\Controller\WebPageArchiveController;
 use Drupal\web_page_archive\Entity\RunComparison;
 use Drupal\web_page_archive\Plugin\CompareResponseInterface;
 
@@ -19,6 +20,7 @@ abstract class EntityStorageTestBase extends EntityKernelTestBase {
   protected $runComparisonController;
   protected $runComparisonStorage;
   protected $runStorage;
+  protected $webPageArchiveController;
 
   /**
    * Modules to enable.
@@ -31,6 +33,7 @@ abstract class EntityStorageTestBase extends EntityKernelTestBase {
     'system',
     'views',
     'web_page_archive',
+    'wpa_skeleton_capture',
   ];
 
   /**
@@ -52,12 +55,40 @@ abstract class EntityStorageTestBase extends EntityKernelTestBase {
 
     // Setup services.
     $this->entityTypeManager = $this->container->get('entity_type.manager');
+    $this->wpaStorage = $this->entityTypeManager->getStorage('web_page_archive');
     $this->runStorage = $this->entityTypeManager->getStorage('web_page_archive_run');
     $this->runComparisonStorage = $this->entityTypeManager->getStorage('wpa_run_comparison');
     $this->fieldTypeManager = $this->container->get('plugin.manager.field.field_type');
     $this->fieldFormatterManager = $this->container->get('plugin.manager.field.formatter');
     $this->entityFieldManager = $this->container->get('entity_field.manager');
     $this->runComparisonController = RunComparisonController::create($this->container);
+    $this->webPageArchiveController = WebPageArchiveController::create($this->container);
+  }
+
+  /**
+   * Creates a web_page_archive entity.
+   */
+  protected function getWpaEntity($name, $urls = []) {
+    $run_entity = $this->getRunEntity($name, 1);
+    $data = [
+      'id' => md5($name),
+      'capture_utilities' => [
+        '3f6a4941-ce49-41cf-b779-dad4abaca300' => [
+          'uuid' => '3f6a4941-ce49-41cf-b779-dad4abaca300',
+          'id' => 'wpa_skeleton_capture',
+          'weight' => 1,
+        ],
+      ],
+      'name' => $name,
+      'urls' => implode(PHP_EOL, $urls),
+      'run_entity' => $run_entity->id(),
+      'use_robots' => FALSE,
+    ];
+
+    $entity = $this->wpaStorage->create($data);
+    $entity->save();
+
+    return $entity;
   }
 
   /**

@@ -1,5 +1,9 @@
 CHANGELOG for Web Page Archive for Drupal 8
 
+Web Page Archive 8.x-2.7 (2019-03-25)
+----------------------------------------------
+Issue #3042687 by WidgetsBurritos, vessel_adrift: Dispatch event upon job completion
+
 Web Page Archive 8.x-2.6 (2019-03-21)
 ----------------------------------------------
 Issue #3042235 by WidgetsBurritos: Can't access run results on D8.6/8.7

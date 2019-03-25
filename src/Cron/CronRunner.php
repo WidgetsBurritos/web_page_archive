@@ -124,8 +124,9 @@ class CronRunner {
 
     $success_ct = $fail_ct = 0;
     $queue_ct = min($config_entity->getQueueCt(), $this->getCaptureMax());
+    $context = [];
     while ($success_ct + $fail_ct < $queue_ct) {
-      if (WebPageArchiveController::batchProcess($config_entity)) {
+      if (WebPageArchiveController::batchProcess($config_entity, $context)) {
         $success_ct++;
       }
       else {
@@ -140,6 +141,10 @@ class CronRunner {
     if ($fail_ct > 0) {
       $this->messenger->addError(\t('Failed to process @count URLs.', ['@count' => $success_ct]));
     }
+
+    // Pass results in and complete our batch.
+    $results = !empty($context['results']) ? $context['results'] : [];
+    WebPageArchiveController::batchFinished(TRUE, $results, []);
 
     $this->state->set("web_page_archive.next_run.{$id}", $config_entity->calculateNextRun());
     $this->lock->release($lock_id);
