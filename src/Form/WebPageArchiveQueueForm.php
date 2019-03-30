@@ -9,7 +9,6 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Messenger\MessengerTrait;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueWorkerManagerInterface;
-use Drupal\web_page_archive\Controller\WebPageArchiveController;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -121,7 +120,6 @@ class WebPageArchiveQueueForm extends EntityForm {
   public function startRun(array $form, FormStateInterface $form_state) {
     $web_page_archive = $this->getEntity();
     $web_page_archive->startNewRun();
-    WebPageArchiveController::setBatch($web_page_archive);
 
     // TODO: Should there be some sort of validation the aboved worked?
     $form_state->setRedirect('entity.web_page_archive.canonical', ['web_page_archive' => $web_page_archive->id()]);
