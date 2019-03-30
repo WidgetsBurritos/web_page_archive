@@ -1,5 +1,11 @@
 CHANGELOG for Web Page Archive for Drupal 8
 
+Web Page Archive 8.x-2.8 (2019-03-29)
+----------------------------------------------
+Issue #3043158 by kavbiswa, WidgetsBurritos: Travis CI Failures
+Issue #3043306 by WidgetsBurritos, vessel_adrift: URLs overlapping
+Issue #3043968 by WidgetsBurritos, vessel_adrift: WebPageArchiveController::setBatch() is Double-firing
+
 Web Page Archive 8.x-2.7 (2019-03-25)
 ----------------------------------------------
 Issue #3042687 by WidgetsBurritos, vessel_adrift: Dispatch event upon job completion
