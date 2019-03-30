@@ -22,3 +22,7 @@
   background: #f0f0f0;
   padding: 15px;
 }
+
+.wpa-captured-url {
+  word-wrap: break-word;
+}

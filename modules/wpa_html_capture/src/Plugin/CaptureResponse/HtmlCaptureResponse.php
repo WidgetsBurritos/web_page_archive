@@ -45,7 +45,7 @@ class HtmlCaptureResponse extends UriCaptureResponse {
     // If capture has a URL show it.
     if (!empty($this->captureUrl)) {
       $url = Html::escape($this->captureUrl);
-      $link_array['capture_url'] = ['#markup' => "<p>{$url}</p>"];
+      $link_array['capture_url'] = ['#markup' => "<p class='wpa-captured-url'>{$url}</p>"];
     }
 
     $render['link'] = [

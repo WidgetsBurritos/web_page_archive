@@ -42,7 +42,7 @@ class ScreenshotCaptureResponse extends UriCaptureResponse {
     // If capture has a URL show it.
     if (!empty($this->captureUrl)) {
       $url = Html::escape($this->captureUrl);
-      $link_array['capture_url'] = ['#markup' => "<p>{$url}</p>"];
+      $link_array['capture_url'] = ['#markup' => "<p class='wpa-captured-url'>{$url}</p>"];
     }
 
     // If capture has a screenshot show it, otherwise show error.
