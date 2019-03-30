@@ -680,7 +680,7 @@ function web_page_archive_update_8201() {
 function web_page_archive_update_8202() {
   $change_list = \Drupal::entityDefinitionUpdateManager()->getChangeSummary();
   if (!empty($change_list['wpa_run_comparison'])) {
-    if (count(array_filter($change_list['wpa_run_comparison'], function($item) {
+    if (count(array_filter($change_list['wpa_run_comparison'], function ($item) {
       $args = $item->getArguments();
       return isset($args['%field_name']) && $args['%field_name']->__toString() == 'UUID';
     })) > 0) {
