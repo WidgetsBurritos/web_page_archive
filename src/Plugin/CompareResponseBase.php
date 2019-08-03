@@ -2,6 +2,7 @@
 
 namespace Drupal\web_page_archive\Plugin;
 
+use Drupal\Core\DependencyInjection\DependencySerializationTrait;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 
 /**
@@ -9,6 +10,7 @@ use Drupal\Core\StringTranslation\StringTranslationTrait;
  */
 abstract class CompareResponseBase implements CompareResponseInterface {
 
+  use DependencySerializationTrait;
   use StringTranslationTrait;
 
   /**

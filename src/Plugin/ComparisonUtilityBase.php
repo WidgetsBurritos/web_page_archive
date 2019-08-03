@@ -2,6 +2,7 @@
 
 namespace Drupal\web_page_archive\Plugin;
 
+use Drupal\Core\DependencyInjection\DependencySerializationTrait;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Component\Plugin\PluginBase;
@@ -12,6 +13,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 abstract class ComparisonUtilityBase extends PluginBase implements ComparisonUtilityInterface, ContainerFactoryPluginInterface {
 
+  use DependencySerializationTrait;
   use StringTranslationTrait;
   use FileStorageTrait;
 

@@ -2,6 +2,7 @@
 
 namespace Drupal\web_page_archive\Plugin;
 
+use Drupal\Core\DependencyInjection\DependencySerializationTrait;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Component\Plugin\PluginBase;
@@ -14,6 +15,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 abstract class CaptureUtilityBase extends PluginBase implements CaptureUtilityInterface, ContainerFactoryPluginInterface {
 
+  use DependencySerializationTrait;
   use StringTranslationTrait;
   use FileStorageTrait;
 
