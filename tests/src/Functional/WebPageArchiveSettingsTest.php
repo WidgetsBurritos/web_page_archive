@@ -70,6 +70,7 @@ class WebPageArchiveSettingsTest extends BrowserTestBase {
     $this->assertFieldByName('defaults[user_agent]', 'WPA');
     $this->assertFieldByName('defaults[use_cron]', 1);
     $this->assertFieldByName('defaults[use_robots]', 1);
+    $this->assertFieldByName('defaults[retention_type]', '');
     $this->assertFieldByName('comparison[run1]', '');
     $this->assertFieldByName('comparison[run2]', '');
     $this->assertFieldByName('comparison[strip_type]', '');
@@ -92,6 +93,8 @@ class WebPageArchiveSettingsTest extends BrowserTestBase {
         'defaults[url_type]' => 'sitemap',
         'defaults[user_agent]' => 'NinjaBot',
         'defaults[use_robots]' => 0,
+        'defaults[retention_type]' => 'days',
+        'defaults[retention_value]' => 142,
         'comparison[run1]' => 1,
         'comparison[run2]' => 1,
         'comparison[strip_type]' => 'string',
@@ -114,6 +117,8 @@ class WebPageArchiveSettingsTest extends BrowserTestBase {
     $this->assertFieldByName('defaults[url_type]', 'sitemap');
     $this->assertFieldByName('defaults[user_agent]', 'NinjaBot');
     $this->assertFieldByName('defaults[use_robots]', 0);
+    $this->assertFieldByName('defaults[retention_type]', 'days');
+    $this->assertFieldByName('defaults[retention_value]', 142);
     $this->assertFieldByName('comparison[run1]', '1');
     $this->assertFieldByName('comparison[run2]', '1');
     $this->assertFieldByName('comparison[strip_type]', 'string');
@@ -130,6 +135,8 @@ class WebPageArchiveSettingsTest extends BrowserTestBase {
     $this->assertFieldByName('url_type', 'sitemap');
     $this->assertFieldByName('user_agent', 'NinjaBot');
     $this->assertFieldByName('use_robots', 0);
+    $this->assertFieldByName('retention_type', 'days');
+    $this->assertFieldByName('retention_value', 142);
 
     // Ensure default values made it into the compare form.
     $this->drupalGet('admin/config/system/web-page-archive/compare');

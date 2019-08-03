@@ -169,6 +169,35 @@ abstract class WebPageArchiveFormBase extends EntityForm {
       '#default_value' => !$this->entity->isNew() ? $this->entity->getUserAgent() : $config->get('defaults.user_agent'),
     ];
 
+    $form['retention_type'] = [
+      '#type' => 'select',
+      '#title' => $this->t('Data retention type'),
+      '#description' => $this->t('Determines the data retention policy for a job. <br><em>Warning: Changing this on existing jobs may result in data loss.</em>'),
+      '#options' => [
+        '' => $this->t('Keep all revisions'),
+        'revisions' => $this->t('Keep last <em>X</em> revisions'),
+        'days' => $this->t('Keep revisions from last <em>X</em> days'),
+      ],
+      '#default_value' => !$this->entity->isNew() ? $this->entity->getRetentionType() : $config->get('defaults.retention_type'),
+    ];
+
+    $form['retention_value'] = [
+      '#type' => 'number',
+      '#title' => $this->t('Data retention value'),
+      '#description' => $this->t('Amount of revisions/days to keep.'),
+      '#default_value' => !$this->entity->isNew() ? $this->entity->getRetentionValue() : $config->get('defaults.retention_value'),
+      '#states' => [
+        'visible' => [
+          ['select[name="retention_type"]' => ['value' => 'revisions']],
+          ['select[name="retention_type"]' => ['value' => 'days']],
+        ],
+        'required' => [
+          ['select[name="retention_type"]' => ['value' => 'revisions']],
+          ['select[name="retention_type"]' => ['value' => 'days']],
+        ],
+      ],
+    ];
+
     $form['urls'] = [
       '#type' => 'textarea',
       '#title' => $this->t('URLs to Capture'),

@@ -2,6 +2,7 @@
 
 namespace Drupal\web_page_archive\Controller;
 
+use Drupal\Core\Cache\Cache;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Queue\RequeueException;
 
@@ -11,6 +12,77 @@ use Drupal\Core\Queue\RequeueException;
  * @package Drupal\web_page_archive\Controller
  */
 class CleanupController extends ControllerBase {
+
+  /**
+   * Removes all legacy revisions based on revision count.
+   */
+  public static function deleteOldRevisionsByDays($web_page_archive) {
+    $run_storage = \Drupal::entityTypeManager()->getStorage('web_page_archive_run');
+    $revisions = $web_page_archive->getRevisionIds();
+    $keep_days = $web_page_archive->getRetentionValue();
+    $utilities = $web_page_archive->getCaptureUtilities();
+    $current_time = \Drupal::service('datetime.time')->getCurrentTime();
+    $time_limit = $current_time - $keep_days * 86400;
+
+    if ($keep_days < 0) {
+      \Drupal::logger('web_page_archive')->warning(t('Data retention value is negative for the @name job. No results were removed.', ['@name' => $web_page_archive->label()]));
+      return;
+    }
+
+    foreach ($revisions as $vid) {
+      $run = $run_storage->loadRevision($vid);
+      $created = $run->getRevisionCreationTime();
+
+      // Skip revisions newer than time limit.
+      if ($created > $time_limit) {
+        continue;
+      }
+
+      // If we're not looking at the default or a locked revision, remove it.
+      if (!$run->isDefaultRevision() && !$run->getRetentionLocked()) {
+        foreach ($utilities as $utility) {
+          $utility->cleanupRevision($vid);
+        }
+        $run_storage->deleteRevision($vid);
+      }
+    }
+
+    Cache::invalidateTags(['config:views.view.web_page_archive_canonical']);
+  }
+
+  /**
+   * Removes all legacy revisions based on revision count.
+   */
+  public static function deleteOldRevisionsByRevisions($web_page_archive) {
+    $run_storage = \Drupal::entityTypeManager()->getStorage('web_page_archive_run');
+    $revisions = $web_page_archive->getRevisionIds();
+    $keep_revisions = $web_page_archive->getRetentionValue();
+    $utilities = $web_page_archive->getCaptureUtilities();
+    if ($keep_revisions < 0) {
+      \Drupal::logger('web_page_archive')->warning(t('Data retention value is negative for the @name job. No results were removed.', ['@name' => $web_page_archive->label()]));
+      return;
+    }
+
+    // Delete oldest revisions.
+    $revision_ct = count($revisions);
+    foreach ($revisions as $vid) {
+      // If we have under the limit, then we don't need to do anything.
+      if ($revision_ct <= $keep_revisions) {
+        break;
+      }
+      $run = $run_storage->loadRevision($vid);
+      // If we're not looking at the default or a locked revision, remove it.
+      if (!$run->isDefaultRevision() && !$run->getRetentionLocked()) {
+        foreach ($utilities as $utility) {
+          $utility->cleanupRevision($vid);
+        }
+        $run_storage->deleteRevision($vid);
+        $revision_ct--;
+      }
+    }
+
+    Cache::invalidateTags(['config:views.view.web_page_archive_canonical']);
+  }
 
   /**
    * Queues all revisions of a run entity up for file cleanup.

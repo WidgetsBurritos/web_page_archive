@@ -143,6 +143,17 @@ entity.web_page_archive.run_download:
   requirements:
     _permission: 'view web page archive results'
 
+entity.web_page_archive.run_toggle_lock:
+  path: 'admin/config/system/web-page-archive/runs/{web_page_archive_run_revision}/toggle-lock'
+  defaults:
+    _controller: '\Drupal\web_page_archive\Controller\LockController::toggleRetentionLock'
+  options:
+    parameters:
+      web_page_archive_run_revision:
+        type: web_page_archive_run_revision
+  requirements:
+    _permission: 'administer web page archive'
+
 entity.web_page_archive.modal:
   path: 'admin/config/system/web-page-archive/modal/{web_page_archive_run_revision}/{delta}'
   defaults:

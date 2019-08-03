@@ -258,6 +258,31 @@ class SettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('defaults.timeout'),
     ];
 
+    $form['defaults']['retention_type'] = [
+      '#type' => 'select',
+      '#title' => $this->t('Data retention type'),
+      '#description' => $this->t('Determines the data retention policies for a job.'),
+      '#options' => [
+        '' => $this->t('Keep all revisions'),
+        'revisions' => $this->t('Keep last <em>X</em> revisions'),
+        'days' => $this->t('Keep revisions from last <em>X</em> days'),
+      ],
+      '#default_value' => $config->get('defaults.retention_type'),
+    ];
+
+    $form['defaults']['retention_value'] = [
+      '#type' => 'number',
+      '#title' => $this->t('Data retention value'),
+      '#description' => $this->t('Amount of revisions/days to keep.'),
+      '#default_value' => $config->get('defaults.retention_value'),
+      '#states' => [
+        'visible' => [
+          ['select[name="defaults[retention_type]"]' => ['value' => 'revisions']],
+          ['select[name="defaults[retention_type]"]' => ['value' => 'days']],
+        ],
+      ],
+    ];
+
     $form['defaults']['url_type'] = [
       '#type' => 'select',
       '#title' => $this->t('Default Capture Type'),

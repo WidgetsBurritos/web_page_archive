@@ -72,6 +72,12 @@ web_page_archive.settings:
         timeout:
           type: integer
           label: 'Timeout (ms)'
+        retention_type:
+          type: string
+          label: 'Data retention type'
+        retention_value:
+          type: integer
+          label: 'Data retention value'
 
 web_page_archive.web_page_archive.*:
   type: config_entity
@@ -106,6 +112,12 @@ web_page_archive.web_page_archive.*:
     timeout:
       type: integer
       label: 'Timeout (ms)'
+    retention_type:
+      type: string
+      label: 'Data retention type'
+    retention_value:
+      type: integer
+      label: 'Data retention value'
     capture_utilities:
       type: sequence
       sequence:

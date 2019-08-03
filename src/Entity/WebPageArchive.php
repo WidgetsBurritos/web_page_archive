@@ -8,6 +8,7 @@ use Drupal\Core\Entity\EntityWithPluginCollectionInterface;
 use Drupal\Core\Messenger\MessengerTrait;
 use Drupal\Core\Plugin\DefaultLazyPluginCollection;
 use Drupal\web_page_archive\Plugin\CaptureUtilityInterface;
+use Drupal\web_page_archive\Controller\CleanupController;
 use Drupal\web_page_archive\Controller\WebPageArchiveController;
 use GuzzleHttp\HandlerStack;
 
@@ -56,6 +57,8 @@ use GuzzleHttp\HandlerStack;
  *     "use_cron",
  *     "user_agent",
  *     "cron_schedule",
+ *     "retention_type",
+ *     "retention_value",
  *     "capture_utilities",
  *     "run_entity"
  *   }
@@ -85,6 +88,20 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
    * @var int
    */
   protected $timeout;
+
+  /**
+   * Data retention type.
+   *
+   * @var string
+   */
+  protected $retention_type;
+
+  /**
+   * Data retention value.
+   *
+   * @var int
+   */
+  protected $retention_value;
 
   /**
    * URL type.
@@ -140,6 +157,20 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
    */
   public function getTimeout() {
     return $this->timeout;
+  }
+
+  /**
+   * Retrieves data retention type.
+   */
+  public function getRetentionType() {
+    return $this->retention_type;
+  }
+
+  /**
+   * Retrieves data retention type.
+   */
+  public function getRetentionValue() {
+    return (int) $this->retention_value;
   }
 
   /**
@@ -540,6 +571,30 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
    */
   protected function getEditableConfig() {
     return \Drupal::service('config.factory')->getEditable("web_page_archive.web_page_archive.{$this->id()}");
+  }
+
+  /**
+   * Retrieves list of all revision ids.
+   */
+  public function getRevisionIds() {
+    $run_entity = $this->getRunEntity();
+    $revisions = $this->entityTypeManager()
+      ->getStorage('web_page_archive_run')
+      ->revisionIds($run_entity);
+    sort($revisions);
+    return $revisions;
+  }
+
+  /**
+   * Removes old data.
+   */
+  public function processRetentionPlan() {
+    if ($this->getRetentionType() == 'revisions') {
+      CleanupController::deleteOldRevisionsByRevisions($this);
+    }
+    elseif ($this->getRetentionType() == 'days') {
+      CleanupController::deleteOldRevisionsByDays($this);
+    }
   }
 
 }
