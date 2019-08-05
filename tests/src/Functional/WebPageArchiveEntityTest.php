@@ -510,8 +510,15 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $this->assertTrue(file_exists($file_paths[0]));
     $this->assertTrue(file_exists($file_paths[1]));
 
-    // Attempt to download captures.
+    // Attempt to toggle run locks.
     $this->drupalGet('admin/config/system/web-page-archive/jobs/localhost');
+    $assert->pageTextNotContains('[locked]');
+    $this->clickLink('Toggle Retention Lock');
+    $assert->pageTextContains('[locked]');
+    $this->clickLink('Toggle Retention Lock');
+    $assert->pageTextNotContains('[locked]');
+
+    // Attempt to download captures.
     $this->clickLink('Download Run');
     $assert->pageTextContains('You can download all images from the specified run as a *.zip file.');
     $this->drupalPostForm(NULL, [], t('Download Run'));

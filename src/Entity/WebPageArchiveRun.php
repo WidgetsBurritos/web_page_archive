@@ -44,6 +44,7 @@ use Drupal\web_page_archive\Controller\CleanupController;
  *     "queue_ct" = "queue_ct",
  *     "success_ct" = "success_ct",
  *     "capture_utilities" = "capture_utilities",
+ *     "retention_locked" = "retention_locked",
  *   },
  *   field_ui_base_route = "web_page_archive_run.settings"
  * )
@@ -231,6 +232,21 @@ class WebPageArchiveRun extends RevisionableContentEntityBase implements WebPage
   }
 
   /**
+   * Indicates if run is "locked", which prevents removal via data retention.
+   */
+  public function getRetentionLocked() {
+    return (boolean) $this->get('retention_locked')->getString();
+  }
+
+  /**
+   * Sets the retention locked flag.
+   */
+  public function setRetentionLocked($flag) {
+    $this->set('retention_locked', $flag);
+    return $this;
+  }
+
+  /**
    * Marks a capture task complete.
    */
   public function markCaptureComplete($data) {
@@ -378,6 +394,12 @@ class WebPageArchiveRun extends RevisionableContentEntityBase implements WebPage
     $fields['success_ct'] = BaseFieldDefinition::create('wpa_default_integer')
       ->setLabel(t('Success count'))
       ->setDescription(t('Number of successfully completed in the queue.'))
+      ->setRevisionable(TRUE);
+
+    $fields['retention_locked'] = BaseFieldDefinition::create('boolean')
+      ->setLabel(t('Retention locked'))
+      ->setDescription(t('Indicates whether or not a run is protected from being removed by the retention policy.'))
+      ->setDefaultValue(FALSE)
       ->setRevisionable(TRUE);
 
     $fields['capture_size'] = BaseFieldDefinition::create('float')

@@ -68,8 +68,9 @@ abstract class EntityStorageTestBase extends EntityKernelTestBase {
   /**
    * Creates a web_page_archive entity.
    */
-  protected function getWpaEntity($name, $urls = []) {
-    $run_entity = $this->getRunEntity($name, 1);
+  protected function getWpaEntity($name, $urls = [], $revision_ct = 1, $start_time = 1513860000, $time_increment_factor = 1) {
+    $run_entity = $this->getRunEntity($name, $revision_ct, $start_time, $time_increment_factor);
+
     $data = [
       'id' => md5($name),
       'capture_utilities' => [
@@ -81,12 +82,15 @@ abstract class EntityStorageTestBase extends EntityKernelTestBase {
       ],
       'name' => $name,
       'urls' => implode(PHP_EOL, $urls),
-      'run_entity' => $run_entity->id(),
+      'run_entity' => $run_entity->uuid(),
       'use_robots' => FALSE,
     ];
 
     $entity = $this->wpaStorage->create($data);
     $entity->save();
+
+    $run_entity->set('config_entity', $entity->id());
+    $run_entity->save();
 
     return $entity;
   }
@@ -94,11 +98,12 @@ abstract class EntityStorageTestBase extends EntityKernelTestBase {
   /**
    * Creates a web_page_archive_run with the specified number of revisions.
    */
-  protected function getRunEntity($name, $revision_ct, $start_time = 1513860000) {
+  protected function getRunEntity($name, $revision_ct, $start_time = 1513860000, $time_increment_factor = 1) {
     // Create initial entity.
     $data = [
       'name' => $name,
       'success_ct' => 5,
+      'retention_locked' => FALSE,
     ];
     $run_entity = $this->runStorage->create($data);
     $run_entity->setRevisionCreationTime($start_time);
@@ -107,7 +112,7 @@ abstract class EntityStorageTestBase extends EntityKernelTestBase {
     // Create additional revisions.
     for ($i = 1; $i <= $revision_ct; $i++) {
       $run_entity->setNewRevision(TRUE);
-      $run_entity->setRevisionCreationTime($start_time + $i);
+      $run_entity->setRevisionCreationTime($start_time + $i * $time_increment_factor);
       $run_entity->save();
     }
 

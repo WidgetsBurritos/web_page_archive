@@ -83,6 +83,9 @@ class CronRunner {
    * Runs the cron runner on the config entity.
    */
   public function run($config_entity) {
+    // Remove old data.
+    $config_entity->processRetentionPlan();
+
     // Check if entity is configured to run on cron.
     $use_cron = $config_entity->getUseCron();
     if (!$use_cron) {

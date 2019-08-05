@@ -689,3 +689,17 @@ function web_page_archive_update_8202() {
     }
   }
 }
+
+/**
+ * Add 'retention_locked' to web page archive run entities.
+ */
+function web_page_archive_update_8203() {
+  $storage_definition = BaseFieldDefinition::create('boolean')
+    ->setLabel(t('Retention locked'))
+    ->setDescription(t('Indicates whether or not a run is protected from being removed by the retention policy.'))
+    ->setRevisionable(TRUE)
+    ->setDefaultValue(FALSE);
+
+  \Drupal::entityDefinitionUpdateManager()
+    ->installFieldStorageDefinition('retention_locked', 'web_page_archive_run', 'web_page_archive_run', $storage_definition);
+}

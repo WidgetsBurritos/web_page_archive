@@ -13,6 +13,8 @@ defaults:
   use_cron: true
   use_robots: true
   user_agent: WPA
+  retention_type: ''
+  retention_value: 365
 comparison:
   run1: null
   run2: null
