@@ -85,6 +85,10 @@ class UriCaptureResponse extends CaptureResponseBase {
       ->getStorage('web_page_archive_run')
       ->loadRevision($revision_id);
 
+    // If we've specified an invalid revision ID, do nothing.
+    if (!isset($run_revision)) {
+      return;
+    }
     $captures = $run_revision->get('field_captures');
     $runs_to_remove = [];
     foreach ($captures as $capture) {

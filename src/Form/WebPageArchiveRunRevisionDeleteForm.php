@@ -2,7 +2,7 @@
 
 namespace Drupal\web_page_archive\Form;
 
-use Drupal\Core\Database\Connection;
+use Drupal\Core\Cache\CacheTagsInvalidatorInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -31,26 +31,19 @@ class WebPageArchiveRunRevisionDeleteForm extends ConfirmFormBase {
    *
    * @var \Drupal\Core\Entity\EntityStorageInterface
    */
-  protected $WebPageArchiveRunStorage;
-
-  /**
-   * The database connection.
-   *
-   * @var \Drupal\Core\Database\Connection
-   */
-  protected $connection;
+  protected $webPageArchiveRunStorage;
 
   /**
    * Constructs a new WebPageArchiveRunRevisionDeleteForm.
    *
    * @param \Drupal\Core\Entity\EntityStorageInterface $entity_storage
    *   The entity storage.
-   * @param \Drupal\Core\Database\Connection $connection
-   *   The database connection.
+   * @param \Drupal\Core\Cache\CacheTagsInvalidatorInterface $cache_tag_invalidator
+   *   The cache tag invalidator service.
    */
-  public function __construct(EntityStorageInterface $entity_storage, Connection $connection) {
-    $this->WebPageArchiveRunStorage = $entity_storage;
-    $this->connection = $connection;
+  public function __construct(EntityStorageInterface $entity_storage, CacheTagsInvalidatorInterface $cache_tag_invalidator) {
+    $this->webPageArchiveRunStorage = $entity_storage;
+    $this->cacheTagInvalidator = $cache_tag_invalidator;
   }
 
   /**
@@ -60,7 +53,7 @@ class WebPageArchiveRunRevisionDeleteForm extends ConfirmFormBase {
     $entity_manager = $container->get('entity_type.manager');
     return new static(
       $entity_manager->getStorage('web_page_archive_run'),
-      $container->get('database')
+      $container->get('cache_tags.invalidator')
     );
   }
 
@@ -75,29 +68,47 @@ class WebPageArchiveRunRevisionDeleteForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function getQuestion() {
-    return t('Are you sure you want to delete the revision from %revision-date?', ['%revision-date' => format_date($this->revision->getRevisionCreationTime())]);
+    $replacements = [
+      '%job' => $this->revision->label(),
+      '%revision-date' => format_date($this->revision->getRevisionCreationTime()),
+    ];
+    return $this->t('Are you sure you want to delete the %job run from %revision-date?', $replacements);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getDescription() {
+    return $this->t('This job and all stored files will be removed from the system.');
   }
 
   /**
    * {@inheritdoc}
    */
   public function getCancelUrl() {
-    return new Url('entity.web_page_archive_run.version_history', ['web_page_archive_run' => $this->revision->id()]);
+    return new Url('entity.web_page_archive.canonical', ['web_page_archive' => $this->revision->getConfigEntity()->id()]);
   }
 
   /**
    * {@inheritdoc}
    */
   public function getConfirmText() {
-    return t('Delete');
+    return $this->t('Delete');
   }
 
   /**
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state, $web_page_archive_run_revision = NULL) {
-    $this->revision = $this->WebPageArchiveRunStorage->loadRevision($web_page_archive_run_revision);
-    $form = parent::buildForm($form, $form_state);
+    $this->revision = $this->webPageArchiveRunStorage->loadRevision($web_page_archive_run_revision);
+    if (!$this->revision->getRetentionLocked()) {
+      $form = parent::buildForm($form, $form_state);
+    }
+    else {
+      $form['locked'] = [
+        '#markup' => $this->t('This run cannot be deleted as it is current locked.'),
+      ];
+    }
 
     return $form;
   }
@@ -105,14 +116,39 @@ class WebPageArchiveRunRevisionDeleteForm extends ConfirmFormBase {
   /**
    * {@inheritdoc}
    */
-  public function submitForm(array &$form, FormStateInterface $form_state) {
-    $this->WebPageArchiveRunStorage->deleteRevision($this->revision->getRevisionId());
+  public function validateForm(array &$form, FormStateInterface $form_state) {
+    if ($this->revision->getRetentionLocked()) {
+      $form_state->setErrorByName('locked', $this->t('This revision is locked and cannot be removed.'));
+    }
+  }
 
-    $this->logger('content')->notice('Web page archive run: deleted %title revision %revision.', ['%title' => $this->revision->label(), '%revision' => $this->revision->getRevisionId()]);
-    $this->messenger()->addStatus(t('Revision from %revision-date of Web page archive run %title has been deleted.', ['%revision-date' => format_date($this->revision->getRevisionCreationTime()), '%title' => $this->revision->label()]));
+  /**
+   * {@inheritdoc}
+   */
+  public function submitForm(array &$form, FormStateInterface $form_state) {
+    $wpa = $this->revision->getConfigEntity();
+    $title = $this->revision->label();
+    $revision_id = $this->revision->getRevisionId();
+    if ($this->webPageArchiveRunStorage->deleteRevision($revision_id)) {
+      $message = $this->t('%title run deleted with ID: %revision.', [
+        '%title' => $title,
+        '%revision' => $revision_id,
+      ]);
+      $this->logger('web_page_archive')->notice($message);
+      $this->messenger()->addStatus($message);
+      $this->cacheTagInvalidator->invalidateTags(['config:views.view.web_page_archive_canonical']);
+    }
+    else {
+      $message = $this->t('%title could not delete run with ID: %revision. The most recent run cannot be deleted.', [
+        '%title' => $title,
+        '%revision' => $revision_id,
+      ]);
+      $this->logger('web_page_archive')->warning($message);
+      $this->messenger()->addWarning($message);
+    }
     $form_state->setRedirect(
-      'entity.web_page_archive_run.canonical',
-       ['web_page_archive_run' => $this->revision->id()]
+      'entity.web_page_archive.canonical',
+       ['web_page_archive' => $wpa->id()]
     );
   }
 

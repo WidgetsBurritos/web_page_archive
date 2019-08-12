@@ -143,6 +143,14 @@ entity.web_page_archive.run_download:
   requirements:
     _permission: 'view web page archive results'
 
+entity.web_page_archive_run.revision_delete_form:
+  path: 'admin/config/system/web-page-archive/runs/{web_page_archive_run_revision}/delete'
+  defaults:
+    _form: '\Drupal\web_page_archive\Form\WebPageArchiveRunRevisionDeleteForm'
+    _title: 'Delete this run'
+  requirements:
+    _permission: 'administer web page archive'
+
 entity.web_page_archive.run_toggle_lock:
   path: 'admin/config/system/web-page-archive/runs/{web_page_archive_run_revision}/toggle-lock'
   defaults:

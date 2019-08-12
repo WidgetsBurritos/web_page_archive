@@ -84,6 +84,14 @@ function web_page_archive_post_update_3072289_set_default_retention_values() {
 }
 
 /**
+ * Issue 3011579: Reimports the web page archive canonical view.
+ */
+function web_page_archive_post_update_3011579_reimport_canonical_view() {
+  $views = ['views.view.web_page_archive_canonical'];
+  _web_page_archive_reimport_views($views);
+}
+
+/**
  * Helper function to reimport existing views from the install directory.
  */
 function _web_page_archive_reimport_views($views) {

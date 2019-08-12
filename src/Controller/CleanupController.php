@@ -40,9 +40,6 @@ class CleanupController extends ControllerBase {
 
       // If we're not looking at the default or a locked revision, remove it.
       if (!$run->isDefaultRevision() && !$run->getRetentionLocked()) {
-        foreach ($utilities as $utility) {
-          $utility->cleanupRevision($vid);
-        }
         $run_storage->deleteRevision($vid);
       }
     }
@@ -73,9 +70,6 @@ class CleanupController extends ControllerBase {
       $run = $run_storage->loadRevision($vid);
       // If we're not looking at the default or a locked revision, remove it.
       if (!$run->isDefaultRevision() && !$run->getRetentionLocked()) {
-        foreach ($utilities as $utility) {
-          $utility->cleanupRevision($vid);
-        }
         $run_storage->deleteRevision($vid);
         $revision_ct--;
       }

@@ -555,6 +555,35 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $this->assertEquals($expected_summary, $zip->getFromIndex(2));
     $zip->close();
 
+    // Test revision deletion functionality.
+    for ($i = 0; $i < 3; $i++) {
+      // Modify state to allow for rerun within same time window.
+      $this->container->get('state')->set('web_page_archive.next_run.localhost', -1);
+      web_page_archive_cron();
+    }
+    $this->drupalGet('admin/config/system/web-page-archive/jobs/localhost');
+
+    // At this point we should be able to confirm that we have 4 revisions.
+    $this->assertEquals(4, substr_count($this->getTextContent(), 'Delete Revision'));
+
+    // Attempt to delete default revision (which will fail).
+    $this->drupalPostForm('admin/config/system/web-page-archive/runs/4/delete', [], t('Delete'));
+    $assert->pageTextContains(t('localhost could not delete run with ID: 4. The most recent run cannot be deleted.'));
+
+    // Attempt to delete a locked revision (which will fail).
+    $this->drupalGet('admin/config/system/web-page-archive/runs/3/toggle-lock');
+    $this->drupalGet('admin/config/system/web-page-archive/runs/3/delete');
+    $assert->pageTextContains(t('This run cannot be deleted as it is current locked.'));
+
+    // Attempt to delete a normal revision (which should succeed).
+    $this->drupalPostForm('admin/config/system/web-page-archive/runs/2/delete', [], t('Delete'));
+    $assert->pageTextContains(t('localhost run deleted with ID: 2.'));
+
+    // Cancel deletion attempt, and ensure we're back at the overview page.
+    $this->drupalGet('admin/config/system/web-page-archive/runs/1/delete');
+    $this->clickLink(t('Cancel'));
+    $this->assertEquals(3, substr_count($this->getTextContent(), 'Delete Revision'));
+
     // Delete the config entity.
     $this->drupalGet('admin/config/system/web-page-archive/jobs/localhost/delete');
     $this->drupalPostForm(NULL, [], t('Delete'));

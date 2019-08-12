@@ -64,4 +64,20 @@ class WebPageArchiveRunStorage extends SqlContentEntityStorage implements WebPag
       ->execute();
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function deleteRevision($revision_id) {
+    $run = $this->loadRevision($revision_id);
+    $wpa = $run->getConfigEntity();
+    if ($run->isDefaultRevision()) {
+      return FALSE;
+    }
+    foreach ($wpa->getCaptureUtilities() as $utility) {
+      $utility->cleanupRevision($revision_id);
+    }
+    parent::deleteRevision($revision_id);
+    return TRUE;
+  }
+
 }
