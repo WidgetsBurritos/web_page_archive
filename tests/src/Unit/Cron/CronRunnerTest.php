@@ -192,13 +192,12 @@ class CronRunnerTest extends UnitTestCase {
 
   /**
    * Tests invalid crontab throws an exception.
-   *
-   * @expectedException Exception
-   * @expectedExceptionMessage Invalid crontab expression
    */
   public function testInvalidCronTabThrowsException() {
     $mock_web_page_archive = $this->getMockWebPageArchive('I am a bad bad crontab.');
     $cron_runner = $this->getCronRunner();
+    $this->expectException(\Exception::class);
+    $this->expectExceptionMessage('Invalid crontab expression');
     $cron_runner->run($mock_web_page_archive);
   }
 

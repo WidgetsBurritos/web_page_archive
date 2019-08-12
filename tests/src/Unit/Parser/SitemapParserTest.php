@@ -9,6 +9,8 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Exception\RequestException;
+use Symfony\Component\Serializer\Exception\NotEncodableValueException;
+use GuzzleHttp\Exception\ClientException;
 
 /**
  * @coversDefaultClass \Drupal\web_page_archive\Parser\SitemapParser
@@ -75,29 +77,26 @@ class SitemapParserTest extends UnitTestCase {
 
   /**
    * Tests unparseable file throws exception.
-   *
-   * @expectedException Symfony\Component\Serializer\Exception\UnexpectedValueException
    */
   public function testsUnparseableFileThrowsException() {
-    $urls = static::$sitemapParser->parse('https://www.somesite.com/invalid.file.png');
+    $this->expectException(NotEncodableValueException::class);
+    $url = static::$sitemapParser->parse('https://www.somesite.com/invalid.file.png');
   }
 
   /**
    * Tests 4xx client error throws exception.
-   *
-   * @expectedException GuzzleHttp\Exception\ClientException
    */
   public function testsClientErrorThrowsException() {
-    $urls = static::$sitemapParser->parse('https://www.somesite.com/access-denied-page');
+    $this->expectException(ClientException::class);
+    static::$sitemapParser->parse('https://www.somesite.com/access-denied-page');
   }
 
   /**
    * Tests connection failures.
-   *
-   * @expectedException GuzzleHttp\Exception\RequestException
    */
   public function testsRequestErrorThrowsException() {
-    $urls = static::$sitemapParser->parse('https://www.youcantconnecttome.com/sitemap.xml');
+    $this->expectException(RequestException::class);
+    static::$sitemapParser->parse('https://www.youcantconnecttome.com/sitemap.xml');
   }
 
 }

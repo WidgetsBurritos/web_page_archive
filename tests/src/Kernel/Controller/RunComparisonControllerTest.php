@@ -385,13 +385,12 @@ class RunComparisonControllerTest extends EntityStorageTestBase {
 
   /**
    * Tests RunComparisonController::markCompareComplete().
-   *
-   * @expectedException Exception
-   * @expectedExceptionMessage run2 is required
    */
   public function testMarkCompareCompleteThrowsExceptionIfMissingSecondRun() {
     $strip_patterns = ['www.', 'staging.'];
     $run_comparison = $this->getRunComparisonEntity('Compare job', 'My run entity', 2, 'string', $strip_patterns);
+    $this->expectException(\Exception::class);
+    $this->expectExceptionMessage('run2 is required');
     $this->setMockCompareResults($run_comparison);
 
     $expected = [

@@ -79,9 +79,6 @@ class CaptureQueueWorkerTest extends UnitTestCase {
 
   /**
    * Tests missing utility writes message.
-   *
-   * @expectedException Exception
-   * @expectedExceptionMessage utility is required
    */
   public function testMissingUtilityWritesMessage() {
     $data = [
@@ -90,14 +87,13 @@ class CaptureQueueWorkerTest extends UnitTestCase {
       'run_entity' => $this->mockWebPageArchiveRun,
       'user_agent' => 'WPA',
     ];
+    $this->expectException(\Exception::class);
+    $this->expectExceptionMessage('utility is required');
     $response = $this->queue->processItem($data);
   }
 
   /**
    * Tests missing url writes message.
-   *
-   * @expectedException Exception
-   * @expectedExceptionMessage url is required
    */
   public function testMissingUrlWritesMessage() {
     $data = [
@@ -106,14 +102,13 @@ class CaptureQueueWorkerTest extends UnitTestCase {
       'run_entity' => $this->mockWebPageArchiveRun,
       'user_agent' => 'WPA',
     ];
+    $this->expectException(\Exception::class);
+    $this->expectExceptionMessage('url is required');
     $response = $this->queue->processItem($data);
   }
 
   /**
    * Tests missing run_uuid writes message.
-   *
-   * @expectedException Exception
-   * @expectedExceptionMessage run_uuid is required
    */
   public function testMissingRunUuidWritesMessage() {
     $data = [
@@ -122,14 +117,13 @@ class CaptureQueueWorkerTest extends UnitTestCase {
       'run_entity' => $this->mockWebPageArchiveRun,
       'user_agent' => 'WPA',
     ];
+    $this->expectException(\Exception::class);
+    $this->expectExceptionMessage('run_uuid is required');
     $response = $this->queue->processItem($data);
   }
 
   /**
    * Tests missing run_entity writes message.
-   *
-   * @expectedException Exception
-   * @expectedExceptionMessage run_entity is required
    */
   public function testMissingRunEntityWritesMessage() {
     $data = [
@@ -138,14 +132,13 @@ class CaptureQueueWorkerTest extends UnitTestCase {
       'run_uuid' => '12345678-1234-1234-1234-123456789000',
       'user_agent' => 'WPA',
     ];
+    $this->expectException(\Exception::class);
+    $this->expectExceptionMessage('run_entity is required');
     $response = $this->queue->processItem($data);
   }
 
   /**
    * Tests missing user_agent writes message.
-   *
-   * @expectedException Exception
-   * @expectedExceptionMessage user_agent is required
    */
   public function testMissingUserAgentWritesMessage() {
     $data = [
@@ -154,14 +147,13 @@ class CaptureQueueWorkerTest extends UnitTestCase {
       'run_uuid' => '12345678-1234-1234-1234-123456789000',
       'run_entity' => $this->mockWebPageArchiveRun,
     ];
+    $this->expectException(\Exception::class);
+    $this->expectExceptionMessage('user_agent is required');
     $response = $this->queue->processItem($data);
   }
 
   /**
    * Tests failing capture utility.
-   *
-   * @expectedException Exception
-   * @expectedExceptionMessage Oh no! I could not capture the URL.
    */
   public function testProcessItemWritesMessage() {
     $failing_utility = $this->getMockBuilder('\Drupal\wpa_html_capture\Plugin\CaptureUtility\HtmlCaptureUtility')
@@ -178,6 +170,8 @@ class CaptureQueueWorkerTest extends UnitTestCase {
       'run_entity' => $this->mockWebPageArchiveRun,
       'user_agent' => 'WPA',
     ];
+    $this->expectException(\Exception::class);
+    $this->expectExceptionMessage('Oh no! I could not capture the URL.');
     $response = $this->queue->processItem($data);
   }
 
