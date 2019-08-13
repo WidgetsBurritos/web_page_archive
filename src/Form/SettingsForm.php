@@ -392,7 +392,6 @@ class SettingsForm extends ConfigFormBase {
         else {
           $fields = $config->get($group['id']);
           foreach ($fields as $field => $value) {
-            $form[$plugin_definition['id']][$group['id']][$field]['#default_value'] = $value;
             unset($form[$plugin_definition['id']][$group['id']][$field]['#required']);
           }
         }

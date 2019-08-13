@@ -43,6 +43,7 @@ class WebPageArchiveSettingsTest extends BrowserTestBase {
       'administer web page archive',
       'view web page archive results',
     ]);
+    $this->someOtherUser = $this->drupalCreateUser([]);
   }
 
   /**
@@ -180,6 +181,14 @@ class WebPageArchiveSettingsTest extends BrowserTestBase {
     $this->assertFieldByName('wpa_screenshot_capture[system][node_modules_path]', '');
     $this->assertNoFieldChecked('wpa_screenshot_capture[system][puppeteer_disable_sandbox]');
     $this->assertFieldByName('wpa_skeleton_capture[defaults][width]', 1280);
+    $this->assertFieldByName('wpa_skeleton_capture[defaults][users]', '');
+
+    // Generate user string for entity_autocomplete field.
+    $user1 = $this->authorizedAdminUser->label();
+    $uid1 = $this->authorizedAdminUser->id();
+    $user2 = $this->someOtherUser->label();
+    $uid2 = $this->someOtherUser->id();
+    $user_str = "{$user1} ($uid1), {$user2} ($uid2)";
 
     // Attempt to set defaults.
     $this->drupalPostForm(
@@ -198,6 +207,7 @@ class WebPageArchiveSettingsTest extends BrowserTestBase {
         'wpa_screenshot_capture[system][node_modules_path]' => '/path/to/node_modules/',
         'wpa_screenshot_capture[system][puppeteer_disable_sandbox]' => 1,
         'wpa_skeleton_capture[defaults][width]' => 480,
+        'wpa_skeleton_capture[defaults][users]' => $user_str,
       ],
       t('Save configuration')
     );
@@ -220,6 +230,7 @@ class WebPageArchiveSettingsTest extends BrowserTestBase {
 
     // Confirm skeleton capture utility settings updated.
     $this->assertFieldByName('wpa_skeleton_capture[defaults][width]', 480);
+    $this->assertFieldByName('wpa_skeleton_capture[defaults][users]', $user_str);
 
     // Create a dummy entity with no capture utilities.
     $data = [
@@ -256,6 +267,7 @@ class WebPageArchiveSettingsTest extends BrowserTestBase {
     $this->drupalGet('admin/config/system/web-page-archive/jobs/programmatic_archive/edit');
     $this->drupalPostForm(NULL, ['new' => 'wpa_skeleton_capture'], t('Add'));
     $this->assertFieldByName('data[width]', 480);
+    $this->assertFieldByName('data[users]', $user_str);
 
   }
 

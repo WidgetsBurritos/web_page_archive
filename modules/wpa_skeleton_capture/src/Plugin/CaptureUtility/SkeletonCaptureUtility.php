@@ -57,6 +57,7 @@ class SkeletonCaptureUtility extends ConfigurableCaptureUtilityBase {
     $config = \Drupal::configFactory()->get('web_page_archive.wpa_skeleton_capture.settings');
     return [
       'width' => $config->get('defaults.width'),
+      'users' => $config->get('defaults.users'),
     ];
   }
 
@@ -72,6 +73,21 @@ class SkeletonCaptureUtility extends ConfigurableCaptureUtilityBase {
       '#description' => $this->t('Capture width.'),
       '#default_value' => $this->configuration['width'],
     ];
+
+    // Retrieve default users.
+    $user_ids = isset($this->configuration['users']) ? array_map(function ($value) {
+      return $value['target_id'];
+    }, $this->configuration['users']) : [];
+    $users = !empty($user_ids) ? \Drupal::entityTypeManager()->getStorage('user')->loadMultiple($user_ids) : [];
+
+    $form['users'] = [
+      '#type' => 'entity_autocomplete',
+      '#target_type' => 'user',
+      '#title' => $this->t('User'),
+      '#description' => $this->t('Select which users to attach this job to.'),
+      '#tags' => TRUE,
+      '#default_value' => $users,
+    ];
     return $form;
   }
 
@@ -82,6 +98,7 @@ class SkeletonCaptureUtility extends ConfigurableCaptureUtilityBase {
     parent::submitConfigurationForm($form, $form_state);
 
     $this->configuration['width'] = $form_state->getValue('width');
+    $this->configuration['users'] = $form_state->getValue('users');
   }
 
   /**
