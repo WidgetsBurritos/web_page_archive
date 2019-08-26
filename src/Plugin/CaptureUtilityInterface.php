@@ -2,13 +2,14 @@
 
 namespace Drupal\web_page_archive\Plugin;
 
-use Drupal\Component\Plugin\ConfigurablePluginInterface;
 use Drupal\Component\Plugin\PluginInspectionInterface;
+use Drupal\Component\Plugin\ConfigurableInterface;
+use Drupal\Component\Plugin\DependentPluginInterface;
 
 /**
  * Defines an interface for capture utility plugins.
  */
-interface CaptureUtilityInterface extends PluginInspectionInterface, ConfigurablePluginInterface {
+interface CaptureUtilityInterface extends PluginInspectionInterface, ConfigurableInterface, DependentPluginInterface {
 
   /**
    * Captures the specified URL.

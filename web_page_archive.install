@@ -45,7 +45,7 @@ function web_page_archive_uninstall() {
   }
 
   // Delete files.
-  file_unmanaged_delete_recursive(file_default_scheme() . '://web-page-archive');
+  \Drupal::service('file_system')->deleteRecursive(file_default_scheme() . '://web-page-archive');
 
   // Delete locks.
   $query = \Drupal::database()->delete('semaphore');

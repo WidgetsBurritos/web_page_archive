@@ -2,10 +2,43 @@
 
 namespace Drupal\web_page_archive\Plugin;
 
+use Drupal\Core\File\FileSystemInterface;
+
 /**
  * Trait for utility plugins that use file storage.
  */
 trait FileStorageTrait {
+
+  /**
+   * The file system service.
+   *
+   * @var \Drupal\Core\File\FileSystemInterface
+   */
+  protected $fileSystem;
+
+  /**
+   * Retrieves file system.
+   *
+   * @return \Drupal\Core\File\FileSystemInterface
+   *   The file system service.
+   */
+  public function getFileSystem() {
+    if(!$this->fileSystem) {
+      $this->fileSystem = \Drupal::service('file_system');
+    }
+    return $this->fileSystem;
+  }
+
+  /**
+   * Sets file system service.
+   *
+   * @param \Drupal\Core\File\FileSystemInterface $file_system
+   *   The file system service.
+   */
+  public function setFileSystem(FileSystemInterface $file_system) {
+    $this->fileSystem = $file_system;
+    return $this;
+  }
 
   /**
    * Prepares and returns the storage path for the specified run uuid.
@@ -35,7 +68,7 @@ trait FileStorageTrait {
       $path_tokens[] = $run_uuid;
     }
     $path = implode('/', $path_tokens);
-    if (!file_prepare_directory($path, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS)) {
+    if (!$this->getFileSystem()->prepareDirectory($path, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS)) {
       throw new \Exception("Could not write to $path");
     }
     return $path;

@@ -99,7 +99,7 @@ abstract class CaptureUtilityFormBase extends FormBase {
     $form['actions']['cancel'] = [
       '#type' => 'link',
       '#title' => $this->t('Cancel'),
-      '#url' => $this->webPageArchive->urlInfo('edit-form'),
+      '#url' => $this->webPageArchive->toUrl('edit-form')->toString(),
       '#attributes' => ['class' => ['button']],
     ];
     return $form;
@@ -131,7 +131,7 @@ abstract class CaptureUtilityFormBase extends FormBase {
     $this->webPageArchive->save();
 
     $this->messenger()->addStatus($this->t('The capture utility was successfully applied.'));
-    $form_state->setRedirectUrl($this->webPageArchive->urlInfo('edit-form'));
+    $form_state->setRedirectUrl($this->webPageArchive->toUrl('edit-form'));
   }
 
   /**

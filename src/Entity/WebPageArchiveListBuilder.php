@@ -5,6 +5,7 @@ namespace Drupal\web_page_archive\Entity;
 use Cron\CronExpression;
 use Drupal\Core\Config\Entity\ConfigEntityListBuilder;
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Link;
 use Drupal\Core\Url;
 use Drupal\web_page_archive\Controller\WebPageArchiveController;
 
@@ -25,7 +26,7 @@ class WebPageArchiveListBuilder extends ConfigEntityListBuilder {
     $capture_utilities = \Drupal::service('plugin.manager.capture_utility')->getDefinitions();
     if (empty($capture_utilities)) {
       $url = Url::fromRoute('system.modules_list', [], ['fragment' => 'edit-modules-web-page-archive']);
-      $link = \Drupal::l($this->t('install a capture utility module'), $url);
+      $link = Link::fromTextAndUrl($this->t('install a capture utility module'), $url);
       \Drupal::messenger()->addWarning($this->t('You have installed Web Page Archive, but do not have any capture utilities installed. You will need to @install before you use this module.', ['@install' => $link]));
     }
     return parent::load();

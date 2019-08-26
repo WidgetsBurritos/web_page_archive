@@ -4,9 +4,12 @@ namespace Drupal\web_page_archive\Controller;
 
 use Drupal\Component\Utility\Xss;
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Datetime\DateFormatterInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Url;
 use Drupal\web_page_archive\Entity\WebPageArchiveRunInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\Link;
 
 /**
  * Class WebPageArchiveRunController.
@@ -16,6 +19,29 @@ use Drupal\web_page_archive\Entity\WebPageArchiveRunInterface;
  * @package Drupal\web_page_archive\Controller
  */
 class WebPageArchiveRunController extends ControllerBase implements ContainerInjectionInterface {
+
+  /**
+   * The date formatter service.
+   *
+   * @var \Drupal\Core\Datetime\DateFormatterInterface
+   */
+  protected $dateFormatter;
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct(DateFormatterInterface $date_formatter) {
+    $this->dateFormatter = $date_formatter;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('date.formatter')
+    );
+  }
 
   /**
    * Displays a Web page archive run  revision.
@@ -44,7 +70,7 @@ class WebPageArchiveRunController extends ControllerBase implements ContainerInj
    */
   public function revisionPageTitle($web_page_archive_run_revision) {
     $web_page_archive_run = $this->entityTypeManager()->getStorage('web_page_archive_run')->loadRevision($web_page_archive_run_revision);
-    return $this->t('Revision of %title from %date', ['%title' => $web_page_archive_run->label(), '%date' => format_date($web_page_archive_run->getRevisionCreationTime())]);
+    return $this->t('Revision of %title from %date', ['%title' => $web_page_archive_run->label(), '%date' => $this->dateFormatter->format($web_page_archive_run->getRevisionCreationTime())]);
   }
 
   /**
@@ -89,10 +115,10 @@ class WebPageArchiveRunController extends ControllerBase implements ContainerInj
         // Use revision link to link to revisions that are not active.
         $date = \Drupal::service('date.formatter')->format($revision->getRevisionCreationTime(), 'short');
         if ($vid != $web_page_archive_run->getRevisionId()) {
-          $link = $this->l($date, new Url('entity.web_page_archive_run.revision', ['web_page_archive_run' => $web_page_archive_run->id(), 'web_page_archive_run_revision' => $vid]));
+          $link = Link::fromTextAndUrl($date, new Url('entity.web_page_archive_run.revision', ['web_page_archive_run' => $web_page_archive_run->id(), 'web_page_archive_run_revision' => $vid]));
         }
         else {
-          $link = $web_page_archive_run->link($date);
+          $link = $web_page_archive_run->toLink($date)->toString();
         }
 
         $row = [];

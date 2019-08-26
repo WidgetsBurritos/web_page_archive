@@ -43,7 +43,7 @@ class CaptureUtilityDeleteForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function getCancelUrl() {
-    return $this->webPageArchive->urlInfo('edit-form');
+    return $this->webPageArchive->toUrl('edit-form')->toString();
   }
 
   /**
@@ -69,7 +69,7 @@ class CaptureUtilityDeleteForm extends ConfirmFormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $this->webPageArchive->deleteCaptureUtility($this->captureUtility);
     $this->messenger()->addStatus($this->t('The capture utility %name has been deleted.', ['%name' => $this->captureUtility->label()]));
-    $form_state->setRedirectUrl($this->webPageArchive->urlInfo('edit-form'));
+    $form_state->setRedirectUrl($this->webPageArchive->toUrl('edit-form'));
   }
 
 }

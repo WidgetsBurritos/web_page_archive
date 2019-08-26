@@ -3,6 +3,7 @@
 namespace Drupal\web_page_archive\Form;
 
 use Drupal\Core\Cache\CacheTagsInvalidatorInterface;
+use Drupal\Core\Datetime\DateFormatterInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -34,16 +35,26 @@ class WebPageArchiveRunRevisionDeleteForm extends ConfirmFormBase {
   protected $webPageArchiveRunStorage;
 
   /**
+   * The date formatter service.
+   *
+   * @var \Drupal\Core\Datetime\DateFormatterInterface
+   */
+  protected $dateFormatter;
+
+  /**
    * Constructs a new WebPageArchiveRunRevisionDeleteForm.
    *
    * @param \Drupal\Core\Entity\EntityStorageInterface $entity_storage
    *   The entity storage.
    * @param \Drupal\Core\Cache\CacheTagsInvalidatorInterface $cache_tag_invalidator
    *   The cache tag invalidator service.
+   * @param \Drupal\Core\Datetime\DateFormatterInterface $date_formatter
+   *   The date formatter service.
    */
-  public function __construct(EntityStorageInterface $entity_storage, CacheTagsInvalidatorInterface $cache_tag_invalidator) {
+  public function __construct(EntityStorageInterface $entity_storage, CacheTagsInvalidatorInterface $cache_tag_invalidator, DateFormatterInterface $date_formatter) {
     $this->webPageArchiveRunStorage = $entity_storage;
     $this->cacheTagInvalidator = $cache_tag_invalidator;
+    $this->dateFormatter = $date_formatter;
   }
 
   /**
@@ -53,7 +64,8 @@ class WebPageArchiveRunRevisionDeleteForm extends ConfirmFormBase {
     $entity_manager = $container->get('entity_type.manager');
     return new static(
       $entity_manager->getStorage('web_page_archive_run'),
-      $container->get('cache_tags.invalidator')
+      $container->get('cache_tags.invalidator'),
+      $container->get('date.formatter')
     );
   }
 
@@ -70,7 +82,7 @@ class WebPageArchiveRunRevisionDeleteForm extends ConfirmFormBase {
   public function getQuestion() {
     $replacements = [
       '%job' => $this->revision->label(),
-      '%revision-date' => format_date($this->revision->getRevisionCreationTime()),
+      '%revision-date' => $this->dateFormatter->format($this->revision->getRevisionCreationTime()),
     ];
     return $this->t('Are you sure you want to delete the %job run from %revision-date?', $replacements);
   }
