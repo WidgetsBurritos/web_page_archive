@@ -30,6 +30,20 @@ class WebPageArchiveRunStorage extends SqlContentEntityStorage implements WebPag
   /**
    * {@inheritdoc}
    */
+  public function revisionIdsInRange(WebPageArchiveRunInterface $entity, $start_time, $end_time) {
+    return $this->database->query(
+      'SELECT vid FROM {web_page_archive_run_revision} WHERE id=:id AND revision_created BETWEEN :start_time AND :end_time ORDER BY vid',
+      [
+        ':id' => $entity->id(),
+        ':start_time' => intval($start_time),
+        ':end_time' => intval($end_time),
+      ]
+    )->fetchCol();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function fullRevisionList() {
     return $this->database->query(
       'SELECT vid, name, revision_created FROM {web_page_archive_run_revision} ORDER BY vid'

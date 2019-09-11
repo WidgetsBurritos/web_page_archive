@@ -29,6 +29,21 @@ interface WebPageArchiveRunStorageInterface extends ContentEntityStorageInterfac
   public function revisionIds(WebPageArchiveRunInterface $entity);
 
   /**
+   * Gets a list of revision IDs for a specific run within specific time range.
+   *
+   * @param \Drupal\web_page_archive\Entity\WebPageArchiveRunInterface $entity
+   *   The Web page archive run entity.
+   * @param int $start_time
+   *   Unix timestamp to look after
+   * @param int $end_time
+   *   Unix timestamp to look before
+   *
+   * @return int[]
+   *   Web page archive run revision IDs (in ascending order).
+   */
+  public function revisionIdsInRange(WebPageArchiveRunInterface $entity, $start_time, $end_time);
+
+  /**
    * Gets a list of all web page archive run revision IDs and labels.
    *
    * @return array
