@@ -3,6 +3,7 @@ type: module
 description: 'Provides a screenshot capture utility using Headless Chrome or PhantomJS.'
 package: Web Page Archive
 core: 8.x
+core_version_requirement: ^8 || ^9
 dependencies:
   - drupal:image
   - web_page_archive:web_page_archive

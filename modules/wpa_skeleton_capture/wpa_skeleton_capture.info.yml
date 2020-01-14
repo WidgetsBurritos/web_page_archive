@@ -3,5 +3,6 @@ type: module
 description: 'Provides a skeleton capture utility useful when creating new plugins.'
 package: Web Page Archive
 core: 8.x
+core_version_requirement: ^8 || ^9
 dependencies:
   - web_page_archive:web_page_archive

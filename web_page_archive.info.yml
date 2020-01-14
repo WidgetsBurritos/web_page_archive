@@ -3,6 +3,7 @@ type: module
 description: 'Provides web page data archiving and reporting functionality.'
 package: Web Page Archive
 core: 8.x
+core_version_requirement: ^8 || ^9
 configure: entity.web_page_archive.collection
 dependencies:
   - drupal:system (>= 8.3)
