@@ -53,7 +53,7 @@ trait FileStorageTrait {
   public function storagePath($entity_id = NULL, $run_uuid = NULL, $directory = NULL) {
     // TODO: Use custom stream wrapper.
     // @see https://www.drupal.org/node/2901781
-    $scheme = file_default_scheme();
+    $scheme = \Drupal::config('system.file')->get('default_scheme');
     $path_tokens = ["{$scheme}:/", 'web-page-archive'];
     if (isset($directory)) {
       $path_tokens[] = $directory;
@@ -68,7 +68,8 @@ trait FileStorageTrait {
       $path_tokens[] = $run_uuid;
     }
     $path = implode('/', $path_tokens);
-    if (!$this->getFileSystem()->prepareDirectory($path, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS)) {
+
+    if (!$this->getFileSystem()->prepareDirectory($path, FileSystemInterface::CREATE_DIRECTORY | FileSystemInterface::MODIFY_PERMISSIONS)) {
       throw new \Exception("Could not write to $path");
     }
     return $path;

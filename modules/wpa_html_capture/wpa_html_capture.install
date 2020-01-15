@@ -35,8 +35,9 @@ function wpa_html_capture_update_8001(&$sandbox = NULL) {
   if ($runs = $run_storage->loadMultiple($run_ids)) {
 
     // Determine file paths for replacement.
-    $old_file_path = \Drupal::service('file_system')->realpath(file_default_scheme() . "://") . '/';
-    $new_file_path = file_default_scheme() . "://";
+    $scheme = \Drupal::config('system.file')->get('default_scheme');
+    $old_file_path = \Drupal::service('file_system')->realpath("{$scheme}://") . '/';
+    $new_file_path = "$scheme://";
 
     foreach ($runs as $run) {
 

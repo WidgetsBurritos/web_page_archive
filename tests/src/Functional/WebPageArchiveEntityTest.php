@@ -525,10 +525,11 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
 
     // Ensure our response contains the expected headers.
     $assert->responseHeaderEquals('Content-Type', 'application/zip;charset=UTF-8');
-    $assert->responseHeaderContains('Content-Disposition', 'attachment; filename="localhost-');
+    $assert->responseHeaderMatches('Content-Disposition', '/attachment; filename=["]?localhost-[0-9-]+\.zip/');
 
     // Ensure our response is a valid zip file containing the expected files.
-    $tmp_file = \file_directory_temp() . '/tmp.zip';
+    $tmp_dir = $this->container->get('file_system')->getTempDirectory();
+    $tmp_file = "{$tmp_dir}/tmp.zip";
     file_put_contents($tmp_file, $this->getSession()->getPage()->getContent());
     $zip = new \ZipArchive();
     $zip->open($tmp_file);

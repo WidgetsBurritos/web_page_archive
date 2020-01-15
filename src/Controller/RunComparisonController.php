@@ -41,7 +41,7 @@ class RunComparisonController extends ControllerBase {
    * Generates a label for the specified revision.
    */
   public static function generateRevisionLabel($vid, $name, $timestamp) {
-    $timezone = \drupal_get_user_timezone();
+    $timezone = \date_default_timezone_get();
     $date = \Drupal::service('date.formatter')
       ->format($timestamp, 'custom', 'Y-m-d H:i:s', $timezone);
     return "{$name}: {$date} ($vid)";
