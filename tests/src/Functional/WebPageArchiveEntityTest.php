@@ -547,12 +547,12 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
 
     // Verify the summary file.
     $this->assertEquals('summary.csv', $zip->statIndex(2)['name']);
-    $expected_summary = implode([
+    $expected_summary = implode(PHP_EOL, [
       'Url,File',
       "{$base_url},{$file_name_1}",
       "{$base_url}?somearg=1,{$file_name_2}",
       '',
-    ], PHP_EOL);
+    ]);
     $this->assertEquals($expected_summary, $zip->getFromIndex(2));
     $zip->close();
 
