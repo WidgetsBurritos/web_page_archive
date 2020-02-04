@@ -5,6 +5,7 @@ namespace Drupal\web_page_archive\EventSubscriber;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\web_page_archive\Event\CaptureJobCompleteEvent;
 use Drupal\web_page_archive\Event\CompareJobCompleteEvent;
+use Drupal\web_page_archive\Event\NotificationEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -24,6 +25,7 @@ class WebPageArchiveEventSubscriber implements EventSubscriberInterface {
     return [
       CaptureJobCompleteEvent::EVENT_NAME => 'captureComplete',
       CompareJobCompleteEvent::EVENT_NAME => 'compareComplete',
+      NotificationEvent::EVENT_NAME => 'notify',
     ];
   }
 
@@ -45,6 +47,16 @@ class WebPageArchiveEventSubscriber implements EventSubscriberInterface {
    */
   public function compareComplete(CompareJobCompleteEvent $event) {
     \Drupal::messenger()->addStatus($this->t('The comparison has been completed.'));
+  }
+
+  /**
+   * Reacts to requests to notify users.
+   *
+   * @param \Drupal\web_page_archive\Event\NotificationEvent $event
+   *   Notification event.
+   */
+  public function notify(NotificationEvent $event) {
+    $event->getNotificationUtility()->handleEvent($event);
   }
 
 }

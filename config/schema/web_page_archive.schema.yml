@@ -138,6 +138,11 @@ web_page_archive.web_page_archive.*:
 web_page_archive.capture_utility.*:
   type: mapping
   label: 'Capture utility settings'
+  mapping:
+    wpa_notification_utility:
+      type: sequence
+      sequence:
+        type: string
 
 field.widget.settings.web_page_archive_capture_widget:
   type: mapping

@@ -1,0 +1,5 @@
+services:
+  wpa_skeleton_capture.event_subscriber:
+    class: Drupal\wpa_skeleton_capture\EventSubscriber\WebPageArchiveEventSubscriber
+    tags:
+      - { name: event_subscriber }
