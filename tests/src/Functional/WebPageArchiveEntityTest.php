@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\web_page_archive\Functional;
 
+use Drupal\Core\Test\AssertMailTrait;
 use Drupal\Tests\BrowserTestBase;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
@@ -14,6 +15,8 @@ use Symfony\Component\HttpFoundation\Response;
  * @group web_page_archive
  */
 class WebPageArchiveEntityTest extends BrowserTestBase {
+
+  use AssertMailTrait;
 
   /**
    * {@inheritdoc}
@@ -601,6 +604,233 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $this->assertFalse(file_exists('public://web-page-archive/wpa_html_capture/localhost'));
     $this->assertTrue(file_exists('public://web-page-archive/wpa_html_capture'));
 
+  }
+
+  /**
+   * Tests that the email notificiation system works as expected.
+   */
+  public function testNotificationSystem() {
+    $assert = $this->assertSession();
+
+    // Login.
+    $this->drupalLogin($this->authorizedAdminUser);
+
+    // Add an entity using the entity form.
+    $this->drupalGet('admin/config/system/web-page-archive/jobs/add');
+
+    $urls = [
+      'http://somehost.com',
+      'http://somehost.com/foo',
+      'http://somehost.com/bar',
+    ];
+    $this->drupalPostForm(
+      NULL,
+      [
+        'label' => 'Skeleton test',
+        'id' => 'skeleton_test',
+        'timeout' => 500,
+        'use_cron' => 1,
+        'use_robots' => 1,
+        'user_agent' => 'WPA',
+        'cron_schedule' => '* * * * *',
+        'url_type' => 'url',
+        'urls' => implode(PHP_EOL, $urls),
+      ],
+      t('Create new archive')
+    );
+    $assert->pageTextContains('Created the Skeleton test Web page archive entity.');
+
+    // Add a skeleton capture utility to our job.
+    $this->drupalPostForm(
+      NULL,
+      [
+        'new' => 'wpa_skeleton_capture',
+      ],
+      t('Add')
+    );
+
+    // By default assume no fields have been checked.
+    $this->assertNoFieldChecked('data[wpa_notification_utility][wpa_notify_email]');
+    $this->assertNoFieldChecked('data[wpa_notification_utility_details][wpa_notify_email][capture_complete_single][enabled]');
+    $this->assertNoFieldChecked('data[wpa_notification_utility_details][wpa_notify_email][capture_complete_all][enabled]');
+
+    // CASE 1: Send 3 emails for the capture_complete_single context.
+    // Configure our capture utility for notifications.
+    $this->drupalPostForm(
+      NULL,
+      [
+        'data[width]' => 1600,
+        'data[users]' => NULL,
+        'data[wpa_notification_utility][wpa_notify_email]' => 'wpa_notify_email',
+        'data[wpa_notification_utility_details][wpa_notify_email][capture_complete_single][enabled]' => 1,
+        'data[wpa_notification_utility_details][wpa_notify_email][capture_complete_single][to]' => 'foo@bar.com',
+        'data[wpa_notification_utility_details][wpa_notify_email][capture_complete_single][format]' => 'text/html',
+        'data[wpa_notification_utility_details][wpa_notify_email][capture_complete_single][subject]' => 'Job: @wpa_label',
+        'data[wpa_notification_utility_details][wpa_notify_email][capture_complete_single][body]' => '<strong>Your job ID is:</strong> @wpa_id',
+        'data[wpa_notification_utility_details][wpa_notify_email][capture_complete_all][enabled]' => NULL,
+      ],
+      t('Add capture utility')
+    );
+
+    $this->clickLink('Edit');
+
+    // Verify the checkboxes are now checked.
+    $this->assertFieldChecked('data[wpa_notification_utility][wpa_notify_email]');
+    $this->assertFieldChecked('data[wpa_notification_utility_details][wpa_notify_email][capture_complete_single][enabled]');
+    $this->assertNoFieldChecked('data[wpa_notification_utility_details][wpa_notify_email][capture_complete_all][enabled]');
+
+    // Allow immediate cron run.
+    $this->container->get('state')->set('web_page_archive.next_run.skeleton_test', 100);
+
+    // Simulate a cron run.
+    web_page_archive_cron();
+
+    // Check canonical view to see if run occurred.
+    $this->drupalGet('admin/config/system/web-page-archive/jobs/skeleton_test');
+    $assert->pageTextContains('Skeleton capture utility');
+
+    // Confirm the expected emails were sent (one per URL).
+    $captured_emails = $this->getMails();
+    $this->assertEquals(count($captured_emails), 3);
+    $this->assertMail('to', 'foo@bar.com');
+    $this->assertMail('subject', 'Job: Skeleton test');
+    $this->assertMail('body', '<strong>Your job ID is:</strong> skeleton_test');
+    $this->assertMail('headers', ['Content-type' => 'text/html']);
+
+    // CASE 2: Send 1 email for the capture_complete_all context.
+    // Clear out the existing mail queue.
+    $this->container->get('state')->set('system.test_mail_collector', []);
+
+    // Now let's switch to the capture_complete_all context instead.
+    $this->drupalGet('admin/config/system/web-page-archive/jobs/skeleton_test/edit');
+    $this->clickLink('Edit');
+
+    // Configure our capture utility for notifications.
+    $this->drupalPostForm(
+      NULL,
+      [
+        'data[width]' => 1600,
+        'data[users]' => NULL,
+        'data[wpa_notification_utility][wpa_notify_email]' => 'wpa_notify_email',
+        'data[wpa_notification_utility_details][wpa_notify_email][capture_complete_single][enabled]' => NULL,
+        'data[wpa_notification_utility_details][wpa_notify_email][capture_complete_all][enabled]' => 1,
+        'data[wpa_notification_utility_details][wpa_notify_email][capture_complete_all][to]' => 'foo@baz.com',
+        'data[wpa_notification_utility_details][wpa_notify_email][capture_complete_all][format]' => 'text/plain',
+        'data[wpa_notification_utility_details][wpa_notify_email][capture_complete_all][subject]' => 'Cumulative run: @wpa_label',
+        'data[wpa_notification_utility_details][wpa_notify_email][capture_complete_all][body]' => 'Your cumulative job ID is: @wpa_id',
+      ],
+      t('Update capture utility')
+    );
+    $this->clickLink('Edit');
+
+    // Verify the checkboxes are now checked.
+    $this->assertFieldChecked('data[wpa_notification_utility][wpa_notify_email]');
+    $this->assertFieldChecked('data[wpa_notification_utility_details][wpa_notify_email][capture_complete_all][enabled]');
+    $this->assertNoFieldChecked('data[wpa_notification_utility_details][wpa_notify_email][capture_complete_single][enabled]');
+
+    // Allow immediate cron run.
+    $this->container->get('state')->set('web_page_archive.next_run.skeleton_test', 100);
+
+    // Simulate a cron run.
+    web_page_archive_cron();
+
+    // Confirm there's only one message and it doesn't have variables enabled.
+    $captured_emails = $this->getMails();
+    $this->assertEquals(count($captured_emails), 1);
+    $this->assertMail('to', 'foo@baz.com');
+    $this->assertMail('subject', 'Cumulative run: @wpa_label');
+    $this->assertMail('body', 'Your cumulative job ID is: @wpa_id');
+    $this->assertMail('headers', ['Content-type' => 'text/plain']);
+
+    // CASE 3: Send 0 emails when the neither contexts are enabled.
+    // Clear out the existing mail queue.
+    $this->container->get('state')->set('system.test_mail_collector', []);
+
+    // Now let's turn all notification contexts off.
+    $this->drupalGet('admin/config/system/web-page-archive/jobs/skeleton_test/edit');
+    $this->clickLink('Edit');
+
+    // Configure our capture utility for notifications.
+    $this->drupalPostForm(
+      NULL,
+      [
+        'data[width]' => 1600,
+        'data[users]' => NULL,
+        'data[wpa_notification_utility][wpa_notify_email]' => 'wpa_notify_email',
+        'data[wpa_notification_utility_details][wpa_notify_email][capture_complete_single][enabled]' => NULL,
+        'data[wpa_notification_utility_details][wpa_notify_email][capture_complete_single][to]' => 'foo@bar.com',
+        'data[wpa_notification_utility_details][wpa_notify_email][capture_complete_single][format]' => 'text/html',
+        'data[wpa_notification_utility_details][wpa_notify_email][capture_complete_single][subject]' => 'Job: @wpa_label',
+        'data[wpa_notification_utility_details][wpa_notify_email][capture_complete_single][body]' => '<strong>Your job ID is:</strong> @wpa_id',
+        'data[wpa_notification_utility_details][wpa_notify_email][capture_complete_all][enabled]' => NULL,
+        'data[wpa_notification_utility_details][wpa_notify_email][capture_complete_all][to]' => 'foo@baz.com',
+        'data[wpa_notification_utility_details][wpa_notify_email][capture_complete_all][format]' => 'text/plain',
+        'data[wpa_notification_utility_details][wpa_notify_email][capture_complete_all][subject]' => 'Cumulative run: @wpa_label',
+        'data[wpa_notification_utility_details][wpa_notify_email][capture_complete_all][body]' => 'Your cumulative job ID is: @wpa_id',
+      ],
+      t('Update capture utility')
+    );
+    $this->clickLink('Edit');
+
+    // Verify the checkboxes are now checked.
+    $this->assertFieldChecked('data[wpa_notification_utility][wpa_notify_email]');
+    $this->assertNoFieldChecked('data[wpa_notification_utility_details][wpa_notify_email][capture_complete_all][enabled]');
+    $this->assertNoFieldChecked('data[wpa_notification_utility_details][wpa_notify_email][capture_complete_single][enabled]');
+
+    // Allow immediate cron run.
+    $this->container->get('state')->set('web_page_archive.next_run.skeleton_test', 100);
+
+    // Simulate a cron run.
+    web_page_archive_cron();
+
+    // Confirm there are no messages.
+    $captured_emails = $this->getMails();
+    $this->assertEquals(count($captured_emails), 0);
+
+    // CASE 4: Send 0 emails when the wpa_notify_email method is unchecked.
+    // Clear out the existing mail queue.
+    $this->container->get('state')->set('system.test_mail_collector', []);
+
+    // Now let's turn all notification contexts off.
+    $this->drupalGet('admin/config/system/web-page-archive/jobs/skeleton_test/edit');
+    $this->clickLink('Edit');
+
+    // Configure our capture utility for notifications.
+    $this->drupalPostForm(
+      NULL,
+      [
+        'data[width]' => 1600,
+        'data[users]' => NULL,
+        'data[wpa_notification_utility][wpa_notify_email]' => NULL,
+        'data[wpa_notification_utility_details][wpa_notify_email][capture_complete_single][enabled]' => 1,
+        'data[wpa_notification_utility_details][wpa_notify_email][capture_complete_single][to]' => 'foo@bar.com',
+        'data[wpa_notification_utility_details][wpa_notify_email][capture_complete_single][format]' => 'text/html',
+        'data[wpa_notification_utility_details][wpa_notify_email][capture_complete_single][subject]' => 'Job: @wpa_label',
+        'data[wpa_notification_utility_details][wpa_notify_email][capture_complete_single][body]' => '<strong>Your job ID is:</strong> @wpa_id',
+        'data[wpa_notification_utility_details][wpa_notify_email][capture_complete_all][enabled]' => 1,
+        'data[wpa_notification_utility_details][wpa_notify_email][capture_complete_all][to]' => 'foo@baz.com',
+        'data[wpa_notification_utility_details][wpa_notify_email][capture_complete_all][format]' => 'text/plain',
+        'data[wpa_notification_utility_details][wpa_notify_email][capture_complete_all][subject]' => 'Cumulative run: @wpa_label',
+        'data[wpa_notification_utility_details][wpa_notify_email][capture_complete_all][body]' => 'Your cumulative job ID is: @wpa_id',
+      ],
+      t('Update capture utility')
+    );
+    $this->clickLink('Edit');
+
+    // Verify the checkboxes are now checked.
+    $this->assertNoFieldChecked('data[wpa_notification_utility][wpa_notify_email]');
+    $this->assertFieldChecked('data[wpa_notification_utility_details][wpa_notify_email][capture_complete_all][enabled]');
+    $this->assertFieldChecked('data[wpa_notification_utility_details][wpa_notify_email][capture_complete_single][enabled]');
+
+    // Allow immediate cron run.
+    $this->container->get('state')->set('web_page_archive.next_run.skeleton_test', 100);
+
+    // Simulate a cron run.
+    web_page_archive_cron();
+
+    // Confirm there are no messages.
+    $captured_emails = $this->getMails();
+    $this->assertEquals(count($captured_emails), 0);
   }
 
 }

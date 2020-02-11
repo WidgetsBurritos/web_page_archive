@@ -2,23 +2,19 @@
 
 namespace Drupal\web_page_archive\Plugin;
 
-use Drupal\Core\DependencyInjection\DependencySerializationTrait;
+use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Language\LanguageManagerInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
-use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Component\Plugin\PluginBase;
-use Drupal\web_page_archive\Controller\CleanupController;
+use Drupal\web_page_archive\Event\NotificationEvent;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Base class for Capture utility plugins.
  */
-abstract class CaptureUtilityBase extends PluginBase implements CaptureUtilityInterface, ContainerFactoryPluginInterface {
-
-  use DependencySerializationTrait;
-  use StringTranslationTrait;
-  use FileStorageTrait;
-  use NotifiableTrait;
+abstract class NotificationUtilityBase extends PluginBase implements NotificationUtilityInterface, ContainerFactoryPluginInterface {
 
   /**
    * The capture utility ID.
@@ -28,27 +24,51 @@ abstract class CaptureUtilityBase extends PluginBase implements CaptureUtilityIn
   protected $uuid;
 
   /**
-   * The weight of the capture utility.
+   * The weight of the Notification utility.
    *
    * @var int|string
    */
   protected $weight = '';
 
   /**
-   * A logger instance.
+   * The logger service.
    *
    * @var \Psr\Log\LoggerInterface
    */
   protected $logger;
 
   /**
+   * The language manager service.
+   *
+   * @var \Drupal\Core\Language\LanguageManagerInterface
+   */
+  protected $languageManager;
+
+  /**
+   * The config factory service.
+   *
+   * @var \Drupal\Core\Config\ConfigFactoryInterface
+   */
+  protected $config;
+
+  /**
+   * The event dispatcher service.
+   *
+   * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
+   */
+  protected $eventDispatcher;
+
+  /**
    * {@inheritdoc}
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, LoggerInterface $logger) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, LoggerInterface $logger, LanguageManagerInterface $language_manager, ConfigFactoryInterface $config_factory, EventDispatcherInterface $event_dispatcher) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
 
     $this->setConfiguration($configuration);
     $this->logger = $logger;
+    $this->languageManager = $language_manager;
+    $this->config = $config_factory;
+    $this->eventDispatcher = $event_dispatcher;
   }
 
   /**
@@ -59,22 +79,11 @@ abstract class CaptureUtilityBase extends PluginBase implements CaptureUtilityIn
       $configuration,
       $plugin_id,
       $plugin_definition,
-      $container->get('logger.factory')->get('web_page_archive')
+      $container->get('logger.factory')->get('web_page_archive'),
+      $container->get('language_manager'),
+      $container->get('config.factory'),
+      $container->get('event_dispatcher')
     );
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getSummary() {
-    return [
-      '#markup' => '',
-      '#capture_utility' => [
-        'id' => $this->pluginDefinition['id'],
-        'label' => $this->label(),
-        'description' => $this->pluginDefinition['description'],
-      ],
-    ];
   }
 
   /**
@@ -150,52 +159,21 @@ abstract class CaptureUtilityBase extends PluginBase implements CaptureUtilityIn
   /**
    * {@inheritdoc}
    */
-  public function missingDependencies() {
-    return [];
+  public function triggerEvent(array $configuration, array $replacements = []) {
+    $event = new NotificationEvent($this, $configuration, $replacements);
+    $this->eventDispatcher->dispatch(NotificationEvent::EVENT_NAME, $event);
   }
 
   /**
    * {@inheritdoc}
    */
-  public function cleanupEntity($entity_id) {
-    $path = $this->storagePath($entity_id);
-    CleanupController::queueDirectoryDelete($path);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function cleanupRevision($revision_id) {}
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getFileName(array $data, $extension) {
-    $entity_id = $data['run_entity']->getConfigEntity()->id();
-    return $this->getUniqueFileName($entity_id, $data['run_uuid'], $data['url'], 'captures', $extension);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getNotificationContexts() {
-    return [
-      'capture_complete_single' => [
-        'label' => $this->t('Single capture completion'),
-        'description' => $this->t('This context occurs after a single capture is performed.'),
-      ],
-      'capture_complete_all' => [
-        'label' => $this->t('Full capture completion'),
-        'description' => $this->t('This context occurs after all captures are performed.'),
-      ],
-    ];
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getReplacementListByContext($context) {
-    return [];
+  public function checkRequiredConfigurationKeys(array $configuration) {
+    $keys = $this->getRequiredConfigurationKeys();
+    foreach ($keys as $key) {
+      if (empty($configuration[$key])) {
+        throw new \Exception("Missing email setting: {$key}");
+      }
+    }
   }
 
 }

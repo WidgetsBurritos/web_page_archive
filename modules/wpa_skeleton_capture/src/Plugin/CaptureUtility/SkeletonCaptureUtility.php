@@ -3,6 +3,7 @@
 namespace Drupal\wpa_skeleton_capture\Plugin\CaptureUtility;
 
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Url;
 use Drupal\web_page_archive\Plugin\ConfigurableCaptureUtilityBase;
 use Drupal\web_page_archive\Plugin\CaptureResponse\UriCaptureResponse;
 
@@ -37,10 +38,39 @@ class SkeletonCaptureUtility extends ConfigurableCaptureUtilityBase {
     // mechanism, such as storing the data directly inside the database table
     // instead of external files, you simply need to create a response class
     // that extends \Drupal\web_page_archive\Plugin\CaptureResponseBase.
-    $response_content = $this->t('Contents from @url', ['@url' => $data['url']]);
+    $replacements = ['@url' => $data['url']];
+    $response_content = $this->t('Contents from @url', $replacements);
     $this->response = new UriCaptureResponse($response_content, $data['url']);
 
+    // Create @wpa variables.
+    $replacements['@wpa_id'] = $data['web_page_archive']->id();
+    $replacements['@wpa_label'] = $data['web_page_archive']->label();
+    $replacements['@wpa_run_id'] = $data['run_entity']->getRevisionId();
+    $replacements['@wpa_run_label'] = $data['run_entity']->label();
+    $url = Url::fromRoute('view.web_page_archive_individual.individual_run_page', ['arg_0' => $replacements['@wpa_run_id']]);
+    $url->setAbsolute(TRUE);
+    $replacements['@wpa_run_url'] = $url->toString();
+
+    $this->notify('capture_complete_single', $replacements);
+
     return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getReplacementListByContext($context) {
+    switch ($context) {
+      case 'capture_complete_single':
+        return [
+          '@wpa_id' => $this->t('Web page archive configuration entity ID'),
+          '@wpa_label' => $this->t('Web page archive configuration entity label'),
+          '@wpa_run_id' => $this->t('Web page archive run entity ID'),
+          '@wpa_run_label' => $this->t('Web page archive run entity label'),
+          '@wpa_run_url' => $this->t('URL to this individual run'),
+        ];
+    }
+    return [];
   }
 
   /**
@@ -55,10 +85,12 @@ class SkeletonCaptureUtility extends ConfigurableCaptureUtilityBase {
    */
   public function defaultConfiguration() {
     $config = \Drupal::configFactory()->get('web_page_archive.wpa_skeleton_capture.settings');
-    return [
+    $ret = [
       'width' => $config->get('defaults.width'),
       'users' => $config->get('defaults.users'),
     ];
+    $this->injectNotificationDefaultValues($ret, $config->get('defaults') ?: []);
+    return $ret;
   }
 
   /**
@@ -88,6 +120,8 @@ class SkeletonCaptureUtility extends ConfigurableCaptureUtilityBase {
       '#tags' => TRUE,
       '#default_value' => $users,
     ];
+
+    $this->injectNotificationFields($form, $this->configuration);
     return $form;
   }
 
@@ -99,6 +133,7 @@ class SkeletonCaptureUtility extends ConfigurableCaptureUtilityBase {
 
     $this->configuration['width'] = $form_state->getValue('width');
     $this->configuration['users'] = $form_state->getValue('users');
+    $this->injectNotificationConfig($this->configuration, $form_state);
   }
 
   /**

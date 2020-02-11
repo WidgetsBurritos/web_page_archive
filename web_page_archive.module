@@ -72,3 +72,14 @@ function web_page_archive_help($route_name, RouteMatchInterface $route_match) {
       return $output;
   }
 }
+
+/**
+ * Implements hook_mail().
+ */
+function web_page_archive_mail($key, &$message, $params) {
+  if ($key == 'wpa_notify_email') {
+    $message['from'] = $params['from'];
+    $message['subject'] = $params['subject'];
+    $message['body'][] = $params['body'];
+  }
+}

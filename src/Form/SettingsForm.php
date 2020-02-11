@@ -394,6 +394,30 @@ class SettingsForm extends ConfigFormBase {
           foreach ($fields as $field => $value) {
             unset($form[$plugin_definition['id']][$group['id']][$field]['#required']);
           }
+
+          // Set appropriate defaults for notification fields.
+          if (isset($fields['wpa_notification_utility'])) {
+            $form[$plugin_definition['id']][$group['id']]['wpa_notification_utility']['#default_value'] = $fields['wpa_notification_utility'];
+          }
+          if (!empty($form[$plugin_definition['id']][$group['id']]['wpa_notification_utility_details'])) {
+            foreach ($form[$plugin_definition['id']][$group['id']]['wpa_notification_utility_details'] as $plugin_id => $plugin_details) {
+              foreach ($form[$plugin_definition['id']][$group['id']]['wpa_notification_utility_details'][$plugin_id] as $context_id => $context) {
+                if (!empty($fields['wpa_notification_utility_details'][$plugin_id][$context_id])) {
+                  foreach ($fields['wpa_notification_utility_details'][$plugin_id][$context_id] as $field => $value) {
+                    $form[$plugin_definition['id']][$group['id']]['wpa_notification_utility_details'][$plugin_id][$context_id][$field]['#default_value'] = $value;
+                    unset($form[$plugin_definition['id']][$group['id']]['wpa_notification_utility_details'][$plugin_id][$context_id][$field]['#required']);
+                    if ($field != 'enabled') {
+                      $form[$plugin_definition['id']][$group['id']]['wpa_notification_utility_details'][$plugin_id][$context_id][$field]['#states'] = [
+                        'visible' => [
+                          ":input[name='wpa_skeleton_capture[defaults][wpa_notification_utility_details][{$plugin_id}][{$context_id}][enabled]']" => ['checked' => TRUE],
+                        ],
+                      ];
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
     }

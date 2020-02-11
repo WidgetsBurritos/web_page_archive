@@ -16,6 +16,7 @@ abstract class ComparisonUtilityBase extends PluginBase implements ComparisonUti
   use DependencySerializationTrait;
   use StringTranslationTrait;
   use FileStorageTrait;
+  use NotifiableTrait;
 
   /**
    * The capture utility ID.
@@ -170,6 +171,20 @@ abstract class ComparisonUtilityBase extends PluginBase implements ComparisonUti
    */
   public function getFileName(array $data, $extension) {
     return $this->getUniqueFileName($data['run_comparison']->id(), NULL, $data['url'], 'comparisons', $extension);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getNotificationContexts() {
+    return [];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getReplacementListByContext($context) {
+    return [];
   }
 
 }

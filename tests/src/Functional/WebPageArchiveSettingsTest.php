@@ -182,6 +182,9 @@ class WebPageArchiveSettingsTest extends BrowserTestBase {
     $this->assertNoFieldChecked('wpa_screenshot_capture[system][puppeteer_disable_sandbox]');
     $this->assertFieldByName('wpa_skeleton_capture[defaults][width]', 1280);
     $this->assertFieldByName('wpa_skeleton_capture[defaults][users]', '');
+    $this->assertNoFieldChecked('wpa_skeleton_capture[defaults][wpa_notification_utility][wpa_notify_email]');
+    $this->assertNoFieldChecked('wpa_skeleton_capture[defaults][wpa_notification_utility_details][wpa_notify_email][capture_complete_single][enabled]');
+    $this->assertNoFieldChecked('wpa_skeleton_capture[defaults][wpa_notification_utility_details][wpa_notify_email][capture_complete_all][enabled]');
 
     // Generate user string for entity_autocomplete field.
     $user1 = $this->authorizedAdminUser->label();
@@ -208,6 +211,17 @@ class WebPageArchiveSettingsTest extends BrowserTestBase {
         'wpa_screenshot_capture[system][puppeteer_disable_sandbox]' => 1,
         'wpa_skeleton_capture[defaults][width]' => 480,
         'wpa_skeleton_capture[defaults][users]' => $user_str,
+        'wpa_skeleton_capture[defaults][wpa_notification_utility][wpa_notify_email]' => 'wpa_notify_email',
+        'wpa_skeleton_capture[defaults][wpa_notification_utility_details][wpa_notify_email][capture_complete_single][enabled]' => 1,
+        'wpa_skeleton_capture[defaults][wpa_notification_utility_details][wpa_notify_email][capture_complete_single][to]' => 'foo@bar.com',
+        'wpa_skeleton_capture[defaults][wpa_notification_utility_details][wpa_notify_email][capture_complete_single][format]' => 'text/html',
+        'wpa_skeleton_capture[defaults][wpa_notification_utility_details][wpa_notify_email][capture_complete_single][subject]' => 'Job: @wpa_label',
+        'wpa_skeleton_capture[defaults][wpa_notification_utility_details][wpa_notify_email][capture_complete_single][body]' => '<strong>Your job ID is:</strong> @wpa_id',
+        'wpa_skeleton_capture[defaults][wpa_notification_utility_details][wpa_notify_email][capture_complete_all][enabled]' => 1,
+        'wpa_skeleton_capture[defaults][wpa_notification_utility_details][wpa_notify_email][capture_complete_all][to]' => 'foo@baz.com',
+        'wpa_skeleton_capture[defaults][wpa_notification_utility_details][wpa_notify_email][capture_complete_all][format]' => 'text/plain',
+        'wpa_skeleton_capture[defaults][wpa_notification_utility_details][wpa_notify_email][capture_complete_all][subject]' => 'Cumulative run: @wpa_label',
+        'wpa_skeleton_capture[defaults][wpa_notification_utility_details][wpa_notify_email][capture_complete_all][body]' => 'Your cumulative job ID is: @wpa_id',
       ],
       t('Save configuration')
     );
@@ -231,6 +245,17 @@ class WebPageArchiveSettingsTest extends BrowserTestBase {
     // Confirm skeleton capture utility settings updated.
     $this->assertFieldByName('wpa_skeleton_capture[defaults][width]', 480);
     $this->assertFieldByName('wpa_skeleton_capture[defaults][users]', $user_str);
+    $this->assertFieldChecked('wpa_skeleton_capture[defaults][wpa_notification_utility][wpa_notify_email]');
+    $this->assertFieldChecked('wpa_skeleton_capture[defaults][wpa_notification_utility_details][wpa_notify_email][capture_complete_single][enabled]');
+    $this->assertFieldByName('wpa_skeleton_capture[defaults][wpa_notification_utility_details][wpa_notify_email][capture_complete_single][to]', 'foo@bar.com');
+    $this->assertFieldByName('wpa_skeleton_capture[defaults][wpa_notification_utility_details][wpa_notify_email][capture_complete_single][format]', 'text/html');
+    $this->assertFieldByName('wpa_skeleton_capture[defaults][wpa_notification_utility_details][wpa_notify_email][capture_complete_single][subject]', 'Job: @wpa_label');
+    $this->assertFieldByName('wpa_skeleton_capture[defaults][wpa_notification_utility_details][wpa_notify_email][capture_complete_single][body]', '<strong>Your job ID is:</strong> @wpa_id');
+    $this->assertFieldChecked('wpa_skeleton_capture[defaults][wpa_notification_utility_details][wpa_notify_email][capture_complete_all][enabled]');
+    $this->assertFieldByName('wpa_skeleton_capture[defaults][wpa_notification_utility_details][wpa_notify_email][capture_complete_all][to]', 'foo@baz.com');
+    $this->assertFieldByName('wpa_skeleton_capture[defaults][wpa_notification_utility_details][wpa_notify_email][capture_complete_all][format]', 'text/plain');
+    $this->assertFieldByName('wpa_skeleton_capture[defaults][wpa_notification_utility_details][wpa_notify_email][capture_complete_all][subject]', 'Cumulative run: @wpa_label');
+    $this->assertFieldByName('wpa_skeleton_capture[defaults][wpa_notification_utility_details][wpa_notify_email][capture_complete_all][body]', 'Your cumulative job ID is: @wpa_id');
 
     // Create a dummy entity with no capture utilities.
     $data = [
@@ -263,11 +288,22 @@ class WebPageArchiveSettingsTest extends BrowserTestBase {
     $this->assertFieldByName('data[image_type]', 'jpg');
     $this->assertFieldByName('data[width]', 1400);
 
-    // Add a screenshot capture utilitiy to the config entity and test defaults.
+    // Add a skeleton capture utility to the config entity and test defaults.
     $this->drupalGet('admin/config/system/web-page-archive/jobs/programmatic_archive/edit');
     $this->drupalPostForm(NULL, ['new' => 'wpa_skeleton_capture'], t('Add'));
     $this->assertFieldByName('data[width]', 480);
     $this->assertFieldByName('data[users]', $user_str);
+    $this->assertFieldByName('data[wpa_notification_utility][wpa_notify_email]', 'wpa_notify_email');
+    $this->assertFieldByName('data[wpa_notification_utility_details][wpa_notify_email][capture_complete_single][enabled]', 1);
+    $this->assertFieldByName('data[wpa_notification_utility_details][wpa_notify_email][capture_complete_single][to]', 'foo@bar.com');
+    $this->assertFieldByName('data[wpa_notification_utility_details][wpa_notify_email][capture_complete_single][format]', 'text/html');
+    $this->assertFieldByName('data[wpa_notification_utility_details][wpa_notify_email][capture_complete_single][subject]', 'Job: @wpa_label');
+    $this->assertFieldByName('data[wpa_notification_utility_details][wpa_notify_email][capture_complete_single][body]', '<strong>Your job ID is:</strong> @wpa_id');
+    $this->assertFieldByName('data[wpa_notification_utility_details][wpa_notify_email][capture_complete_all][enabled]', 1);
+    $this->assertFieldByName('data[wpa_notification_utility_details][wpa_notify_email][capture_complete_all][to]', 'foo@baz.com');
+    $this->assertFieldByName('data[wpa_notification_utility_details][wpa_notify_email][capture_complete_all][format]', 'text/plain');
+    $this->assertFieldByName('data[wpa_notification_utility_details][wpa_notify_email][capture_complete_all][subject]', 'Cumulative run: @wpa_label');
+    $this->assertFieldByName('data[wpa_notification_utility_details][wpa_notify_email][capture_complete_all][body]', 'Your cumulative job ID is: @wpa_id');
 
   }
 

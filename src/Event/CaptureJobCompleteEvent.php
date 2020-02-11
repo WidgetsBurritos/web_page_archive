@@ -29,4 +29,14 @@ class CaptureJobCompleteEvent extends Event {
     $this->runEntity = $run_entity;
   }
 
+  /**
+   * Retrieves the completed run entity.
+   *
+   * @return \Drupal\web_page_archive\Entity\WebPageArchiveRunInterface
+   *   The run entity object.
+   */
+  public function getRunEntity() {
+    return $this->runEntity;
+  }
+
 }
