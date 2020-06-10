@@ -20,6 +20,11 @@ class RunComparisonTest extends BrowserTestBase {
   public $profile = 'minimal';
 
   /**
+   * {@inheritdoc}
+   */
+  protected $defaultTheme = 'stark';
+
+  /**
    * Authorized Admin User.
    *
    * @var \Drupal\user\UserInterface

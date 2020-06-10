@@ -58,7 +58,13 @@ class SliderScreenshotCompareResponseTest extends EntityStorageTestBase {
     ];
 
     $actual = $response->renderable($options);
-    $this->assertArraySubset($expected, $actual);
+
+    foreach ($expected as $expected_id => $expected_item) {
+      foreach ($expected_item as $key => $expected_value) {
+        $this->assertEquals($expected_value, $actual[$expected_id][$key]);
+      }
+    }
+
     $this->assertEquals('admin/config/system/web-page-archive/modal/compare/1/1', $actual['link']['#url']->getInternalPath());
   }
 
@@ -123,7 +129,11 @@ class SliderScreenshotCompareResponseTest extends EntityStorageTestBase {
         'url' => 'https://drupal.org',
       ],
     ];
-    $this->assertArraySubset($expected, $results);
+    foreach ($expected as $expected_id => $expected_item) {
+      foreach ($expected_item as $key => $expected_value) {
+        $this->assertEquals($expected_value, $results[$expected_id][$key]);
+      }
+    }
 
     // Unserialize results to get compare response.
     $unserialized = unserialize($results[1]['results']);
@@ -143,15 +153,23 @@ class SliderScreenshotCompareResponseTest extends EntityStorageTestBase {
           '#theme' => 'image_style',
           '#style_name' => 'web_page_archive_full',
           '#uri' => __DIR__ . '/../../fixtures/drupal-org-1.png',
+          '#attached' => ['library' => ['web_page_archive/admin']],
         ],
         '#right' => [
           '#theme' => 'image_style',
           '#style_name' => 'web_page_archive_full',
           '#uri' => __DIR__ . '/../../fixtures/drupal-org-2.png',
+          '#attached' => ['library' => ['web_page_archive/admin']],
         ],
       ],
     ];
-    $this->assertArraySubset($expected, $response_collection->renderable($options));
+
+    $actual = $response_collection->renderable($options);
+    foreach ($expected as $expected_id => $expected_item) {
+      foreach ($expected_item as $key => $expected_value) {
+        $this->assertEquals($expected_value, $actual[$expected_id][$key]);
+      }
+    }
   }
 
 }

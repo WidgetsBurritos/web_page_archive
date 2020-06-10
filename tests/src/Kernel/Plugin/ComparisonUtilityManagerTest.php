@@ -73,7 +73,13 @@ class ComparisonUtilityManagerTest extends EntityKernelTestBase {
         'provider' => 'wpa_screenshot_capture',
       ],
     ];
-    $this->assertArraySubset($expected, $this->imageComparisonManager->getDefinitions());
+
+    $actual = $this->imageComparisonManager->getDefinitions();
+    foreach ($expected as $expected_id => $expected_item) {
+      foreach ($expected_item as $key => $expected_value) {
+        $this->assertEquals($expected_value, $actual[$expected_id][$key]);
+      }
+    }
   }
 
   /**

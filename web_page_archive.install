@@ -704,3 +704,21 @@ function web_page_archive_update_8203() {
   \Drupal::entityDefinitionUpdateManager()
     ->installFieldStorageDefinition('retention_locked', 'web_page_archive_run', 'web_page_archive_run', $storage_definition);
 }
+
+/**
+ * Issue #3149345: Update entity type definitions.
+ */
+function web_page_archive_update_8204() {
+  $change_list = \Drupal::entityDefinitionUpdateManager()->getChangeSummary();
+  if (!empty($change_list['web_page_archive_run'])) {
+    $entityType = \Drupal::entityTypeManager()
+      ->getDefinition('web_page_archive_run');
+    \Drupal::entityDefinitionUpdateManager()->installEntityType($entityType);
+  }
+
+  if (!empty($change_list['wpa_run_comparison'])) {
+    $entityType = \Drupal::entityTypeManager()
+      ->getDefinition('wpa_run_comparison');
+    \Drupal::entityDefinitionUpdateManager()->installEntityType($entityType);
+  }
+}

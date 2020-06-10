@@ -334,7 +334,12 @@ class RunComparisonControllerTest extends EntityStorageTestBase {
         'variance' => '100',
       ],
     ];
-    $this->assertArraySubset($expected, $run_comparison->getResults());
+    $actual = $run_comparison->getResults();
+    foreach ($expected as $expected_id => $expected_item) {
+      foreach ($expected_item as $key => $expected_value) {
+        $this->assertEquals($expected_value, $actual[$expected_id][$key]);
+      }
+    }
   }
 
   /**
@@ -361,7 +366,13 @@ class RunComparisonControllerTest extends EntityStorageTestBase {
         'variance' => '53',
       ],
     ];
-    $this->assertArraySubset($expected, $run_comparison->getResults());
+
+    $actual = $run_comparison->getResults();
+    foreach ($expected as $expected_id => $expected_item) {
+      foreach ($expected_item as $key => $expected_value) {
+        $this->assertEquals($expected_value, $actual[$expected_id][$key]);
+      }
+    }
 
     // Confirm normalized variance gets added to the database.
     $normalized_variance = $this->runComparisonStorage->getNormalizedVarianceAtIndex($run_comparison->id());
