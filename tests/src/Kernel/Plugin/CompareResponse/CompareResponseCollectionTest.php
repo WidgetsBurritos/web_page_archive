@@ -47,7 +47,12 @@ class CompareResponseCollectionTest extends EntityStorageTestBase {
         [5 => ['capture_size' => 3532235]],
       ],
     ];
-    $this->assertArraySubset($expected, $response_collection->renderable($options));
+    $actual = $response_collection->renderable($options);
+    foreach ($expected as $expected_id => $expected_item) {
+      foreach ($expected_item as $key => $expected_value) {
+        $this->assertEquals($expected_value, $actual[$expected_id][$key]);
+      }
+    }
   }
 
   /**
@@ -69,7 +74,12 @@ class CompareResponseCollectionTest extends EntityStorageTestBase {
       [],
     ];
     $options = ['mode' => 'full'];
-    $this->assertArraySubset($expected, $response_collection->renderable($options));
+    $actual = $response_collection->renderable($options);
+    foreach ($expected as $expected_id => $expected_item) {
+      foreach ($expected_item as $key => $expected_value) {
+        $this->assertEquals($expected_value, $actual[$expected_id][$key]);
+      }
+    }
   }
 
 }

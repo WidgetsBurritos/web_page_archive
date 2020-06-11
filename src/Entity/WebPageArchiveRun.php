@@ -46,7 +46,12 @@ use Drupal\web_page_archive\Controller\CleanupController;
  *     "capture_utilities" = "capture_utilities",
  *     "retention_locked" = "retention_locked",
  *   },
- *   field_ui_base_route = "web_page_archive_run.settings"
+ *   field_ui_base_route = "web_page_archive_run.settings",
+ *   revision_metadata_keys = {
+ *     "revision_user" = "revision_uid",
+ *     "revision_created" = "revision_created",
+ *     "revision_log_message" = "revision_log"
+ *   }
  * )
  */
 class WebPageArchiveRun extends RevisionableContentEntityBase implements WebPageArchiveRunInterface {

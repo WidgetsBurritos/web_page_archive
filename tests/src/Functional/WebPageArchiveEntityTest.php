@@ -24,6 +24,11 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
   public $profile = 'minimal';
 
   /**
+   * {@inheritdoc}
+   */
+  protected $defaultTheme = 'stark';
+
+  /**
    * Authorized Admin User.
    *
    * @var \Drupal\user\UserInterface
@@ -103,7 +108,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     $assert->pageTextContains('Created the Test Archive Web page archive entity.');
 
     // Verify previous values are retained.
-    $this->assertContains('admin/config/system/web-page-archive/jobs/test_archive/edit', $this->getSession()->getCurrentUrl());
+    $this->assertStringContainsString('admin/config/system/web-page-archive/jobs/test_archive/edit', $this->getSession()->getCurrentUrl());
     $this->assertFieldByName('timeout', '500');
     $this->assertFieldByName('url_type', 'url');
     $this->assertFieldByName('urls', 'http://localhost');
