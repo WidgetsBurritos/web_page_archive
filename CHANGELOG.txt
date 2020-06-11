@@ -1,5 +1,34 @@
 CHANGELOG for Web Page Archive for Drupal 8
 
+
+Web Page Archive 8.x-3.0 (in progress)
+----------------------------------------------
+Issue #3074051 by WidgetsBurritos, vessel_adrift, pobster, bighappyface: Notification System
+Issue #3108837 by peterkokot, WidgetsBurritos: PHP 7.4 deprecated reverse order of glue and pieces in implode
+Issue #3149346 by Project Update Bot, WidgetsBurritos, pobster: Automated Drupal 9 compatibility fixes
+
+Web Page Archive 8.x-2.13 (2020-01-14)
+----------------------------------------------
+Issue #3090902 by WidgetsBurritos: Drupal 9 Support
+
+Web Page Archive 8.x-2.12 (2019-09-11)
+----------------------------------------------
+Issue #3074461 by vessel_adrift, Sergiu Stici, WidgetsBurritos: Deprecated Code Report
+Issue #3080440 by WidgetsBurritos, vessel_adrift: Retrieve revision IDs within specified date range
+
+Web Page Archive 8.x-2.11 (2019-08-13)
+----------------------------------------------
+Issue #3074615 by WidgetsBurritos, pobster: SettingsForm doesn't support entity_autocomplete fields
+
+Web Page Archive 8.x-2.10 (2019-08-12)
+----------------------------------------------
+Issue #3011579 by WidgetsBurritos, pobster: Delete Individual Runs
+Issue #3046172 by aleevas, kavbiswa, maliknaik, WidgetsBurritos: Don't use @expectedException and @expectedExceptionMessage
+
+Web Page Archive 8.x-2.9 (2019-08-05)
+----------------------------------------------
+Issue #3072289 by WidgetsBurritos, pobster: Data Retention Functionality
+
 Web Page Archive 8.x-2.8 (2019-03-29)
 ----------------------------------------------
 Issue #3043158 by kavbiswa, WidgetsBurritos: Travis CI Failures
