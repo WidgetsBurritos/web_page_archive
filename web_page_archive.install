@@ -722,3 +722,42 @@ function web_page_archive_update_8301() {
     \Drupal::entityDefinitionUpdateManager()->installEntityType($entityType);
   }
 }
+
+/**
+ * Issue #3154006: revision_uid column is missing.
+ */
+function web_page_archive_update_8302() {
+  $schema_driver = \Drupal::database()->schema();
+
+  $tables = [
+    'web_page_archive_run_revision',
+    'wpa_run_comparison_revision',
+  ];
+  $fields = [
+    'revision_user' => [
+      'field' => 'revision_uid',
+      'spec' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => FALSE,
+        'description' => 'The ID of the target entity.',
+      ],
+    ],
+    'revision_log_message' => [
+      'field' => 'revision_log',
+      'spec' => [
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => FALSE,
+      ],
+    ],
+  ];
+
+  foreach ($tables as $table) {
+    foreach ($fields as $old_field => $new_field) {
+      if ($schema_driver->fieldExists($table, $old_field)) {
+        $schema_driver->changeField($table, $old_field, $new_field['field'], $new_field['spec']);
+      }
+    }
+  }
+}
