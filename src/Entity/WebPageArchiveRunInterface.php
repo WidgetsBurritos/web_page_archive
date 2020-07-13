@@ -15,6 +15,14 @@ use Drupal\user\EntityOwnerInterface;
 interface WebPageArchiveRunInterface extends RevisionableInterface, RevisionLogInterface, EntityChangedInterface, EntityOwnerInterface {
 
   /**
+   * Gets the UUID for the current run. Sets new one if doesn't already exist.
+   *
+   * @return string|null
+   *   UUID of the run. NULL if none set.
+   */
+  public function getRunUuid();
+
+  /**
    * Gets the Web page archive run name.
    *
    * @return string

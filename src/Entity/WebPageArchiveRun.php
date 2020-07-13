@@ -36,6 +36,7 @@ use Drupal\web_page_archive\Controller\CleanupController;
  *   entity_keys = {
  *     "id" = "id",
  *     "revision" = "vid",
+ *     "run_uuid" = "run_uuid",
  *     "label" = "name",
  *     "uuid" = "uuid",
  *     "uid" = "user_id",
@@ -44,7 +45,7 @@ use Drupal\web_page_archive\Controller\CleanupController;
  *     "queue_ct" = "queue_ct",
  *     "success_ct" = "success_ct",
  *     "capture_utilities" = "capture_utilities",
- *     "retention_locked" = "retention_locked",
+ *     "retention_locked" = "retention_locked"
  *   },
  *   field_ui_base_route = "web_page_archive_run.settings",
  *   revision_metadata_keys = {
@@ -73,6 +74,11 @@ class WebPageArchiveRun extends RevisionableContentEntityBase implements WebPage
    */
   public function preSave(EntityStorageInterface $storage) {
     parent::preSave($storage);
+
+    // Initialize run uuid, if not set.
+    if (empty($this->get('run_uuid')->getString())) {
+      $this->set('run_uuid', $this->uuidGenerator()->generate());
+    }
 
     foreach (array_keys($this->getTranslationLanguages()) as $langcode) {
       $translation = $this->getTranslation($langcode);
@@ -118,6 +124,28 @@ class WebPageArchiveRun extends RevisionableContentEntityBase implements WebPage
   public function setCreatedTime($timestamp) {
     $this->set('created', $timestamp);
     return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getRunUuid() {
+    return $this->get('run_uuid')->getString() ?: $this->parseRunUuidFromLog();
+  }
+
+  /**
+   * Parses a run uuid from a log message.
+   *
+   * @return string|null
+   *   UUID value or null.
+   */
+  private function parseRunUuidFromLog() {
+    $log_message = $this->get('revision_log')->getString();
+    if (preg_match('/-- Run ID: ([a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}) --/', $log_message, $matches)) {
+      return $matches[1];
+    }
+
+    return NULL;
   }
 
   /**
@@ -323,6 +351,23 @@ class WebPageArchiveRun extends RevisionableContentEntityBase implements WebPage
    */
   public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
     $fields = parent::baseFieldDefinitions($entity_type);
+
+    $fields['run_uuid'] = BaseFieldDefinition::create('string')
+      ->setLabel(t('Run UUID'))
+      ->setDescription(t('UUID specific to the particular revision'))
+      ->setRevisionable(TRUE)
+      ->setSettings([
+        'max_length' => 36,
+        'text_processing' => 0,
+      ])
+      ->setDefaultValue('')
+      ->setDisplayOptions('view', [
+        'label' => 'hidden',
+        'type' => 'string',
+        'weight' => -4,
+      ])
+      ->setDisplayConfigurable('form', FALSE)
+      ->setDisplayConfigurable('view', TRUE);
 
     $fields['user_id'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Authored by'))

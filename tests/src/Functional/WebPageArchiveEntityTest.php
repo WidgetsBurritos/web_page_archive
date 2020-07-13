@@ -501,6 +501,12 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
     // Switched to detailed view.
     $this->clickLink('View Details');
 
+    // Confirm we see the Run UUID on the details page.
+    $wpa = $this->container->get('entity_type.manager')
+      ->getStorage('web_page_archive')
+      ->load('localhost');
+    $assert->pageTextContains($wpa->getRunEntity()->getRunUuid());
+
     // Parse file path.
     $file_paths = [];
     if (preg_match_all('/<span class="wpa-hidden wpa-file-path">(.*\.html)<\/span>/', $this->getSession()->getPage()->getContent(), $matches)) {
@@ -635,7 +641,7 @@ class WebPageArchiveEntityTest extends BrowserTestBase {
         'id' => 'skeleton_test',
         'timeout' => 500,
         'use_cron' => 1,
-        'use_robots' => 1,
+        'use_robots' => 0,
         'user_agent' => 'WPA',
         'cron_schedule' => '* * * * *',
         'url_type' => 'url',

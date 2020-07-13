@@ -369,8 +369,8 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
       $queue->deleteQueue();
       $queue->createQueue();
 
-      $run_uuid = $this->uuidGenerator()->generate();
       $run_entity = $this->getRunEntity();
+      $run_uuid = $this->uuidGenerator()->generate();
       $user_agent = $this->getUserAgent();
 
       foreach ($urls as $url) {
@@ -391,6 +391,7 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
       if ($this->getRunCt() > 0) {
         $run_entity->setNewRevision();
       }
+      $run_entity->set('run_uuid', $run_uuid);
       $run_entity->setQueueCt($queue->numberOfItems());
       $run_entity->setCapturedArray([]);
       $run_entity->setCaptureUtilities($this->getCaptureUtilityMap());

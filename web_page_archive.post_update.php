@@ -102,3 +102,47 @@ function _web_page_archive_reimport_views($views) {
     $config_storage->write($view, $source->read($view));
   }
 }
+
+/**
+ * Issue 3157902: Populate all run uuids.
+ */
+function web_page_archive_post_update_3157902_populate_run_uuids(&$sandbox) {
+  $storage = \Drupal::entityTypeManager()->getStorage('web_page_archive_run');
+  if (!isset($sandbox['list'])) {
+    $sandbox['list'] = array_keys($storage->fullRevisionList());
+    $sandbox['total'] = count($sandbox['list']);
+    // If there are no items, there is nothing left to do here.
+    if ($sandbox['total'] === 0) {
+      return;
+    }
+    $sandbox['progress'] = 0;
+  }
+
+  // Get next 25 ids.
+  $limit = 25;
+  $ids = array_splice($sandbox['list'], 0, $limit);
+
+  if (empty($ids)) {
+    $sandbox['progress']++;
+  }
+  else {
+    $revisions = $storage->loadMultipleRevisions($ids);
+    foreach ($revisions as $revision) {
+      $revision->set('run_uuid', $revision->getRunUuid());
+      $revision->save();
+      $sandbox['progress']++;
+    }
+  }
+
+  \Drupal::messenger()->addStatus("{$sandbox['progress']}/{$sandbox['total']} results processed.");
+
+  $sandbox['#finished'] = ($sandbox['progress'] / $sandbox['total']);
+}
+
+/**
+ * Issue 3157902: Reimport the web_page_archive_individual view.
+ */
+function web_page_archive_post_update_3157902_reimport_view() {
+  $views = ['views.view.web_page_archive_individual'];
+  _web_page_archive_reimport_views($views);
+}

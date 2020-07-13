@@ -761,3 +761,30 @@ function web_page_archive_update_8302() {
     }
   }
 }
+
+/**
+ * Issue #3157902: Add run_uuid field to run entities.
+ */
+function web_page_archive_update_8303() {
+  $fields['run_uuid'] = BaseFieldDefinition::create('string')
+    ->setLabel(t('Run UUID'))
+    ->setDescription(t('UUID specific to the particular revision'))
+    ->setRevisionable(TRUE)
+    ->setSettings([
+      'max_length' => 36,
+      'text_processing' => 0,
+    ])
+    ->setDefaultValue('')
+    ->setDisplayOptions('view', [
+      'label' => 'hidden',
+      'type' => 'string',
+      'weight' => -4,
+    ])
+    ->setDisplayConfigurable('form', FALSE)
+    ->setDisplayConfigurable('view', TRUE);
+
+  foreach ($fields as $field => $storage_definition) {
+    \Drupal::entityDefinitionUpdateManager()
+      ->installFieldStorageDefinition($field, 'web_page_archive_run', 'web_page_archive_run', $storage_definition);
+  }
+}
