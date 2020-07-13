@@ -1,11 +1,14 @@
 CHANGELOG for Web Page Archive for Drupal 8
 
 
-Web Page Archive 8.x-3.0 (in progress)
+Web Page Archive 4.0.0 (2020-07-12)
 ----------------------------------------------
 Issue #3074051 by WidgetsBurritos, vessel_adrift, pobster, bighappyface: Notification System
 Issue #3108837 by peterkokot, WidgetsBurritos: PHP 7.4 deprecated reverse order of glue and pieces in implode
 Issue #3149346 by Project Update Bot, WidgetsBurritos, pobster: Automated Drupal 9 compatibility fixes
+Issue #3154006 by WidgetsBurritos, pobster: Unknown column 'revision.revision_uid'
+Issue #3157902 by WidgetsBurritos, vessel_adrift, pobster: Add run UUID to run revisions
+Issue #3158593 by WidgetsBurritos, vessel_adrift, pobster: PHP 7.3: Notice: unserialize(): Error at offset
 
 Web Page Archive 8.x-2.13 (2020-01-14)
 ----------------------------------------------
