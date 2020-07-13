@@ -78,17 +78,59 @@ class CaptureQueueWorkerTest extends UnitTestCase {
   }
 
   /**
-   * Tests missing utility writes message.
+   * Tests a valid response.
    */
-  public function testMissingUtilityWritesMessage() {
+  public function testProcessItemWithPluginIdReturnsResponse() {
+    $mock_capture_utility_manager = $this->getMockBuilder('\Drupal\web_page_archive\Plugin\CaptureUtilityManager')
+      ->disableOriginalConstructor()
+      ->getMock();
+    $mock_capture_utility_manager->expects($this->once())
+      ->method('createInstance')
+      ->will($this->returnValue($this->mockHtmlCaptureUtility));
+    $this->queue->setCaptureUtilityManager($mock_capture_utility_manager);
+
     $data = [
+      'utility_plugin_id' => 'wpa_html_capture',
+      'utility_plugin_configuration' => json_encode(['some_config']),
       'url' => 'http://www.whatever.com',
       'run_uuid' => '12345678-1234-1234-1234-123456789000',
       'run_entity' => $this->mockWebPageArchiveRun,
       'user_agent' => 'WPA',
     ];
+    $response = $this->queue->processItem($data);
+    $this->assertSame('uri', $response->getType());
+    $this->assertSame('https://upload.wikimedia.org/wikipedia/commons/c/c1/Drupal-wordmark.svg', $response->getContent());
+  }
+
+  /**
+   * Tests missing utility plugin id writes message.
+   */
+  public function testMissingUtilityPluginIdWritesMessage() {
+    $data = [
+      'url' => 'http://www.whatever.com',
+      'run_uuid' => '12345678-1234-1234-1234-123456789000',
+      'run_entity' => $this->mockWebPageArchiveRun,
+      'user_agent' => 'WPA',
+      'utility_plugin_configuration' => [],
+    ];
     $this->expectException(\Exception::class);
-    $this->expectExceptionMessage('utility is required');
+    $this->expectExceptionMessage('utility_plugin_id and utility_plugin_configuration are required');
+    $response = $this->queue->processItem($data);
+  }
+
+  /**
+   * Tests missing utility configuration writes message.
+   */
+  public function testMissingUtilityPluginConfigurationWritesMessage() {
+    $data = [
+      'url' => 'http://www.whatever.com',
+      'run_uuid' => '12345678-1234-1234-1234-123456789000',
+      'run_entity' => $this->mockWebPageArchiveRun,
+      'user_agent' => 'WPA',
+      'utility_plugin_id' => 'my_id_here',
+    ];
+    $this->expectException(\Exception::class);
+    $this->expectExceptionMessage('utility_plugin_id and utility_plugin_configuration are required');
     $response = $this->queue->processItem($data);
   }
 

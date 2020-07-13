@@ -377,7 +377,8 @@ class WebPageArchive extends ConfigEntityBase implements WebPageArchiveInterface
         foreach ($this->getCaptureUtilities() as $utility) {
           $item = [
             'web_page_archive' => $this,
-            'utility' => $utility,
+            'utility_plugin_id' => $utility->getPluginId(),
+            'utility_plugin_configuration' => json_encode($utility->getConfiguration()),
             'url' => $url,
             'run_uuid' => $run_uuid,
             'run_entity' => $run_entity,
