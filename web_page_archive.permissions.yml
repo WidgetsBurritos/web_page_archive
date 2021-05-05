@@ -1,4 +1,7 @@
 administer web page archive:
   title: 'Administer Web Page Archive'
+  description: 'Allows access to all web page archive jobs, capture utilities, and configuration settings'
+  restrict access: true
+
 view web page archive results:
   title: 'View Web Page Archive Results'
