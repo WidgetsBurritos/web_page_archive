@@ -33,6 +33,7 @@ class WebPageArchiveSettingsTest extends BrowserTestBase {
    */
   public static $modules = [
     'config',
+    'config_translation',
     'web_page_archive',
     'wpa_html_capture',
     'wpa_screenshot_capture',

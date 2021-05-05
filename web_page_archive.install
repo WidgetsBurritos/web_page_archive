@@ -396,7 +396,6 @@ function web_page_archive_update_8009() {
       'langcode' => 'langcode',
       'status' => 'status',
     ],
-    'field_ui_base_route' => 'wpa_run_comparison.settings',
   ]);
   $update_manager->installEntityType($definition);
 }

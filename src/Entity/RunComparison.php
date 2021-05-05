@@ -46,7 +46,6 @@ use Drupal\user\UserInterface;
  *     "langcode" = "langcode",
  *     "status" = "status",
  *   },
- *   field_ui_base_route = "wpa_run_comparison.settings",
  *   revision_metadata_keys = {
  *     "revision_user" = "revision_uid",
  *     "revision_created" = "revision_created",

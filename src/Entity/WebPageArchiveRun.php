@@ -47,7 +47,6 @@ use Drupal\web_page_archive\Controller\CleanupController;
  *     "capture_utilities" = "capture_utilities",
  *     "retention_locked" = "retention_locked"
  *   },
- *   field_ui_base_route = "web_page_archive_run.settings",
  *   revision_metadata_keys = {
  *     "revision_user" = "revision_uid",
  *     "revision_created" = "revision_created",
